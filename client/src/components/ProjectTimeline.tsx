@@ -137,7 +137,7 @@ export default function ProjectTimeline() {
       {/* Grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-40 -z-10"></div>
       
-      <div className="container mx-auto px-4 relative" ref={containerRef}>
+      <div className="container mx-auto px-4 relative" style={{ position: "relative" }} ref={containerRef}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -305,7 +305,7 @@ export default function ProjectTimeline() {
                 />
                 
                 {/* Timeline node */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-8 w-6 h-6 rounded-full border-2 border-white bg-black z-10 flex items-center justify-center">
+                <div className="absolute left-1/2 -translate-x-1/2 top-8 w-6 h-6 rounded-full bg-black z-10 flex items-center justify-center" style={{ borderWidth: "2px", borderStyle: "solid", borderColor: "white" }}>
                   <motion.div 
                     className="w-2 h-2 bg-white rounded-full"
                     animate={{ 
@@ -364,12 +364,18 @@ export default function ProjectTimeline() {
                       <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 hover:border-white/30 transition-all duration-300 relative">
                         {/* Corner accent */}
                         <motion.div 
-                          className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
+                          className="absolute top-0 left-0 w-10 h-10 z-10"
+                          style={{ 
+                            borderTopWidth: "1px", 
+                            borderLeftWidth: "1px", 
+                            borderTopStyle: "solid", 
+                            borderLeftStyle: "solid", 
+                            borderTopColor: "rgba(255,255,255,0.2)",
+                            borderLeftColor: "rgba(255,255,255,0.2)"
+                          }}
                           whileHover={{ scale: 1.1 }}
                           animate={{
-                            borderColor: activeProject === project.id 
-                              ? ["rgba(255,255,255,0.2)", "rgba(255,255,255,0.4)", "rgba(255,255,255,0.2)"] 
-                              : "rgba(255,255,255,0.2)"
+                            opacity: activeProject === project.id ? [0.2, 0.6, 0.2] : 0.2
                           }}
                           transition={{ duration: 2, repeat: activeProject === project.id ? Infinity : 0 }}
                         />
