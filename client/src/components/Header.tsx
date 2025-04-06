@@ -58,9 +58,9 @@ export default function Header() {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? "bg-background/80 py-2 shadow-lg" 
+          ? "bg-black/80 backdrop-blur-md py-2 border-b border-white/10" 
           : "bg-transparent py-4"
       }`}
     >
@@ -69,9 +69,11 @@ export default function Header() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="font-bold text-xl text-primary tracking-tighter"
+          className="font-bold text-2xl tracking-tight"
         >
-          NEXUS<span className="text-white">ARCHITECTS</span>
+          <span className="text-white uppercase tracking-widest">NEX</span>
+          <span className="text-white/70 uppercase tracking-widest">US</span>
+          <span className="text-white text-xs ml-1 border-l border-white/30 pl-1">ARCHITECTURE</span>
         </motion.div>
 
         {/* Desktop Navigation */}
@@ -81,20 +83,24 @@ export default function Header() {
               key={item.name}
               href={item.href}
               onClick={(e) => smoothScroll(e, item.href)}
-              className={`text-sm transition-all hover:text-primary relative tracking-wide ${
+              className={`text-xs uppercase font-light tracking-widest transition-all relative py-2 px-1 ${
                 activeSection === item.name.toLowerCase() 
-                  ? "text-primary" 
-                  : "text-gray-300"
+                  ? "text-white" 
+                  : "text-gray-400 hover:text-white/80"
               }`}
-              whileHover={{ y: -2 }}
+              whileHover={{ 
+                letterSpacing: "0.2em",
+                transition: { duration: 0.3 }
+              }}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
               {item.name}
               {activeSection === item.name.toLowerCase() && (
                 <motion.span 
-                  className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary"
+                  className="absolute top-0 right-0 w-[3px] h-full bg-white"
                   layoutId="navIndicator"
+                  transition={{ duration: 0.3 }}
                 />
               )}
             </motion.a>
@@ -104,30 +110,41 @@ export default function Header() {
         {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
-            <button className="p-2" aria-label="Menu">
-              <Menu className="h-6 w-6 text-gray-200" />
-            </button>
+            <motion.button 
+              className="p-2 border border-white/20 backdrop-blur-sm" 
+              aria-label="Menu"
+              whileHover={{ borderColor: "rgba(255,255,255,0.5)" }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Menu className="h-5 w-5 text-white" />
+            </motion.button>
           </SheetTrigger>
-          <SheetContent className="bg-background/95 backdrop-blur-lg border-gray-800">
-            <div className="flex flex-col space-y-6 pt-10">
-              {navItems.map((item) => (
-                <a
+          <SheetContent className="bg-black/95 backdrop-blur-lg border-white/10">
+            <div className="flex flex-col space-y-6 pt-14">
+              {navItems.map((item, index) => (
+                <motion.a
                   key={item.name}
                   href={item.href}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                   onClick={(e) => {
                     smoothScroll(e, item.href);
                     document.querySelector('[data-state="open"]')?.dispatchEvent(
                       new Event("close", { bubbles: true })
                     );
                   }}
-                  className={`text-xl transition-colors hover:text-primary py-2 ${
+                  className={`text-lg uppercase font-light tracking-widest transition-all py-3 border-b border-white/10 ${
                     activeSection === item.name.toLowerCase() 
-                      ? "text-primary" 
-                      : "text-gray-300"
+                      ? "text-white" 
+                      : "text-gray-400"
                   }`}
                 >
+                  {activeSection === item.name.toLowerCase() && (
+                    <span className="inline-block w-2 h-2 bg-white mr-2"></span>
+                  )}
                   {item.name}
-                </a>
+                </motion.a>
               ))}
             </div>
           </SheetContent>

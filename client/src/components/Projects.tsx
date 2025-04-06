@@ -124,10 +124,10 @@ export default function Projects() {
           viewport={{ once: true }}
           className="mb-12 text-center"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
-            <span className="text-primary">Featured</span> Projects
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight uppercase">
+            <span className="text-white border-b-2 border-white pb-1">FEATURED</span> PROJECTS
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 max-w-2xl mx-auto font-light">
             Explore our portfolio of innovative architectural designs spanning various scales and typologies.
           </p>
         </motion.div>
@@ -138,10 +138,10 @@ export default function Projects() {
             <Badge
               key={filter}
               variant={activeFilter === filter ? "default" : "outline"}
-              className={`text-sm py-2 px-4 cursor-pointer ${
+              className={`text-sm py-2 px-4 cursor-pointer uppercase tracking-wider ${
                 activeFilter === filter 
-                  ? "bg-primary hover:bg-primary/90" 
-                  : "hover:bg-gray-800 border-gray-700"
+                  ? "bg-white text-black hover:bg-gray-200" 
+                  : "border-white text-white hover:bg-white/10"
               }`}
               onClick={() => {
                 setActiveFilter(filter);
@@ -169,21 +169,27 @@ export default function Projects() {
               onMouseLeave={() => setHoveredProject(null)}
               className="group"
             >
-              <Card className="overflow-hidden bg-gray-900/50 border-gray-800 h-full hover:border-primary/50 transition-all duration-300">
+              <Card className="overflow-hidden bg-gray-900/50 border-white/10 h-full hover:border-white/50 transition-all duration-300">
                 <div className="relative overflow-hidden aspect-[4/3]">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent"></div>
+                  <motion.div 
+                    whileHover={{ filter: 'grayscale(0%)' }}
+                    initial={{ filter: 'grayscale(100%)' }}
+                    className="h-full w-full"
+                  >
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </motion.div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent group-hover:opacity-90 transition-opacity"></div>
                   
                   <div className="absolute bottom-4 left-4 right-4">
-                    <p className="text-primary text-sm font-medium">{project.category}</p>
-                    <h3 className="text-xl font-bold text-white">{project.title}</h3>
+                    <span className="text-white text-xs tracking-widest uppercase font-light">{project.category}</span>
+                    <h3 className="text-xl font-bold text-white mt-1 uppercase">{project.title}</h3>
                     <div className="flex gap-1 mt-2 flex-wrap">
                       {project.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="bg-gray-800/70 text-gray-300 text-xs">
+                        <Badge key={index} variant="outline" className="border-white/30 text-white text-xs uppercase">
                           {tag}
                         </Badge>
                       ))}
@@ -191,12 +197,12 @@ export default function Projects() {
                   </div>
                 </div>
                 
-                <CardContent className="p-5">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-400 text-sm">{project.location}</span>
-                    <span className="text-gray-400 text-sm">{project.year}</span>
+                <CardContent className="p-5 bg-black/40">
+                  <div className="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
+                    <span className="text-gray-400 text-xs uppercase tracking-wider">{project.location}</span>
+                    <span className="text-white font-mono">{project.year}</span>
                   </div>
-                  <p className="text-gray-300 text-sm">{project.description}</p>
+                  <p className="text-gray-300 text-sm font-light">{project.description}</p>
                   
                   <motion.div 
                     className="mt-4 flex justify-end"
@@ -207,8 +213,12 @@ export default function Projects() {
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10">
-                      View Details <ExternalLink className="ml-2 h-4 w-4" />
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-white hover:text-black hover:bg-white uppercase tracking-wider border-white/30 hover:border-white text-xs"
+                    >
+                      View Project <ExternalLink className="ml-2 h-3 w-3" />
                     </Button>
                   </motion.div>
                 </CardContent>
@@ -218,12 +228,12 @@ export default function Projects() {
         </motion.div>
 
         {/* Load more/less buttons */}
-        <div className="flex justify-center mt-12 gap-4">
+        <div className="flex justify-center mt-12 gap-6">
           {visibleProjects > 3 && (
             <Button 
               variant="outline" 
               onClick={loadLess}
-              className="border-gray-700 hover:bg-gray-800 hover:text-white gap-2"
+              className="border-white/30 hover:bg-white hover:text-black hover:border-white gap-2 uppercase tracking-wider text-sm"
             >
               <ArrowLeft className="h-4 w-4" />
               Show Less
@@ -234,7 +244,7 @@ export default function Projects() {
             <Button 
               variant="outline" 
               onClick={loadMore}
-              className="border-gray-700 hover:bg-gray-800 hover:text-white gap-2"
+              className="border-white/30 hover:bg-white hover:text-black hover:border-white gap-2 uppercase tracking-wider text-sm"
             >
               Show More
               <ArrowRight className="h-4 w-4" />
