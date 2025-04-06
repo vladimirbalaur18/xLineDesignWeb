@@ -1,10 +1,47 @@
-import { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { ChevronDown, Building2, Layers, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [cursorActive, setCursorActive] = useState(false);
+  
+  // Animation elements to cycle through
+  const [currentAnimation, setCurrentAnimation] = useState(0);
+  const animationElements = [
+    { icon: <Building2 className="h-8 w-8 text-white" />, title: "INNOVATION" },
+    { icon: <Layers className="h-8 w-8 text-white" />, title: "PRECISION" },
+    { icon: <Wand2 className="h-8 w-8 text-white" />, title: "CREATIVITY" },
+  ];
+  
+  // Cycle through animation elements
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentAnimation((prev) => (prev + 1) % animationElements.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Track mouse movement for 3D effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      setCursorActive(true);
+    };
+    
+    const handleMouseLeave = () => setCursorActive(false);
+    
+    window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, []);
+  
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
@@ -90,6 +127,157 @@ export default function Hero() {
         <div className="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
       </div>
 
+      {/* 3D Floating Animation Elements */}
+      <div className="hidden lg:block absolute inset-0 pointer-events-none z-10">
+        <AnimatePresence>
+          <motion.div
+            key={currentAnimation}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5 }}
+            className="absolute top-1/4 right-[15%]"
+            style={{
+              perspective: 1000,
+              transform: cursorActive
+                ? `rotateY(${(mousePosition.x - window.innerWidth / 2) / 50}deg) 
+                   rotateX(${-(mousePosition.y - window.innerHeight / 2) / 50}deg)`
+                : "none",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            <div className="w-64 h-64 relative">
+              {/* 3D floating container */}
+              <div className="absolute inset-0 border border-white/20 backdrop-blur-sm bg-black/20 
+                            transform-gpu preserve-3d flex flex-col items-center justify-center">
+                <motion.div
+                  animate={{ 
+                    y: [0, -10, 0], 
+                    rotateZ: [0, 5, 0, -5, 0],
+                    z: [0, 30, 0]
+                  }}
+                  transition={{ 
+                    duration: 5, 
+                    repeat: Infinity, 
+                    ease: "easeInOut" 
+                  }}
+                  style={{ transformStyle: "preserve-3d" }}
+                  className="p-8 flex flex-col items-center gap-5"
+                >
+                  <div className="p-3 border border-white/30 rounded-full backdrop-blur-md">
+                    {animationElements[currentAnimation].icon}
+                  </div>
+                  <div className="text-white font-bold tracking-widest text-xl">
+                    {animationElements[currentAnimation].title}
+                  </div>
+                </motion.div>
+              </div>
+              
+              {/* Animated glow effect */}
+              <motion.div 
+                className="absolute -inset-3 bg-white/5 rounded-none opacity-50 blur-md -z-10"
+                animate={{ 
+                  opacity: [0.3, 0.5, 0.3],
+                  scale: [0.95, 1.05, 0.95]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              />
+              
+              {/* Geometric decorative elements */}
+              <motion.div
+                className="absolute -right-10 -bottom-10 w-20 h-20 border border-white/20"
+                animate={{ 
+                  rotate: [0, 45, 0], 
+                  scale: [0.9, 1.1, 0.9],
+                  opacity: [0.3, 0.6, 0.3]
+                }}
+                transition={{ 
+                  duration: 8, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              />
+            </div>
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Another floating 3D element */}
+        <motion.div
+          className="absolute bottom-1/3 left-[10%]"
+          style={{
+            perspective: 1000,
+            transform: cursorActive
+              ? `rotateY(${(mousePosition.x - window.innerWidth / 2) / 60}deg) 
+                 rotateX(${-(mousePosition.y - window.innerHeight / 2) / 60}deg)`
+              : "none",
+            transformStyle: "preserve-3d",
+          }}
+        >
+          <div className="relative w-44 h-44">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-tr from-black/50 to-black/30 border border-white/10 backdrop-blur-sm"
+              animate={{ 
+                rotateY: [0, 10, 0, -10, 0],
+                rotateX: [0, 5, 0, -5, 0],
+                z: [0, 20, 0]
+              }}
+              transition={{ 
+                duration: 6, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <motion.div 
+                className="h-full w-full flex items-center justify-center"
+                animate={{ 
+                  rotateZ: [0, 5, 0, -5, 0]
+                }}
+                transition={{ 
+                  duration: 8, 
+                  repeat: Infinity, 
+                  ease: "easeInOut",
+                  delay: 1 
+                }}
+              >
+                <div className="p-4 text-white/80 text-center">
+                  <motion.div 
+                    className="w-16 h-16 mx-auto border-t border-r border-white/30 mb-4"
+                    animate={{ rotate: [0, 180, 360] }}
+                    transition={{ 
+                      duration: 20, 
+                      repeat: Infinity, 
+                      ease: "linear" 
+                    }}
+                  />
+                  <div className="text-xs tracking-widest uppercase">
+                    Future Living
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+            
+            {/* Animated shadow/glow */}
+            <motion.div 
+              className="absolute -inset-4 bg-white/5 blur-lg -z-10"
+              animate={{ 
+                opacity: [0.2, 0.4, 0.2],
+                scale: [0.9, 1.1, 0.9]
+              }}
+              transition={{ 
+                duration: 5, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+            />
+          </div>
+        </motion.div>
+      </div>
+      
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

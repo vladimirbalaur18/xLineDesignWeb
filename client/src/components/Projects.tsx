@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExternalLink, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ProjectScene3D from "./ProjectScene3D";
 
 // Project data
 const projects = [
@@ -228,6 +229,17 @@ export default function Projects() {
               </Badge>
             </motion.div>
           ))}
+        </motion.div>
+        
+        {/* 3D Interactive Scene */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true, margin: "-100px" }}
+          className="mb-20"
+        >
+          <ProjectScene3D />
         </motion.div>
 
         {/* Projects Grid */}

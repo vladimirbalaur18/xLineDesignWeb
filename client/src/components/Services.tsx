@@ -25,7 +25,7 @@ const services = [
   {
     id: "residential",
     title: "Residential",
-    icon: <Home className="h-6 w-6" />,
+    icon: <Home className="h-5 w-5 text-white group-data-[state=active]:text-black" />,
     description: "Creating distinctive homes that reflect the personality and lifestyle of their owners while optimizing functionality and comfort.",
     features: [
       "Custom Home Design",
@@ -39,7 +39,7 @@ const services = [
   {
     id: "commercial",
     title: "Commercial",
-    icon: <Building className="h-6 w-6" />,
+    icon: <Building className="h-5 w-5 text-white group-data-[state=active]:text-black" />,
     description: "Designing dynamic commercial spaces that enhance productivity, foster collaboration, and create memorable experiences for visitors.",
     features: [
       "Office Buildings",
@@ -53,7 +53,7 @@ const services = [
   {
     id: "institutional",
     title: "Institutional",
-    icon: <Landmark className="h-6 w-6" />,
+    icon: <Landmark className="h-5 w-5 text-white group-data-[state=active]:text-black" />,
     description: "Creating functional, inspirational spaces for education, healthcare, and cultural institutions that serve communities.",
     features: [
       "Educational Facilities",
@@ -67,7 +67,7 @@ const services = [
   {
     id: "planning",
     title: "Planning",
-    icon: <Presentation className="h-6 w-6" />,
+    icon: <Presentation className="h-5 w-5 text-white group-data-[state=active]:text-black" />,
     description: "Comprehensive master planning and urban design services that create cohesive, sustainable, and vibrant communities.",
     features: [
       "Urban Design",
@@ -221,26 +221,23 @@ export default function Services() {
           const selected = services.find(s => s.id === value);
           if (selected) setActiveService(selected);
         }}>
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 bg-black border border-white/10 rounded-xl p-1 mb-12 backdrop-blur-sm">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm">
             {services.map((service) => (
               <TabsTrigger 
                 key={service.id} 
                 value={service.id}
-                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-black transition-all duration-300"
+                className="rounded-xl py-3 px-4 data-[state=active]:bg-white data-[state=active]:text-black transition-all duration-300"
               >
-                <div className="flex flex-col items-center gap-2 py-2">
+                <div className="flex flex-col items-center gap-3 py-1">
                   <motion.div 
-                    whileHover={{ scale: 1.1 }} 
-                    className="relative"
+                    whileHover={{ scale: 1.05 }} 
+                    className="relative w-12 h-12 flex items-center justify-center bg-black/50 rounded-xl border border-white/10"
+                    transition={{ type: 'spring', stiffness: 300 }}
                   >
-                    {service.icon}
-                    <motion.div 
-                      className="absolute -inset-1.5 bg-white/5 rounded-full opacity-0 group-hover:opacity-100 blur"
-                      layout
-                      transition={{ duration: 0.2 }}
-                    />
+                    <div className="text-white">{service.icon}</div>
+                    <div className="absolute -inset-0.5 bg-white/5 rounded-xl opacity-0 group-hover:opacity-100 blur-sm"></div>
                   </motion.div>
-                  <span className="text-sm font-medium tracking-wide">{service.title}</span>
+                  <span className="text-sm font-medium tracking-wider">{service.title}</span>
                 </div>
               </TabsTrigger>
             ))}
@@ -381,7 +378,16 @@ export default function Services() {
               viewport={{ once: true }}
             ></motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+            {/* Responsive vertical line for mobile */}
+            <motion.div 
+              className="absolute top-10 bottom-10 left-1/2 w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent md:hidden"
+              initial={{ scaleY: 0, opacity: 0 }}
+              whileInView={{ scaleY: 1, opacity: 1 }}
+              transition={{ duration: 1.5 }}
+              viewport={{ once: true }}
+            ></motion.div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-8 gap-y-16">
               {processSteps.map((step, index) => (
                 <motion.div
                   key={index}
@@ -392,6 +398,14 @@ export default function Services() {
                   onMouseEnter={() => setHoveredStep(index)}
                   onMouseLeave={() => setHoveredStep(undefined)}
                   className="relative"
+                  whileHover={{
+                    z: 20,
+                    scale: 1.03,
+                    transition: { duration: 0.2 }
+                  }}
+                  style={{
+                    transformStyle: "preserve-3d"
+                  }}
                 >
                   {/* Animated glow effect on hover */}
                   <motion.div 
@@ -402,7 +416,8 @@ export default function Services() {
                   ></motion.div>
                   
                   {/* Card with glass morphism effect */}
-                  <Card className="relative backdrop-blur-md bg-black/40 border border-white/10 shadow-lg overflow-hidden h-full z-10">
+                  <Card className="relative backdrop-blur-md bg-black/40 border border-white/10 shadow-lg overflow-hidden h-full z-10 md:transform md:transition-transform md:hover:translate-z-10"
+                        style={{ transformStyle: "preserve-3d" }}>
                     {/* Gradient border effect */}
                     <motion.div 
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0"
@@ -425,7 +440,7 @@ export default function Services() {
                             className="absolute -inset-0.5 rounded-full opacity-0"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: hoveredStep === index ? [0, 0.5, 0] : 0 }}
-                            transition={{ duration: 2, repeat: hoveredStep === index ? Infinity : null, ease: "easeInOut" }}
+                            transition={{ duration: 2, repeat: hoveredStep === index ? Infinity : undefined, ease: "easeInOut" }}
                             style={{ border: '1px solid rgba(255,255,255,0.3)' }}
                           ></motion.div>
                         </motion.div>
