@@ -14,8 +14,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create in-memory storage for this demo
       const result = {
         id: Date.now(),
-        ...contactData,
-        createdAt: new Date().toISOString()
+        ...contactData
       };
       
       // Return success response

@@ -25,6 +25,7 @@ export const insertContactMessageSchema = createInsertSchema(contactMessages).pi
   name: true,
   email: true,
   message: true,
+  createdAt: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
