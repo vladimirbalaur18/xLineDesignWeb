@@ -13,10 +13,17 @@ import {
   DialogTitle,
   DialogDescription,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Bed, Bath, Grid, Expand, Calendar, Info } from "lucide-react";
+import { MapPin, Bed, Bath, Grid, Expand, Calendar, Info, Send, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 // Property data
 const properties = [
@@ -94,9 +101,44 @@ const properties = [
   },
 ];
 
+// Form validation schema
+const consultationFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().min(6, { message: "Please enter a valid phone number." }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+  propertyInterest: z.string().optional(),
+});
+
+type ConsultationFormValues = z.infer<typeof consultationFormSchema>;
+
 export default function PropertyForSale() {
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openConsultationForm, setOpenConsultationForm] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  
+  const form = useForm<ConsultationFormValues>({
+    resolver: zodResolver(consultationFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      propertyInterest: "",
+    },
+  });
+  
+  const onSubmit = (data: ConsultationFormValues) => {
+    console.log("Form submitted with data:", data);
+    setFormSubmitted(true);
+    // In a real application, this would send the data to a server
+    setTimeout(() => {
+      form.reset();
+      setOpenConsultationForm(false);
+      setFormSubmitted(false);
+    }, 2000);
+  };
 
   return (
     <section id="properties" className="py-24 relative overflow-hidden">
@@ -373,11 +415,141 @@ export default function PropertyForSale() {
             <p className="text-white/70 mb-6 max-w-2xl mx-auto">
               Our architectural firm specializes in creating bespoke properties tailored to your vision and lifestyle. Contact our team to discuss your dream home project.
             </p>
-            <Button className="bg-white text-black hover:bg-white/90 hover:text-black">
+            <Button 
+              className="bg-white text-black hover:bg-white/90 hover:text-black"
+              onClick={() => setOpenConsultationForm(true)}
+            >
               Schedule A Consultation
             </Button>
           </div>
         </motion.div>
+        
+        {/* Consultation form dialog */}
+        <Dialog open={openConsultationForm} onOpenChange={setOpenConsultationForm}>
+          <DialogContent className="sm:max-w-md bg-black/95 border-white/10">
+            <div className="absolute top-0 right-0 p-3">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-white/70 hover:text-white hover:bg-white/10" 
+                onClick={() => setOpenConsultationForm(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <DialogTitle className="text-xl font-bold text-white">
+              Schedule Your Consultation
+            </DialogTitle>
+            <DialogDescription className="text-white/70">
+              Complete the form below and our team will contact you to arrange a personal consultation.
+            </DialogDescription>
+            
+            {formSubmitted ? (
+              <div className="py-6 text-center">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10"
+                >
+                  <Send className="h-6 w-6 text-white" />
+                </motion.div>
+                <h3 className="mb-2 text-lg font-semibold text-white">Consultation Request Sent</h3>
+                <p className="text-white/70">
+                  Thank you for your interest. Our team will be in touch with you shortly to discuss your project.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-white">Full Name</Label>
+                  <Input
+                    id="name"
+                    className="bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
+                    placeholder="Enter your full name"
+                    {...form.register("name")}
+                  />
+                  {form.formState.errors.name && (
+                    <p className="text-red-400 text-xs mt-1">{form.formState.errors.name.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    className="bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
+                    placeholder="Enter your email"
+                    {...form.register("email")}
+                  />
+                  {form.formState.errors.email && (
+                    <p className="text-red-400 text-xs mt-1">{form.formState.errors.email.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-white">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    className="bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
+                    placeholder="Enter your phone number"
+                    {...form.register("phone")}
+                  />
+                  {form.formState.errors.phone && (
+                    <p className="text-red-400 text-xs mt-1">{form.formState.errors.phone.message}</p>
+                  )}
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="propertyInterest" className="text-white">Property Interest (Optional)</Label>
+                  <Input
+                    id="propertyInterest"
+                    className="bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
+                    placeholder="Which property are you interested in?"
+                    {...form.register("propertyInterest")}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="message" className="text-white">Your Message</Label>
+                  <Textarea
+                    id="message"
+                    className="min-h-[100px] bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
+                    placeholder="Tell us about your vision or any questions you may have..."
+                    {...form.register("message")}
+                  />
+                  {form.formState.errors.message && (
+                    <p className="text-red-400 text-xs mt-1">{form.formState.errors.message.message}</p>
+                  )}
+                </div>
+                
+                <DialogFooter className="pt-4 border-t border-white/10">
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-white text-black hover:bg-white/90"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                      </div>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        <Send className="mr-2 h-4 w-4" /> Send Request
+                      </span>
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
