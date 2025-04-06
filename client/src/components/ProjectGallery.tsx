@@ -10,6 +10,8 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 
@@ -196,6 +198,9 @@ export default function ProjectGallery() {
               </DialogTrigger>
               
               <DialogContent className="sm:max-w-5xl bg-black/95 border-white/10 p-0">
+                <DialogTitle className="sr-only">{image.title}</DialogTitle>
+                <DialogDescription className="sr-only">{image.description}</DialogDescription>
+                
                 {/* Full Screen Modal View */}
                 <div className="relative">
                   {/* Close button */}
@@ -277,6 +282,9 @@ export default function ProjectGallery() {
                     </DialogTrigger>
                     
                     <DialogContent className="sm:max-w-5xl bg-black/95 border-white/10 p-0">
+                      <DialogTitle className="sr-only">{image.title}</DialogTitle>
+                      <DialogDescription className="sr-only">{image.description}</DialogDescription>
+                      
                       <div className="relative">
                         {/* Close button */}
                         <button 
