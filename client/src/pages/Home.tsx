@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Projects from "@/components/Projects";
+import ProjectGallery from "@/components/ProjectGallery";
 import About from "@/components/About";
 import Services from "@/components/Services";
 import Team from "@/components/Team";
@@ -27,6 +28,7 @@ export default function Home() {
       <main>
         <Hero />
         <Projects />
+        <ProjectGallery />
         <About />
         <Services />
         <Team />
