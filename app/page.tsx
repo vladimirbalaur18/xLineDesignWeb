@@ -18,7 +18,7 @@ export default function HomePage() {
   return (
     <ClientOnly>
       <div className="min-h-screen font-sans">
-        <CustomCursor />
+        {/* <CustomCursor /> */}
         <Header />
         <main>
           <Hero />

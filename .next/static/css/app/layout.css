@@ -1427,6 +1427,10 @@ video {
 .w-px {
   width: 1px;
 }
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
+}
 .min-w-0 {
   min-width: 0px;
 }
@@ -2378,6 +2382,10 @@ video {
 .py-7 {
   padding-top: 1.75rem;
   padding-bottom: 1.75rem;
+}
+.px-24 {
+  padding-left: 6rem;
+  padding-right: 6rem;
 }
 .pb-1 {
   padding-bottom: 0.25rem;
@@ -4467,6 +4475,11 @@ video {
     padding: 2rem;
   }
 
+  .md\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
   .md\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;
@@ -4485,11 +4498,6 @@ video {
   .md\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
-  }
-
-  .md\:text-lg {
-    font-size: 1.125rem;
-    line-height: 1.75rem;
   }
 
   .md\:opacity-0 {
