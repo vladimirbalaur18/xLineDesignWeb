@@ -88,22 +88,20 @@ export default function Header() {
               className={`text-xs uppercase font-light tracking-widest transition-all relative py-2 px-1 ${
                 activeSection === item.name.toLowerCase() 
                   ? "text-white" 
-                  : "text-gray-400 hover:text-white/80"
+                  : "text-gray-400 hover:text-white"
               }`}
-              whileHover={{ 
-                y: -2,
-                transition: { duration: 0.2 }
-              }}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              {item.name}
-              <motion.span 
-                className="absolute bottom-0 left-0 w-full h-[1px] bg-white/40"
-                initial={{ scaleX: 0, opacity: 0 }}
-                whileHover={{ scaleX: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              />
+              <span className="relative z-10 overflow-hidden inline-block">
+                {item.name}
+                <motion.span 
+                  className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/50"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </span>
               {activeSection === item.name.toLowerCase() && (
                 <motion.span 
                   className="absolute top-0 right-0 w-[3px] h-full bg-white"
