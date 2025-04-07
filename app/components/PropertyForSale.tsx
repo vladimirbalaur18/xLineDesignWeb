@@ -312,16 +312,18 @@ export default function PropertyForSale() {
                 </motion.div>
               </DialogTrigger>
               
-              <DialogContent className="sm:max-w-5xl bg-black/95 border-white/10 p-4">
-                <DialogTitle className="text-xl font-bold text-white mb-1">
-                  {property.title}
-                </DialogTitle>
-                <DialogDescription className="text-white/70 mb-6">
-                  {property.address} - {property.price}
-                </DialogDescription>
+              <DialogContent className="sm:max-w-5xl bg-black/95 border-white/10 p-0 sm:p-4 max-h-[95dvh] overflow-y-auto">
+                <div className="sticky top-0 z-20 bg-black/95 backdrop-blur-lg p-4 pb-2">
+                  <DialogTitle className="text-xl font-bold text-white mb-1">
+                    {property.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-white/70">
+                    {property.address} - {property.price}
+                  </DialogDescription>
+                </div>
 
                 {/* Image Carousel */}
-                <div className="mb-8">
+                <div className="mb-4 sm:mb-8 mt-2 relative px-4">
                   <Carousel className="w-full">
                     <CarouselContent>
                       {property.images.map((image, index) => (
@@ -336,17 +338,17 @@ export default function PropertyForSale() {
                         </CarouselItem>
                       ))}
                     </CarouselContent>
-                    <div className="absolute top-1/2 left-4 -translate-y-1/2 z-10">
-                      <CarouselPrevious className="bg-black/70 border-white/30 hover:bg-white/10" />
+                    <div className="absolute top-1/2 -left-1 sm:left-2 -translate-y-1/2 z-10">
+                      <CarouselPrevious className="h-8 w-8 sm:h-10 sm:w-10 bg-black/70 border-white/30 hover:bg-white/10" />
                     </div>
-                    <div className="absolute top-1/2 right-4 -translate-y-1/2 z-10">
-                      <CarouselNext className="bg-black/70 border-white/30 hover:bg-white/10" />
+                    <div className="absolute top-1/2 -right-1 sm:right-2 -translate-y-1/2 z-10">
+                      <CarouselNext className="h-8 w-8 sm:h-10 sm:w-10 bg-black/70 border-white/30 hover:bg-white/10" />
                     </div>
                   </Carousel>
                 </div>
                 
                 {/* Property Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 pb-4">
                   <div>
                     <h4 className="text-white text-lg font-semibold mb-4 flex items-center gap-2">
                       <Info className="w-5 h-5 text-white/70" />
@@ -428,7 +430,7 @@ export default function PropertyForSale() {
         
         {/* Consultation form dialog */}
         <Dialog open={openConsultationForm} onOpenChange={setOpenConsultationForm}>
-          <DialogContent className="sm:max-w-md bg-black/95 border-white/10">
+          <DialogContent className="sm:max-w-md bg-black/95 border-white/10 max-h-[95dvh] overflow-y-auto p-4">
             <div className="absolute top-0 right-0 p-3">
               <Button 
                 variant="ghost" 
