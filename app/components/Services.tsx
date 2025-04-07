@@ -382,14 +382,23 @@ export default function Services() {
             
             {/* Responsive vertical line for mobile */}
             <motion.div 
-              className="absolute top-10 bottom-10 left-1/2 w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent md:hidden"
+              className="absolute top-10 bottom-40 left-[10%] sm:left-[20%] md:left-1/2 w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent sm:hidden"
               initial={{ scaleY: 0, opacity: 0 }}
               whileInView={{ scaleY: 1, opacity: 1 }}
               transition={{ duration: 1.5 }}
               viewport={{ once: true }}
             ></motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8 gap-y-16">
+            {/* Second responsive vertical line for tablet */}
+            <motion.div 
+              className="absolute top-10 bottom-40 right-[20%] w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent hidden sm:block md:hidden"
+              initial={{ scaleY: 0, opacity: 0 }}
+              whileInView={{ scaleY: 1, opacity: 1 }}
+              transition={{ duration: 1.5 }}
+              viewport={{ once: true }}
+            ></motion.div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 gap-y-10 md:gap-8 md:gap-y-16">
               {processSteps.map((step, index) => (
                 <motion.div
                   key={index}
@@ -428,16 +437,16 @@ export default function Services() {
                       style={{ height: '1px', top: 0 }}
                     ></motion.div>
                     
-                    <CardContent className="p-8 text-center relative">
+                    <CardContent className="p-4 sm:p-6 md:p-8 text-center relative">
                       {/* Futuristic numbered icon */}
-                      <div className="mb-6 relative">
+                      <div className="mb-4 sm:mb-6 relative">
                         <div className="absolute -inset-3 bg-white/5 rounded-full blur-sm"></div>
                         <motion.div 
-                          className="w-16 h-16 mx-auto bg-gradient-to-br from-black to-black/80 border border-white/20 rounded-full flex items-center justify-center relative"
+                          className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-gradient-to-br from-black to-black/80 border border-white/20 rounded-full flex items-center justify-center relative"
                           whileHover={{ scale: 1.05 }}
                           transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                         >
-                          <span className="text-3xl">{step.icon}</span>
+                          <span className="text-2xl sm:text-3xl">{step.icon}</span>
                           <motion.div 
                             className="absolute -inset-0.5 rounded-full opacity-0"
                             initial={{ opacity: 0 }}
@@ -452,7 +461,7 @@ export default function Services() {
                       </div>
                       
                       {/* Title with gradient effect */}
-                      <h4 className="text-xl font-bold mb-3 relative inline-block">
+                      <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 relative inline-block">
                         {step.title}
                         <motion.div 
                           className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-white/50 to-transparent"
@@ -464,7 +473,7 @@ export default function Services() {
                       
                       {/* Description with animated opacity */}
                       <motion.p 
-                        className="text-white/70 text-sm leading-relaxed"
+                        className="text-white/70 text-xs sm:text-sm leading-relaxed"
                         animate={{ opacity: hoveredStep === index ? 1 : 0.7 }}
                         transition={{ duration: 0.3 }}
                       >

@@ -91,13 +91,19 @@ export default function Header() {
                   : "text-gray-400 hover:text-white/80"
               }`}
               whileHover={{ 
-                letterSpacing: "0.2em",
-                transition: { duration: 0.3 }
+                y: -2,
+                transition: { duration: 0.2 }
               }}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
               {item.name}
+              <motion.span 
+                className="absolute bottom-0 left-0 w-full h-[1px] bg-white/40"
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileHover={{ scaleX: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
               {activeSection === item.name.toLowerCase() && (
                 <motion.span 
                   className="absolute top-0 right-0 w-[3px] h-full bg-white"
