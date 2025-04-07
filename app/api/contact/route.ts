@@ -1,29 +1,36 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { insertContactMessageSchema } from '../../../shared/schema'
-import { storage } from '../../../server/storage'
+import { NextRequest, NextResponse } from 'next/server';
+import { storage } from '../../../server/storage';
+import { insertContactMessageSchema } from '../../../shared/schema';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await request.json();
     
     // Validate the request body
-    const validatedData = insertContactMessageSchema.parse(body)
+    const validatedData = insertContactMessageSchema.safeParse(body);
     
-    // Save the contact message using our storage implementation
-    const savedMessage = await storage.saveContactMessage(validatedData)
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { 
+          error: 'Invalid request data', 
+          details: validatedData.error.format() 
+        }, 
+        { status: 400 }
+      );
+    }
+    
+    // Save the contact message
+    const savedMessage = await storage.saveContactMessage(validatedData.data);
     
     return NextResponse.json(
-      { success: true, message: 'Contact message sent successfully', data: savedMessage },
+      { message: 'Contact message received successfully', data: savedMessage },
       { status: 201 }
-    )
+    );
   } catch (error) {
-    console.error('Error in contact API route:', error)
+    console.error('Error handling contact form submission:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Unknown error occurred'
-      },
-      { status: 400 }
-    )
+      { error: 'Failed to process contact message' },
+      { status: 500 }
+    );
   }
 }

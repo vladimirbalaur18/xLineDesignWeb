@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Custom cursor styles */
+.cursor-dot,
+.cursor-outline {
+  @apply fixed top-0 left-0 rounded-full pointer-events-none z-50 transition-transform mix-blend-difference;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-dot {
+  @apply w-1 h-1 bg-white;
+}
+
+.cursor-outline {
+  @apply w-8 h-8 border border-white;
+}
+
+/* Animation for the cursor when hovering over interactive elements */
+.cursor-hover .cursor-dot {
+  @apply scale-0;
+}
+
+.cursor-hover .cursor-outline {
+  @apply scale-150;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-black;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/50;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-white/50;
+}
+
+/* Glassmorphism effect */
+.glass {
+  @apply backdrop-blur-md bg-white/10 border border-white/20 shadow-lg;
+}
+
+/* Glow effect */
+.glow {
+  @apply relative;
+}
+
+.glow::after {
+  content: '';
+  @apply absolute inset-0 -z-10 rounded-lg opacity-0 transition-opacity duration-300 
+    bg-gradient-to-r from-white/20 to-white/5 blur-xl;
+}
+
+.glow:hover::after {
+  @apply opacity-100;
+}
+
+/* Grid layout for projects */
+.project-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}

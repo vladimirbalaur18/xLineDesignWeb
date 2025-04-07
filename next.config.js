@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -18,6 +20,9 @@ const nextConfig = {
         },
       },
     });
+    
+    config.resolve.alias['@assets'] = path.join(__dirname, 'attached_assets');
+    
     return config;
   },
 }

@@ -1,33 +1,36 @@
-import { NextResponse, type NextRequest } from 'next/server'
-import { insertConsultationRequestSchema } from '../../../shared/schema'
-import { storage } from '../../../server/storage'
+import { NextRequest, NextResponse } from 'next/server';
+import { storage } from '../../../server/storage';
+import { insertConsultationRequestSchema } from '../../../shared/schema';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = await request.json();
     
-    // Validate the request body using our schema
-    const validatedData = insertConsultationRequestSchema.parse(body)
+    // Validate the request body
+    const validatedData = insertConsultationRequestSchema.safeParse(body);
+    
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { 
+          error: 'Invalid request data', 
+          details: validatedData.error.format() 
+        }, 
+        { status: 400 }
+      );
+    }
     
     // Save the consultation request
-    const savedConsultation = await storage.saveConsultationRequest(validatedData)
+    const savedRequest = await storage.saveConsultationRequest(validatedData.data);
     
     return NextResponse.json(
-      { 
-        success: true, 
-        message: 'Consultation request received successfully', 
-        data: savedConsultation 
-      },
+      { message: 'Consultation request received successfully', data: savedRequest },
       { status: 201 }
-    )
+    );
   } catch (error) {
-    console.error('Error in consultation API route:', error)
+    console.error('Error handling consultation request submission:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Unknown error occurred'
-      },
-      { status: 400 }
-    )
+      { error: 'Failed to process consultation request' },
+      { status: 500 }
+    );
   }
 }
