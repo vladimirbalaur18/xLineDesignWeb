@@ -16,6 +16,8 @@ function Router() {
   );
 }
 
+// This App component is now primarily used for the React version
+// In the Next.js version, we use the app/layout.tsx and app/page.tsx files
 function App() {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -29,6 +31,21 @@ function App() {
       {isMounted && <CustomCursor />}
       <Router />
       <Toaster />
+    </QueryClientProvider>
+  );
+}
+
+// Providers wrapper for Next.js pages
+export function Providers({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
     </QueryClientProvider>
   );
 }
