@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
-
+import path from "path";
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  transpilePackages: ['lucide-react'],
+  transpilePackages: ["lucide-react"],
   compiler: {
     styledComponents: true,
   },
@@ -12,19 +10,17 @@ const nextConfig = {
     config.module.rules.push({
       test: /\.(mp4|webm)$/,
       use: {
-        loader: 'file-loader',
+        loader: "file-loader",
         options: {
-          publicPath: '/_next/static/videos/',
-          outputPath: 'static/videos/',
-          name: '[name].[hash].[ext]',
+          publicPath: "/_next/static/videos/",
+          outputPath: "static/videos/",
+          name: "[name].[hash].[ext]",
         },
       },
     });
-    
-    config.resolve.alias['@assets'] = path.join(__dirname, 'attached_assets');
-    
+
     return config;
   },
-}
+};
 
-module.exports = nextConfig
+export default nextConfig;

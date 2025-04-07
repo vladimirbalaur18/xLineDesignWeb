@@ -1,5 +1,11 @@
 {
-  "include": ["client/src/**/*", "shared/**/*", "server/**/*", "app/**/*", "next-env.d.ts", ".next/types/**/*.ts"],
+  "include": [
+    "shared/**/*",
+    "server/**/*",
+    "app/**/*",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
   "compilerOptions": {
     "incremental": true,
@@ -17,7 +23,7 @@
     "baseUrl": ".",
     "types": ["node"],
     "paths": {
-      "@/*": ["./client/src/*"],
+      "@/*": ["./app/*"],
       "@shared/*": ["./shared/*"]
     },
     "plugins": [
@@ -26,6 +32,7 @@
       }
     ],
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "allowJs": true
   }
 }
