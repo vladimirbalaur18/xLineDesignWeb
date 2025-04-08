@@ -27,10 +27,10 @@ export default function RootLayout({
         content="Servicii de design interior personalizate pentru proiecte particulare și comerciale"
       />
       <head>
-        <script
+        {/* <script
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
-        />
+        /> */}
       </head>
 
       <body className={inter.className}>
