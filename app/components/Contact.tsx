@@ -145,7 +145,7 @@ export default function Contact() {
               transition={{ duration: 0.5, delay: 0.3 }}
               viewport={{ once: true }}
             />
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 uppercase bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 uppercase bg-clip-text  bg-gradient-to-b from-white to-white/70">
               <span className="relative">
                 Contactează-ne
                 <motion.span

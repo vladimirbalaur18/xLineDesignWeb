@@ -41,7 +41,7 @@ import { z } from "zod";
 const properties = [
   {
     id: 1,
-    title: "Modern Minimalist Villa",
+    title: "Vilă Modernă Minimalistă",
     address: "1234 Skyline Drive, Los Angeles, CA",
     price: "$4,850,000",
     bedrooms: 5,
@@ -49,8 +49,8 @@ const properties = [
     area: "4,320",
     yearBuilt: 2022,
     description:
-      "An architectural masterpiece with panoramic ocean views, featuring open concept living spaces, a chef's kitchen, and a stunning infinity pool.",
-    tags: ["Featured", "New Construction"],
+      "O capodoperă arhitecturală cu vedere panoramică la ocean, care include spații de locuit deschise, o bucătărie de top și o piscină infinită impresionantă.",
+    tags: ["Exclusiv", "Construcție nouă"],
     images: [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800",
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800",
@@ -60,7 +60,7 @@ const properties = [
   },
   {
     id: 2,
-    title: "Sleek Downtown Penthouse",
+    title: "Penthouse Elegant în Centrul Orașului",
     address: "500 Urban Heights, New York, NY",
     price: "$3,200,000",
     bedrooms: 3,
@@ -68,8 +68,8 @@ const properties = [
     area: "2,850",
     yearBuilt: 2020,
     description:
-      "Ultra-modern penthouse with floor-to-ceiling windows offering spectacular city views, smart home technology, and private rooftop terrace.",
-    tags: ["Penthouse", "Smart Home"],
+      "Un penthouse ultra-modern cu ferestre din podea până în tavan, oferind priveliști spectaculoase ale orașului, tehnologie smart home și o terasă privată pe acoperiș.",
+    tags: ["Penthouse", "Casă inteligentă"],
     images: [
       "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&h=800",
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=800",
@@ -79,7 +79,7 @@ const properties = [
   },
   {
     id: 3,
-    title: "Geometric Glass Mansion",
+    title: "Conac Geometric din Sticlă",
     address: "789 Lakefront Road, Austin, TX",
     price: "$5,975,000",
     bedrooms: 6,
@@ -87,8 +87,8 @@ const properties = [
     area: "6,200",
     yearBuilt: 2021,
     description:
-      "Innovative geometric design with glass walls that connect indoor-outdoor living spaces, featuring a home theater, wine cellar, and meditation garden.",
-    tags: ["Luxury", "Waterfront"],
+      "Design geometric inovator cu pereți din sticlă care conectează spațiile de locuit interioare și exterioare, incluzând un home theater, cramă și grădină de meditație.",
+    tags: ["Lux", "Pe malul apei"],
     images: [
       "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&h=800",
       "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&h=800",
@@ -98,7 +98,7 @@ const properties = [
   },
   {
     id: 4,
-    title: "Sustainable Forest Retreat",
+    title: "Refugiu Sustenabil în Pădure",
     address: "1545 Mountain View, Boulder, CO",
     price: "$2,795,000",
     bedrooms: 4,
@@ -106,8 +106,8 @@ const properties = [
     area: "3,600",
     yearBuilt: 2023,
     description:
-      "Net-zero energy home crafted from sustainable materials, featuring solar arrays, rainwater harvesting, and biophilic design elements throughout.",
-    tags: ["Eco-Friendly", "Mountain View"],
+      "Casă cu energie net-zero construită din materiale sustenabile, cu panouri solare, colectare de apă de ploaie și elemente de design biophilic în întreaga proprietate.",
+    tags: ["Eco-Friendly", "Vedere la munte"],
     images: [
       "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&h=800",
       "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=1200&h=800",
@@ -125,7 +125,6 @@ const consultationFormSchema = z.object({
   message: z
     .string()
     .min(10, { message: "Message must be at least 10 characters." }),
-  propertyInterest: z.string().optional(),
 });
 
 type ConsultationFormValues = z.infer<typeof consultationFormSchema>;
@@ -143,7 +142,6 @@ export default function PropertyForSale() {
       email: "",
       phone: "",
       message: "",
-      propertyInterest: "",
     },
   });
 
@@ -588,18 +586,6 @@ export default function PropertyForSale() {
                       {form.formState.errors.phone.message}
                     </p>
                   )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="propertyInterest" className="text-white">
-                    Subiectul de interes (Optional)
-                  </Label>
-                  <Input
-                    id="propertyInterest"
-                    className="bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white"
-                    placeholder="Ex: Modern Minimalist Villa"
-                    {...form.register("propertyInterest")}
-                  />
                 </div>
 
                 <div className="space-y-2">

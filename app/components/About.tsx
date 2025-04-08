@@ -97,19 +97,6 @@ export default function About() {
                 />
               </div>
             </div>
-
-            {/* Badge overlay */}
-            <div className="absolute -right-8 bottom-12 md:bottom-24 bg-background border border-gray-800 rounded-xl p-4 shadow-lg max-w-[240px]">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/20 p-2 rounded-full">
-                  <Award className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Award Winning</p>
-                  <p className="font-semibold">Design Studio</p>
-                </div>
-              </div>
-            </div>
           </motion.div>
 
           {/* Right column - Text content */}

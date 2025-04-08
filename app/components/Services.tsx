@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import {
   Pencil,
   Building,
@@ -41,23 +41,7 @@ const services = [
     ],
     image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88",
   },
-  {
-    id: "commercial",
-    title: "Comercial",
-    icon: (
-      <Building className="h-5 w-5 text-white group-data-[state=active]:text-black" />
-    ),
-    description:
-      "Proiectăm spații comerciale dinamice care sporesc productivitatea, încurajează colaborarea și creează experiențe memorabile pentru vizitatori.",
-    features: [
-      "Clădiri de birouri",
-      "Spații comerciale",
-      "Hoteluri și stațiuni",
-      "Dezvoltări mixte",
-      "Sediuri corporative",
-    ],
-    image: "https://images.unsplash.com/photo-1648318440207-ef1893eb8ac0",
-  },
+
   {
     id: "institutional",
     title: "Instituțional",
@@ -203,18 +187,11 @@ export default function Services() {
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <motion.div
-              className="absolute -top-6 left-1/2 -translate-x-1/2 w-20 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-            />
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 uppercase bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 uppercase bg-clip-text  bg-gradient-to-b from-white to-white/70">
               <span className="relative">
                 Servicii arhitecturale
                 <motion.span
-                  className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-white via-white/80 to-transparent"
+                  className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-white via-white/80 "
                   initial={{ width: 0 }}
                   whileInView={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: 0.5 }}
@@ -246,12 +223,12 @@ export default function Services() {
             if (selected) setActiveService(selected);
           }}
         >
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm">
+          <TabsList className="h-fit flex justify-around flex-wrap  bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm">
             {services.map((service) => (
               <TabsTrigger
                 key={service.id}
                 value={service.id}
-                className="rounded-xl py-3 px-4 data-[state=active]:bg-white data-[state=active]:text-black transition-all duration-300"
+                className="rounded-xl w-36 py-3 px-4 data-[state=active]:bg-white data-[state=active]:text-black transition-all duration-300"
               >
                 <div className="flex flex-col items-center gap-3 py-1">
                   <motion.div
@@ -391,7 +368,7 @@ export default function Services() {
               viewport={{ once: true }}
             />
             <h3 className="text-3xl md:text-4xl font-bold uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-              Advanced Design Process
+              Proces avansat de design
             </h3>
             <motion.div
               className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-20 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"

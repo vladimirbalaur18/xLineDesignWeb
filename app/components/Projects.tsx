@@ -12,69 +12,69 @@ import ProjectScene3D from "./ProjectScene3D";
 const projects = [
   {
     id: 1,
-    title: "Azure Sky Tower",
+    title: "Turnul Azure Sky",
     description:
-      "A modern skyscraper with sustainable features and panoramic views of the city skyline.",
+      "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
     category: "interiorDesign",
     location: "Singapore",
     year: "2023",
     image: "https://images.unsplash.com/photo-1646917939502-5f124b08bd97",
-    tags: ["Sustainable", "High-rise", "Urban"],
+    tags: ["Sustenabil", "Înalt", "Urban"],
   },
   {
     id: 2,
-    title: "Oceanfront Residence",
+    title: "Reședința Oceanfront",
     description:
-      "A luxurious beachfront home that seamlessly blends indoor and outdoor living spaces.",
+      "O casă luxoasă pe plajă care îmbină perfect spațiile interioare și exterioare.",
     category: "residential",
     location: "Malibu, CA",
     year: "2022",
     image: "https://images.unsplash.com/photo-1646917939723-5ca456967957",
-    tags: ["Coastal", "Luxury", "Open-concept"],
+    tags: ["Costier", "Lux", "Concept deschis"],
   },
   {
     id: 3,
     title: "The Vertex",
     description:
-      "An award-winning office complex featuring innovative design and collaborative workspaces.",
+      "Un complex de birouri premiat, cu un design inovator și spații de lucru colaborative.",
     category: "interiorDesign",
     location: "Toronto",
     year: "2023",
     image: "https://images.unsplash.com/photo-1661951933252-d8722effb21d",
-    tags: ["Office", "Minimalist", "Collaborative"],
+    tags: ["Birou", "Minimalist", "Colaborativ"],
   },
   {
     id: 4,
-    title: "Echo Library",
+    title: "Biblioteca Echo",
     description:
-      "A public library designed to promote learning and community engagement through thoughtful spaces.",
+      "O bibliotecă publică proiectată pentru a promova învățarea și implicarea comunității prin spații bine gândite.",
     category: "landscapeDesign",
-    location: "Copenhagen",
+    location: "Copenhaga",
     year: "2022",
     image: "https://images.unsplash.com/photo-1649496880872-6159f729f24e",
-    tags: ["Cultural", "Public", "Sustainable"],
+    tags: ["Cultural", "Public", "Sustenabil"],
   },
   {
     id: 5,
-    title: "Harmony Pavilion",
+    title: "Pavilionul Harmony",
     description:
-      "A multi-purpose event space that adapts to various cultural and entertainment functions.",
+      "Un spațiu multifuncțional pentru evenimente, adaptabil pentru diverse funcții culturale și de divertisment.",
     category: "landscapeDesign",
     location: "Melbourne",
     year: "2021",
     image: "https://images.unsplash.com/photo-1647705985300-2b63d0ac9e39",
-    tags: ["Events", "Versatile", "Contemporary"],
+    tags: ["Evenimente", "Versatil", "Contemporan"],
   },
   {
     id: 6,
-    title: "The Prism House",
+    title: "Casa Prism",
     description:
-      "An angular residential building that plays with light and shadow throughout the day.",
+      "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
     category: "architecture",
     location: "Berlin",
     year: "2023",
     image: "https://images.unsplash.com/photo-1661951933413-5dda7807de41",
-    tags: ["Modern", "Geometric", "Light-focused"],
+    tags: ["Modern", "Geometric", "Concentrat pe lumină"],
   },
 ];
 
@@ -505,7 +505,7 @@ export default function Projects() {
                     transition={{ duration: 0.3 }}
                     className="inline-block"
                   >
-                    Show Less
+                    Arată mai puțin
                   </motion.span>
                   <motion.span
                     initial={{ y: 20, position: "absolute", left: 0 }}
@@ -513,7 +513,7 @@ export default function Projects() {
                     transition={{ duration: 0.3 }}
                     className="text-white/80"
                   >
-                    Previous
+                    Înapoi
                   </motion.span>
                 </span>
 

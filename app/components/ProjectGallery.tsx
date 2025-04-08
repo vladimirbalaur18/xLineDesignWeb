@@ -22,7 +22,7 @@ const galleryImages = [
   {
     id: 1,
     title: "Azure Sky Tower - Exterior",
-    category: "Commercial",
+    category: "interiorDesign",
     description:
       "The landmark façade featuring sustainable materials and energy-efficient design.",
     image:
@@ -31,7 +31,7 @@ const galleryImages = [
   {
     id: 2,
     title: "Oceanfront Residence - Living Space",
-    category: "Residential",
+    category: "interiorDesign",
     description:
       "Open-concept living area with panoramic views of the Pacific Ocean.",
     image:
@@ -40,7 +40,7 @@ const galleryImages = [
   {
     id: 3,
     title: "The Vertex - Central Atrium",
-    category: "Commercial",
+    category: "interiorDesign",
     description:
       "Multi-story atrium with natural light and collaborative work areas.",
     image:
@@ -49,7 +49,7 @@ const galleryImages = [
   {
     id: 4,
     title: "Echo Library - Reading Hall",
-    category: "Institutional",
+    category: "interiorDesign",
     description:
       "The main reading hall with its distinctive curved ceiling and acoustic design.",
     image:
@@ -58,7 +58,7 @@ const galleryImages = [
   {
     id: 5,
     title: "Harmony Pavilion - Event Space",
-    category: "Cultural",
+    category: "interiorDesign",
     description:
       "Configurable event space with advanced lighting and sound systems.",
     image:
@@ -67,7 +67,7 @@ const galleryImages = [
   {
     id: 6,
     title: "The Prism House - Interior",
-    category: "Residential",
+    category: "interiorDesign",
     description:
       "Living room with geometric light patterns created by the prismatic exterior.",
     image:
@@ -78,6 +78,11 @@ const galleryImages = [
 export default function ProjectGallery() {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const categoryMapName: Record<string, string> = {
+    interiorDesign: "Design Interior",
+    architecture: "Arhitectură",
+  };
 
   return (
     <section className="py-24 relative overflow-hidden">
@@ -193,7 +198,7 @@ export default function ProjectGallery() {
                     {/* Text content */}
                     <div className="absolute bottom-0 left-0 p-4 z-10">
                       <span className="text-white/70 text-xs uppercase tracking-widest">
-                        {image.category}
+                        {categoryMapName[image.category]}
                       </span>
                       <h3 className="text-lg font-bold text-white group-hover:text-white mt-1">
                         {image.title}
@@ -292,7 +297,7 @@ export default function ProjectGallery() {
           className="relative"
         >
           <div className="mb-8 text-center">
-            <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80 inline-block">
+            <h3 className="text-2xl font-bold bg-clip-text  bg-gradient-to-r from-white to-white/80 inline-block">
               Proiecte în prim-plan
             </h3>
             <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto mt-3"></div>
