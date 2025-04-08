@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { ChevronDown, Building2, Layers, Wand2 } from "lucide-react";
 import { Button } from "./ui/button";
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { navItems } from "@shared/navitems";
 
 export default function Header() {
@@ -39,14 +39,14 @@ export default function Header() {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
-    e.preventDefault();
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
+    // e.preventDefault();
+    // const element = document.querySelector(href);
+    // if (element) {
+    //   element.scrollIntoView({
+    //     behavior: "smooth",
+    //     block: "start",
+    //   });
+    // }
   };
 
   return (

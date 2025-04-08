@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView } from "motion/react";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { ExternalLink, ArrowRight, ArrowLeft } from "lucide-react";
@@ -265,6 +265,7 @@ export default function Projects() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          viewport={{ once: true }}
         >
           {filteredProjects.slice(0, visibleProjects).map((project) => (
             <motion.div
@@ -290,8 +291,8 @@ export default function Projects() {
                   }}
                   transition={{
                     duration: 2,
-                    repeat: hoveredProject === project.id ? Infinity : 0,
-                    repeatType: "reverse",
+                    // repeat: hoveredProject === project.id ? Infinity : 0,
+                    // repeatType: "reverse",
                   }}
                 />
 
