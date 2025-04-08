@@ -93,47 +93,46 @@ const services = [
   },
 ];
 
-const processSteps = [
-  {
-    number: "01",
-    icon: <Cpu className="h-6 w-6" />,
-    title: "Analiza datelor",
-    description:
-      "Analiză algoritmică avansată a nevoilor tale, a condițiilor terenului și a parametrilor de mediu.",
-  },
-  {
-    number: "02",
-    icon: <BrainCircuit className="h-6 w-6" />,
-    title: "Conceptualizare AI",
-    description:
-      "Generarea mai multor variante de design folosind instrumente avansate de proiectare computațională.",
-  },
-  {
-    number: "03",
-    icon: <IterationCcw className="h-6 w-6" />,
-    title: "Rafinare parametrică",
-    description:
-      "Optimizare iterativă în timp real prin sisteme sofisticate de modelare parametrică.",
-  },
-  {
-    number: "04",
-    icon: <Globe className="h-6 w-6" />,
-    title: "Prototipare virtuală",
-    description:
-      "Experiențe VR imersive ale spațiului tău cu ajutorul tehnologiei de gemeni digitali, înainte de construcție.",
-  },
-  {
-    number: "05",
-    icon: <Rocket className="h-6 w-6" />,
-    title: "Construcție inteligentă",
-    description:
-      "Construcție de precizie cu fabricație robotică și sisteme inteligente de materiale.",
-  },
-];
-
 export default function Services() {
   const [activeService, setActiveService] = useState(services[0]);
   const [hoveredStep, setHoveredStep] = useState<number | undefined>(undefined);
+  const processSteps = [
+    {
+      number: "01",
+      icon: <Cpu className="h-6 w-6" />,
+      title: "Analiza datelor",
+      description:
+        "Analiză algoritmică avansată a nevoilor tale, a condițiilor terenului și a parametrilor de mediu.",
+    },
+    {
+      number: "02",
+      icon: <BrainCircuit className="h-6 w-6" />,
+      title: "Conceptualizare AI",
+      description:
+        "Generarea mai multor variante de design folosind instrumente avansate de proiectare computațională.",
+    },
+    {
+      number: "03",
+      icon: <IterationCcw className="h-6 w-6" />,
+      title: "Rafinare parametrică",
+      description:
+        "Optimizare iterativă în timp real prin sisteme sofisticate de modelare parametrică.",
+    },
+    {
+      number: "04",
+      icon: <Globe className="h-6 w-6" />,
+      title: "Prototipare virtuală",
+      description:
+        "Experiențe VR imersive ale spațiului tău cu ajutorul tehnologiei de gemeni digitali, înainte de construcție.",
+    },
+    {
+      number: "05",
+      icon: <Rocket className="h-6 w-6" />,
+      title: "Construcție inteligentă",
+      description:
+        "Construcție de precizie cu fabricație robotică și sisteme inteligente de materiale.",
+    },
+  ];
 
   return (
     <section id="services" className="py-24 bg-black relative overflow-hidden">
@@ -410,11 +409,10 @@ export default function Services() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 gap-y-10 md:gap-8 md:gap-y-16">
               {processSteps.map((step, index) => (
                 <motion.div
-                  key={index}
+                  key={step.number + step.title}
                   initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}
-                  viewport={{ once: true }}
                   onMouseEnter={() => setHoveredStep(index)}
                   onMouseLeave={() => setHoveredStep(undefined)}
                   className="relative"
@@ -422,9 +420,6 @@ export default function Services() {
                     z: 20,
                     scale: 1.03,
                     transition: { duration: 0.2 },
-                  }}
-                  style={{
-                    transformStyle: "preserve-3d",
                   }}
                 >
                   {/* Animated glow effect on hover */}
