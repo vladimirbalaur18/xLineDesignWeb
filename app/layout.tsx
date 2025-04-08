@@ -10,6 +10,20 @@ export const metadata: Metadata = {
   title: "XLine Design",
   description:
     "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
+  openGraph: {
+    title: "XLine Design",
+    description:
+      "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
+    url: "https://xlinedesign.md",
+    siteName: "XLine Design",
+    images: [
+      {
+        url: "/logo.jpg",
+        width: 800,
+        height: 600,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -19,13 +33,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <meta property="og:image" content="public/logo.jpg" />
-      <meta property="og:title" content="XLine Design" />
-      <meta property="og:type" content="website" />
-      <meta
-        property="og:description"
-        content="Servicii de design interior personalizate pentru proiecte particulare și comerciale"
-      />
       <head>
         {/* <script
           crossOrigin="anonymous"
