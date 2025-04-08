@@ -20,7 +20,7 @@ vite.config.ts.*
 /coverage
 
 # next.js
-/.next/
+/.next
 /out/
 
 # production
@@ -44,3 +44,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.next/cache/webpack/client-development/11.pack.gz

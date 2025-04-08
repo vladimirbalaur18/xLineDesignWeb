@@ -7,9 +7,9 @@ import { Toaster } from "./components/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Architecto - Modern Architecture Firm",
+  title: "XLine Design",
   description:
-    "Discover innovative architectural solutions and stunning designs by Architecto - a leading architecture firm specializing in modern, sustainable designs.",
+    "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
 };
 
 export default function RootLayout({
@@ -19,6 +19,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <meta property="og:image" content="public/logo.jpg" />
+      <meta property="og:title" content="XLine Design" />
+      <meta property="og:type" content="website" />
+      <meta
+        property="og:description"
+        content="Servicii de design interior personalizate pentru proiecte particulare și comerciale"
+      />
+      <head>
+        <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        />
+      </head>
+
       <body className={inter.className}>
         <Providers>
           {children}
