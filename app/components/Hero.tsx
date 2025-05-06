@@ -8,16 +8,22 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      image:
-        "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=1920",
+      image: "/hero/1.jpg",
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920",
+      image: "/hero/2.jpg",
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1920",
+      image: "/hero/3.jpg",
+    },
+    {
+      image: "/hero/4.jpg",
+    },
+    {
+      image: "/hero/5.jpg",
+    },
+    {
+      image: "/hero/6.jpg",
     },
   ];
 
