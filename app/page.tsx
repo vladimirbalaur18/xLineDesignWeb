@@ -27,7 +27,7 @@ export default function HomePage() {
           <PropertyForSale />
           <About />
           <Services />
-          <Team />
+          {/* <Team /> */}
           <Contact />
         </main>
         <Footer />
