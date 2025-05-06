@@ -25,8 +25,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 const services = [
   {
-    id: "residential",
-    title: "Rezidențial",
+    id: "interior-design",
+    title: "Design interior",
     icon: (
       <Home className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
@@ -43,8 +43,8 @@ const services = [
   },
 
   {
-    id: "institutional",
-    title: "Instituțional",
+    id: "architecture",
+    title: "Arhitectură",
     icon: (
       <Landmark className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
@@ -60,8 +60,8 @@ const services = [
     image: "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da",
   },
   {
-    id: "planning",
-    title: "Planificare",
+    id: "landschaft-design",
+    title: "Design peisagistic",
     icon: (
       <Presentation className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
@@ -75,21 +75,6 @@ const services = [
       "Arhitectură peisagistică",
     ],
     image: "https://images.unsplash.com/photo-1717245232884-f03d8bce756d",
-  },
-  {
-    id: "renovation",
-    title: "Renovare",
-    icon: <RefreshCw className="h-6 w-6" />,
-    description:
-      "Revitalizăm spațiile existente cu soluții moderne de design, păstrând în același timp semnificația lor istorică și arhitecturală.",
-    features: [
-      "Conservare istorică",
-      "Reutilizare adaptivă",
-      "Modernizarea clădirilor",
-      "Renovări interioare",
-      "Îmbunătățirea fațadelor",
-    ],
-    image: "https://images.unsplash.com/photo-1717445130415-d43ebd8fed1c",
   },
 ];
 
@@ -188,7 +173,7 @@ export default function Services() {
           >
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-3 uppercase bg-clip-text  bg-gradient-to-b from-white to-white/70">
               <span className="relative">
-                Servicii arhitecturale
+                Serviciile noastre
                 <motion.span
                   className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-white via-white/80 "
                   initial={{ width: 0 }}
@@ -215,7 +200,7 @@ export default function Services() {
 
         {/* Futuristic Services tabs */}
         <Tabs
-          defaultValue="residential"
+          defaultValue={activeService?.id}
           className="mb-20"
           onValueChange={(value) => {
             const selected = services.find((s) => s.id === value);
@@ -367,7 +352,7 @@ export default function Services() {
               viewport={{ once: true }}
             />
             <h3 className="text-3xl md:text-4xl font-bold uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-              Proces avansat de design
+              Cum are loc procesul de colaborare?
             </h3>
             <motion.div
               className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-20 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
