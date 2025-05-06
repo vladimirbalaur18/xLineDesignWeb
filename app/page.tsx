@@ -6,14 +6,17 @@ const Header = dynamic(() => import("./components/Header"));
 const Hero = dynamic(() => import("./components/Hero"));
 const Projects = dynamic(() => import("./components/Projects"));
 const ProjectGallery = dynamic(() => import("./components/ProjectGallery"));
-const PropertyForSale = dynamic(() => import("./components/PropertyForSale"));
 const About = dynamic(() => import("./components/About"));
-const Services = dynamic(() => import("./components/Services"));
-const Team = dynamic(() => import("./components/Team"));
+
 const Contact = dynamic(() => import("./components/Contact"));
 const Footer = dynamic(() => import("./components/Footer"));
 const CustomCursor = dynamic(() => import("./components/CustomCursor"));
 const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"));
+
+//TODO: out of scope for now
+// const Services = dynamic(() => import("./components/Services"));
+// const Team = dynamic(() => import("./components/Team"));
+// const PropertyForSale = dynamic(() => import("./components/PropertyForSale"));
 
 export default function HomePage() {
   return (
@@ -25,9 +28,9 @@ export default function HomePage() {
           <Hero />
           <Projects />
           <ProjectGallery />
-          <PropertyForSale />
+          {/* <PropertyForSale /> */}
           <About />
-          <Services />
+          {/* <Services /> */}
           {/* <Team /> */}
           <Contact />
         </main>

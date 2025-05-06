@@ -172,15 +172,6 @@ export default function PropertyForSale() {
           viewport={{ once: true }}
           className="mb-16 text-center relative"
         >
-          {/* Decorative elements */}
-          <motion.div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-white/70 to-transparent"
-            initial={{ scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          />
-
           {/* Section heading with modern styling */}
           <div className="relative inline-block">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 tracking-tight uppercase relative">

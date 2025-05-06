@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MailIcon } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { navItems } from "@shared/navitems";
 import { Button } from "./ui/button";
@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Track scroll position to change header style
   useEffect(() => {
@@ -96,7 +97,7 @@ export default function Header() {
                 </span>
                 {activeSection === item.key.toLowerCase() && (
                   <motion.span
-                    className="absolute top-0 right-0 w-[3px] h-full bg-white"
+                    className="absolute top-0 right-0 w-[1px] h-full bg-white"
                     layoutId="navIndicator"
                     transition={{ duration: 0.3 }}
                   />
@@ -123,7 +124,7 @@ export default function Header() {
           >
             Contactează-ne
           </Button>
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
               <motion.button
                 className="p-2 border border-white/20 backdrop-blur-sm"
@@ -145,9 +146,7 @@ export default function Header() {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                     onClick={(e) => {
                       smoothScroll(e, item.href);
-                      document
-                        .querySelector('[data-state="open"]')
-                        ?.dispatchEvent(new Event("close", { bubbles: true }));
+                      setSheetOpen(false);
                     }}
                     className={`text-lg uppercase font-light tracking-widest transition-all py-3 border-b border-white/10 ${
                       activeSection === item.key.toLowerCase()
