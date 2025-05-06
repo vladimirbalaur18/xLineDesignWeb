@@ -13,6 +13,7 @@ const Team = dynamic(() => import("./components/Team"));
 const Contact = dynamic(() => import("./components/Contact"));
 const Footer = dynamic(() => import("./components/Footer"));
 const CustomCursor = dynamic(() => import("./components/CustomCursor"));
+const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"));
 
 export default function HomePage() {
   return (
@@ -31,6 +32,7 @@ export default function HomePage() {
           <Contact />
         </main>
         <Footer />
+        <LanguageSwitcher />
       </div>
     </ClientOnly>
   );
