@@ -11,8 +11,13 @@ import {
   Lightbulb,
   ChevronRight,
   Smile,
+  Square,
 } from "lucide-react";
 
+const ACTIVE_FROM_YEAR = 2019;
+const PROJECTS_COUNT = 250;
+const COUNTRIES_COUNT = 3;
+const SQUARE_METERS_COUNT = 10000;
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -26,29 +31,26 @@ export default function About() {
 
   const stats = [
     {
-      value: "10+",
-      label: "Ani experiență",
+      value: `${
+        new Date().getFullYear() - ACTIVE_FROM_YEAR
+      }+ ani de activitate`,
+      label: `Activăm din ${ACTIVE_FROM_YEAR}`,
       icon: <Award className="h-6 w-6 text-primary" />,
     },
     {
-      value: "130+",
+      value: `${PROJECTS_COUNT}+`,
       label: "Proiecte finalizate",
       icon: <Home className="h-6 w-6 text-primary" />,
     },
     {
-      value: "3",
+      value: `${COUNTRIES_COUNT}`,
       label: "Țări de activitate",
       icon: <Globe className="h-6 w-6 text-primary" />,
     },
     {
-      value: "45",
-      label: "Colaboratori",
-      icon: <Users className="h-6 w-6 text-primary" />,
-    },
-    {
-      value: "+100",
-      label: "Clienți mulțumiți",
-      icon: <Smile className="h-6 w-6 text-primary" />,
+      value: `${SQUARE_METERS_COUNT}+`,
+      label: "Metri pătrați proiectați",
+      icon: <Square className="h-6 w-6 text-primary" />,
     },
   ];
 
@@ -68,8 +70,8 @@ export default function About() {
         style={{ y: y2, opacity }}
       />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+      <div className="w-full relative z-10">
+        <div className="grid md:grid-cols-2 gap-12 items-center px-4">
           {/* Left column - Image collage */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -140,13 +142,13 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mt-24 "
+          className="mt-24 w-full"
         >
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="flex flex-wrap justify-around gap-8 w-full">
             {stats.map((stat, index) => (
               <Card
                 key={index}
-                className="bg-gray-900/50 border-gray-800 hover:border-primary/50 transition-all hover:transform hover:-translate-y-1"
+                className="bg-gray-900/50 border-gray-800 hover:border-primary/50 transition-all hover:transform hover:-translate-y-1 flex-1 max-w-[300px]"
               >
                 <CardContent className="p-6 text-center">
                   <div className="flex justify-center mb-4">{stat.icon}</div>
