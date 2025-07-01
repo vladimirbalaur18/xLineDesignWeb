@@ -27,7 +27,6 @@ export default function Hero() {
     },
   ];
 
-  // slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -63,7 +62,7 @@ export default function Hero() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Content */}
+      {/* Content */}s
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
         <div className="max-w-2xl mx-auto text-center lg:mx-0 lg:text-left">
           {/* Static Content */}

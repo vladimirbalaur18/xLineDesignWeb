@@ -82,18 +82,18 @@ export default function About() {
           >
             <div className="grid grid-cols-2 gap-4">
               <img
-                src="https://images.unsplash.com/photo-1618385455730-2571c38966b7"
+                src="/hero/1.jpg"
                 alt="Architectural sketch"
                 className="rounded-lg shadow-xl w-full h-auto object-cover aspect-[3/4]"
               />
               <div className="space-y-4">
                 <img
-                  src="https://images.unsplash.com/photo-1445510861639-5651173bc5d5"
+                  src="/hero/2.jpg"
                   alt="Minimalist interior"
                   className="rounded-lg shadow-xl w-full h-auto object-cover aspect-square"
                 />
                 <img
-                  src="https://images.unsplash.com/photo-1637968892928-705abff0e1b3"
+                  src="/hero/3.jpg"
                   alt="Architectural blueprint"
                   className="rounded-lg shadow-xl w-full h-auto object-cover aspect-[4/3]"
                 />

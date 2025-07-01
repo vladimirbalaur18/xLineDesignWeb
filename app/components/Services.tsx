@@ -39,7 +39,7 @@ const services = [
       "Vile de lux",
       "Renovări rezidențiale",
     ],
-    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88",
+    image: "/hero/6.jpg",
   },
 
   {
@@ -469,14 +469,6 @@ export default function Services() {
                       {/* Title with gradient effect */}
                       <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 relative inline-block">
                         {step.title}
-                        <motion.div
-                          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-white/50 to-transparent"
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: hoveredStep === index ? "100%" : "40%",
-                          }}
-                          transition={{ duration: 0.3 }}
-                        ></motion.div>
                       </h4>
 
                       {/* Description with animated opacity */}
