@@ -54,14 +54,22 @@ export default function Hero() {
           transition={{ duration: 1 }}
           className="absolute inset-0"
         >
-          <div
+          <motion.div
+            initial={{ scale: 1, x: 0, y: 0 }}
+            animate={(() => {
+              const direction = currentSlide % 4;
+              if (direction === 0) return { scale: 1.05, x: 20, y: 0 };
+              if (direction === 1) return { scale: 1.05, x: 0, y: 20 };
+              if (direction === 2) return { scale: 1.05, x: -20, y: 0 };
+              return { scale: 1.05, x: 0, y: -20 };
+            })()}
+            transition={{ duration: 5, ease: "easeInOut" }}
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/60" />
         </motion.div>
       </AnimatePresence>
-
       {/* Content */}s
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
         <div className="max-w-2xl mx-auto text-center lg:mx-0 lg:text-left">
