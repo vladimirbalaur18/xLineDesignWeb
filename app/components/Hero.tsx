@@ -67,7 +67,7 @@ export default function Hero() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/80 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20" />
         </motion.div>
       </AnimatePresence>
       {/* Content */}

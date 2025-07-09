@@ -73,7 +73,7 @@ export default function About() {
       {/* TODO: increase text size, add more text to the bottom */}
 
       <div className="w-full relative z-10">
-        <div className="grid md:grid-cols-2 gap-8 items-center px-2">
+        <div className="grid md:grid-cols-2  gap-8 items-center px-2">
           {/* Left column - Image collage */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}

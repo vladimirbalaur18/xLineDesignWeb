@@ -23,7 +23,7 @@ const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"));
 export default function HomePage() {
   return (
     <ClientOnly>
-      <div className="min-h-screen font-sans">
+      <div className="min-h-screen font-sans ">
         {/* <CustomCursor /> */}
         <Header />
         <main>

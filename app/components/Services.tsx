@@ -41,7 +41,7 @@ const services = [
       "Vile de lux",
       "Renovări rezidențiale",
     ],
-    image: "/hero/6.jpg",
+    image: "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da",
   },
 
   {
@@ -59,7 +59,7 @@ const services = [
       "Clădiri guvernamentale",
       "Facilități științifice și de cercetare",
     ],
-    image: "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da",
+    image: "hero/6.jpg",
   },
   {
     id: "landschaft-design",
@@ -135,7 +135,7 @@ export default function Services() {
   }, [activeService, isMobile]);
 
   return (
-    <section id="services" className="py-24 bg-black relative overflow-hidden">
+    <section id="services" className="pt-24 bg-black relative overflow-hidden">
       {/* Futuristic decorative elements */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
@@ -215,7 +215,6 @@ export default function Services() {
         {/* Futuristic Services tabs */}
         <Tabs
           defaultValue={activeService?.id}
-          className="mb-20"
           onValueChange={(value) => {
             const selected = services.find((s) => s.id === value);
             if (selected) setActiveService(selected);
@@ -272,7 +271,7 @@ export default function Services() {
 
           {services.map((service) => (
             <TabsContent key={service.id} value={service.id} className="mt-0">
-              <div className="grid md:grid-cols-2 gap-10 items-center">
+              <div className="grid md:grid-cols-2 gap-10 items-start">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -352,9 +351,9 @@ export default function Services() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="relative aspect-[4/3] rounded-xl overflow-hidden group"
+                  className="relative h-[90%] aspect-[4/3] rounded-xl overflow-hidden group"
                 >
-                  <div className="relative rounded-xl overflow-hidden border border-white/10 z-10">
+                  <div className="relative rounded-xl overflow-hidden border border-white/10 z-10 ">
                     <img
                       src={service.image}
                       alt={service.title}

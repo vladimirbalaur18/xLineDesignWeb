@@ -315,7 +315,7 @@ export default function Projects() {
                     }}
                   />
 
-                  <div className="relative overflow-hidden aspect-[5/4]">
+                  <div className="relative overflow-hidden aspect-[3/2]">
                     <motion.div className="h-full w-full">
                       <img
                         src={project.image}
