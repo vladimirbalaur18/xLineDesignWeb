@@ -1,6 +1,7 @@
 import ClientOnly from "./components/ClientOnly";
 import dynamic from "next/dynamic";
 import Services from "./components/Services";
+import PropertyForSale from "./components/PropertyForSale";
 
 // Dynamically import components to avoid server-side rendering of client components
 const Header = dynamic(() => import("./components/Header"));
@@ -30,7 +31,7 @@ export default function HomePage() {
           <About />
           <Services />
           <Projects />
-          <ProjectGallery />
+          {/* <ProjectGallery /> */}
           {/* <PropertyForSale /> */}
           {/* <Team /> */}
           <Contact />
