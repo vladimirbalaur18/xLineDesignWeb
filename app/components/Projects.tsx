@@ -21,17 +21,7 @@ const projects = [
     image: "https://images.unsplash.com/photo-1646917939502-5f124b08bd97",
     tags: ["Sustenabil", "Înalt", "Urban"],
   },
-  {
-    id: 2,
-    title: "Reședința Oceanfront",
-    description:
-      "O casă luxoasă pe plajă care îmbină perfect spațiile interioare și exterioare.",
-    category: "residential",
-    location: "Malibu, CA",
-    year: "2022",
-    image: "https://images.unsplash.com/photo-1646917939723-5ca456967957",
-    tags: ["Costier", "Lux", "Concept deschis"],
-  },
+
   {
     id: 3,
     title: "The Vertex",
@@ -109,13 +99,14 @@ export default function Projects() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px 0px" });
 
-  const filters = [
-    ["all", "Toate lucrările"],
-    ["residential", "Locuințe"],
-    ["interiorDesign", "Design interior"],
-    ["architecture", "Arhitectură"],
-    ["landscapeDesign", "Peisagistică"],
-  ];
+  const filtersMap = {
+    all: "Toate lucrările",
+    interiorDesign: "Design interior",
+    architecture: "Arhitectură",
+    landscapeDesign: "Peisagistică",
+  };
+
+  const filters = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
 
   const filteredProjects =
     activeFilter === "all"
@@ -202,18 +193,20 @@ export default function Projects() {
           <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-40 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
-          {filters.map(([key, filter]) => (
+          {filters.map((key) => (
             <motion.div
               key={key}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Badge
-                variant={activeFilter === filter ? "default" : "outline"}
+                variant={
+                  activeFilter === filtersMap[key] ? "default" : "outline"
+                }
                 className={`
                   relative text-sm py-2.5 px-6 cursor-pointer uppercase tracking-wider backdrop-blur-sm
                   ${
-                    activeFilter === filter
+                    activeFilter === filtersMap[key]
                       ? "bg-black border border-white text-white hover:bg-white/10"
                       : "border-white/20 text-white/70 hover:text-white hover:border-white/50"
                   }
@@ -223,10 +216,10 @@ export default function Projects() {
                   setVisibleProjects(3);
                 }}
               >
-                {filter}
+                {filtersMap[key]}
 
                 {/* Active indicator line */}
-                {activeFilter === filter && (
+                {activeFilter === filtersMap[key] && (
                   <motion.span
                     className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-white/30 via-white to-white/30"
                     layoutId="activeFilterLine"
@@ -238,24 +231,13 @@ export default function Projects() {
           ))}
         </motion.div>
 
-        {/* 3D Interactive Scene */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="mb-20"
-        >
-          <ProjectScene3D />
-        </motion.div> */}
-
         {/* Projects Grid */}
         <motion.div
           ref={sectionRef}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-2"
           viewport={{ once: true }}
         >
           {filteredProjects.slice(0, visibleProjects).map((project) => (
@@ -266,7 +248,7 @@ export default function Projects() {
               onMouseLeave={() => setHoveredProject(null)}
               className="group"
             >
-              <div className="relative group">
+              <div className="relative group h-full cursor-pointer">
                 {/* Glowing effect on hover */}
                 <motion.div
                   className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
@@ -282,8 +264,6 @@ export default function Projects() {
                   }}
                   transition={{
                     duration: 2,
-                    // repeat: hoveredProject === project.id ? Infinity : 0,
-                    // repeatType: "reverse",
                   }}
                 />
 
@@ -336,11 +316,7 @@ export default function Projects() {
                   />
 
                   <div className="relative overflow-hidden aspect-[5/4]">
-                    <motion.div
-                      whileHover={{ filter: "grayscale(0%)" }}
-                      initial={{ filter: "grayscale(100%)" }}
-                      className="h-full w-full"
-                    >
+                    <motion.div className="h-full w-full">
                       <img
                         src={project.image}
                         alt={project.title}
@@ -362,7 +338,11 @@ export default function Projects() {
                           transition={{ duration: 0.5, delay: 0.2 }}
                         >
                           <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
-                            {project.category}
+                            {
+                              filtersMap[
+                                project.category as keyof typeof filtersMap
+                              ]
+                            }
                           </span>
                           <div className="flex justify-between items-baseline">
                             <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
@@ -387,18 +367,6 @@ export default function Projects() {
                   </div>
 
                   <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {project.tags.map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="border-white/20 text-white/80 text-xs uppercase tracking-wider py-0.5 hover:border-white/40 transition-colors"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
                     <div className="flex items-start gap-2 mb-4">
                       <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
                         {project.location}
@@ -406,45 +374,6 @@ export default function Projects() {
                       <p className="text-white/80 text-sm font-light leading-relaxed">
                         {project.description}
                       </p>
-                    </div>
-
-                    {/* Button with appearing line effect */}
-                    <div className="relative">
-                      <motion.div
-                        className="absolute -top-2 right-0 w-[80%] h-[1px] bg-gradient-to-l from-white/40 to-transparent"
-                        initial={{ scaleX: 0, originX: 1 }}
-                        animate={{
-                          scaleX: hoveredProject === project.id ? 1 : 0,
-                        }}
-                        transition={{ duration: 0.3 }}
-                      />
-
-                      <motion.div
-                        className="flex justify-end"
-                        initial={{ opacity: 0 }}
-                        animate={{
-                          opacity: hoveredProject === project.id ? 1 : 0.5,
-                          y: hoveredProject === project.id ? 0 : 5,
-                        }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-white hover:text-black hover:bg-white uppercase tracking-wider border-white/30 hover:border-white text-xs relative overflow-hidden group/btn"
-                        >
-                          <span className="relative z-10">Vezi proiectul</span>
-                          <ExternalLink className="ml-2 h-3 w-3 relative z-10" />
-
-                          {/* Button hover effect */}
-                          <motion.span
-                            className="absolute inset-0 bg-white"
-                            initial={{ x: "-100%" }}
-                            whileHover={{ x: "0%" }}
-                            transition={{ duration: 0.3 }}
-                          />
-                        </Button>
-                      </motion.div>
                     </div>
                   </CardContent>
                 </Card>

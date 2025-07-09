@@ -67,10 +67,10 @@ export default function Hero() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/80 to-black/40" />
         </motion.div>
       </AnimatePresence>
-      {/* Content */}s
+      {/* Content */}
       <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
         <div className="max-w-2xl mx-auto text-center lg:mx-0 lg:text-left">
           {/* Static Content */}

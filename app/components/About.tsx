@@ -69,9 +69,11 @@ export default function About() {
         className="absolute -bottom-20 -left-20 w-60 h-60 bg-primary/5 rounded-full blur-3xl"
         style={{ y: y2, opacity }}
       />
+      {/* ONLY 2 IMG */}
+      {/* TODO: increase text size, add more text to the bottom */}
 
       <div className="w-full relative z-10">
-        <div className="grid md:grid-cols-2 gap-12 items-center px-4">
+        <div className="grid md:grid-cols-2 gap-8 items-center px-2">
           {/* Left column - Image collage */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -80,13 +82,13 @@ export default function About() {
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2">
               <img
                 src="/hero/1.jpg"
                 alt="Architectural sketch"
-                className="rounded-lg shadow-xl w-full h-auto object-cover aspect-[3/4]"
+                className="rounded-lg shadow-xl w-full h-full object-cover "
               />
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <img
                   src="/hero/2.jpg"
                   alt="Minimalist interior"
@@ -128,11 +130,6 @@ export default function About() {
               înțelegere profundă a nevoilor clienților, a aspectelor de mediu
               și a contextului cultural.
             </p>
-
-            <div className="flex items-center text-primary gap-2 group cursor-pointer">
-              <span className="font-medium">Mai multe detalii...</span>
-              <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </div>
           </motion.div>
         </div>
 
@@ -144,21 +141,33 @@ export default function About() {
           viewport={{ once: true }}
           className="mt-24 w-full"
         >
-          <div className="flex flex-wrap justify-around gap-8 w-full">
-            {stats.map((stat, index) => (
-              <Card
-                key={index}
-                className="bg-gray-900/50 border-gray-800 hover:border-primary/50 transition-all hover:transform hover:-translate-y-1 flex-1 max-w-[300px]"
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="flex justify-center mb-4">{stat.icon}</div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
-                    {stat.value}
-                  </h3>
-                  <p className="text-sm text-gray-400">{stat.label}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="w-full flex justify-center">
+            <div
+              className="
+                grid 
+                grid-cols-1 
+                sm:grid-cols-2 
+                lg:grid-cols-4 
+                gap-2
+                w-full 
+                max-w-6xl
+                "
+            >
+              {stats.map((stat, index) => (
+                <Card
+                  key={index}
+                  className="bg-gray-900/50 border-gray-800 hover:border-primary/50 transition-all hover:transform hover:-translate-y-1 flex flex-col h-full"
+                >
+                  <CardContent className="p-6 text-center flex flex-col h-full justify-center">
+                    <div className="flex justify-center mb-4">{stat.icon}</div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                      {stat.value}
+                    </h3>
+                    <p className="text-sm text-gray-400">{stat.label}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+// TODO: header cards to be same size as stats from about sectioj, increase text size
+import { useState, useRef, useEffect } from "react";
+import { useIsMobile } from "../hooks/use-mobile";
 import { motion } from "motion/react";
 import {
   Pencil,
@@ -81,6 +83,9 @@ const services = [
 export default function Services() {
   const [activeService, setActiveService] = useState(services[0]);
   const [hoveredStep, setHoveredStep] = useState<number | undefined>(undefined);
+  const serviceRefs = useRef<{ [key: string]: HTMLHeadingElement | null }>({});
+  const isMobile = useIsMobile();
+  const tabsListRef = useRef<HTMLDivElement | null>(null);
   const processSteps = [
     {
       number: "01",
@@ -118,6 +123,16 @@ export default function Services() {
         "Construcție de precizie cu fabricație robotică și sisteme inteligente de materiale.",
     },
   ];
+
+  useEffect(() => {
+    if (!isMobile) return;
+    const ref = serviceRefs.current[activeService.id];
+    if (ref) {
+      const offset = 80; // Adjust this value if your sticky header is a different height
+      const top = ref.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  }, [activeService, isMobile]);
 
   return (
     <section id="services" className="py-24 bg-black relative overflow-hidden">
@@ -197,7 +212,6 @@ export default function Services() {
             computațional la execuția construcției.
           </motion.p>
         </motion.div>
-
         {/* Futuristic Services tabs */}
         <Tabs
           defaultValue={activeService?.id}
@@ -205,14 +219,39 @@ export default function Services() {
           onValueChange={(value) => {
             const selected = services.find((s) => s.id === value);
             if (selected) setActiveService(selected);
+            if (!isMobile && tabsListRef.current) {
+              // Scroll the tabs to the top of the viewport with a small offset
+              const offset = 64; // Adjust if you have a sticky header
+              const top =
+                tabsListRef.current.getBoundingClientRect().top +
+                window.scrollY -
+                offset;
+              window.scrollTo({ top, behavior: "smooth" });
+            }
           }}
         >
-          <TabsList className="h-fit flex justify-around flex-wrap  bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm">
+          <TabsList
+            ref={tabsListRef}
+            className="
+              h-fit flex flex-col sm:flex-row justify-around
+              bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm
+              gap-2
+            "
+          >
             {services.map((service) => (
               <TabsTrigger
                 key={service.id}
                 value={service.id}
-                className="rounded-xl w-36 py-3 px-4 data-[state=active]:bg-white data-[state=active]:text-black transition-all duration-300"
+                className="
+                  rounded-xl
+                  w-full sm:w-36
+                  py-2 sm:py-3
+                  px-2 sm:px-4
+                  text-xs sm:text-base
+                  data-[state=active]:bg-white data-[state=active]:text-black
+                  transition-all duration-300
+                  flex-shrink-0
+                "
               >
                 <div className="flex flex-col items-center gap-3 py-1">
                   <motion.div
@@ -240,7 +279,12 @@ export default function Services() {
                   transition={{ duration: 0.5 }}
                   className="backdrop-blur-sm"
                 >
-                  <h3 className="text-2xl font-bold mb-4 flex items-center gap-3 relative">
+                  <h3
+                    ref={(el) => {
+                      serviceRefs.current[service.id] = el;
+                    }}
+                    className="text-2xl font-bold mb-4 flex items-center gap-3 relative"
+                  >
                     <motion.div
                       className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center"
                       whileHover={{ scale: 1.05 }}
@@ -310,14 +354,11 @@ export default function Services() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                   className="relative aspect-[4/3] rounded-xl overflow-hidden group"
                 >
-                  {/* Animated border glow on hover */}
-                  <motion.div className="absolute -inset-0.5 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur rounded-xl" />
-
                   <div className="relative rounded-xl overflow-hidden border border-white/10 z-10">
                     <img
                       src={service.image}
                       alt={service.title}
-                      className="object-cover w-full h-full filter grayscale hover:grayscale-0 transition-all duration-700"
+                      className="object-cover w-full h-full filter transition-all duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
@@ -334,158 +375,6 @@ export default function Services() {
             </TabsContent>
           ))}
         </Tabs>
-
-        {/* Futuristic Process section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mt-32"
-        >
-          <div className="text-center mb-16 relative">
-            <motion.div
-              className="absolute -top-10 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
-              initial={{ width: 0 }}
-              whileInView={{ width: "8rem" }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-            />
-            <h3 className="text-3xl md:text-4xl font-bold uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-              Cum are loc procesul de colaborare?
-            </h3>
-            <motion.div
-              className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-20 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent opacity-30"
-              initial={{ width: 0 }}
-              whileInView={{ width: "5rem" }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            />
-          </div>
-
-          <div className="relative pb-16">
-            {/* Glowing process line with animation */}
-            <motion.div
-              className="absolute top-20 left-10 right-10 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent hidden md:block"
-              initial={{ scaleX: 0, opacity: 0 }}
-              whileInView={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 1.5 }}
-              viewport={{ once: true }}
-            ></motion.div>
-
-            {/* Responsive vertical line for mobile */}
-            <motion.div
-              className="absolute top-10 bottom-40 left-[10%] sm:left-[20%] md:left-1/2 w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent sm:hidden"
-              initial={{ scaleY: 0, opacity: 0 }}
-              whileInView={{ scaleY: 1, opacity: 1 }}
-              transition={{ duration: 1.5 }}
-              viewport={{ once: true }}
-            ></motion.div>
-
-            {/* Second responsive vertical line for tablet */}
-            <motion.div
-              className="absolute top-10 bottom-40 right-[20%] w-0.5 bg-gradient-to-b from-transparent via-white/30 to-transparent hidden sm:block md:hidden"
-              initial={{ scaleY: 0, opacity: 0 }}
-              whileInView={{ scaleY: 1, opacity: 1 }}
-              transition={{ duration: 1.5 }}
-              viewport={{ once: true }}
-            ></motion.div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 gap-y-10 md:gap-8 md:gap-y-16">
-              {processSteps.map((step, index) => (
-                <motion.div
-                  key={step.number + step.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.15 }}
-                  onMouseEnter={() => setHoveredStep(index)}
-                  onMouseLeave={() => setHoveredStep(undefined)}
-                  className="relative"
-                  whileHover={{
-                    z: 20,
-                    scale: 1.03,
-                    transition: { duration: 0.2 },
-                  }}
-                >
-                  {/* Animated glow effect on hover */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: hoveredStep === index ? 0.2 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute -inset-3 bg-white rounded-2xl blur-xl z-0"
-                  ></motion.div>
-
-                  {/* Card with glass morphism effect */}
-                  <Card
-                    className="relative backdrop-blur-md bg-black/40 border border-white/10 shadow-lg overflow-hidden h-full z-10 md:transform md:transition-transform md:hover:translate-z-10"
-                    style={{ transformStyle: "preserve-3d" }}
-                  >
-                    {/* Gradient border effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0"
-                      animate={{ opacity: hoveredStep === index ? 0.5 : 0 }}
-                      transition={{ duration: 0.4 }}
-                      style={{ height: "1px", top: 0 }}
-                    ></motion.div>
-
-                    <CardContent className="p-4 sm:p-6 md:p-8 text-center relative">
-                      {/* Futuristic numbered icon */}
-                      <div className="mb-4 sm:mb-6 relative">
-                        <div className="absolute -inset-3 bg-white/5 rounded-full blur-sm"></div>
-                        <motion.div
-                          className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-gradient-to-br from-black to-black/80 border border-white/20 rounded-full flex items-center justify-center relative"
-                          whileHover={{ scale: 1.05 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 10,
-                          }}
-                        >
-                          <span className="text-2xl sm:text-3xl">
-                            {step.icon}
-                          </span>
-                          <motion.div
-                            className="absolute -inset-0.5 rounded-full opacity-0"
-                            initial={{ opacity: 0 }}
-                            animate={{
-                              opacity: hoveredStep === index ? [0, 0.5, 0] : 0,
-                            }}
-                            transition={{
-                              duration: 2,
-                              repeat:
-                                hoveredStep === index ? Infinity : undefined,
-                              ease: "easeInOut",
-                            }}
-                            style={{
-                              border: "1px solid rgba(255,255,255,0.3)",
-                            }}
-                          ></motion.div>
-                        </motion.div>
-                        <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 text-xs text-white/50 font-mono bg-black/50 px-2 rounded-md">
-                          {step.number}
-                        </div>
-                      </div>
-
-                      {/* Title with gradient effect */}
-                      <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 relative inline-block">
-                        {step.title}
-                      </h4>
-
-                      {/* Description with animated opacity */}
-                      <motion.p
-                        className="text-white/70 text-xs sm:text-sm leading-relaxed"
-                        animate={{ opacity: hoveredStep === index ? 1 : 0.7 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {step.description}
-                      </motion.p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

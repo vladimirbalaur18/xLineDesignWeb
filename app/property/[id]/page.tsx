@@ -779,29 +779,31 @@ export default function PropertyDetail() {
 
           {/* Thumbnail Gallery at Bottom */}
           <div className="max-w-5xl mx-auto w-full flex-shrink-0">
-            <div className="flex gap-2 overflow-x-auto pb-2 px-2">
-              {property.images.map((image, index) => (
-                <motion.button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`relative flex-shrink-0 aspect-video w-24 sm:w-28 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                    currentImageIndex === index
-                      ? "border-white shadow-lg"
-                      : "border-white/30 hover:border-white/60"
-                  }`}
-                >
-                  <img
-                    src={image.url}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                  {currentImageIndex === index && (
-                    <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px]" />
-                  )}
-                </motion.button>
-              ))}
+            <div className="flex gap-2 overflow-x-auto pb-2 px-2 justify-center">
+              <div className="flex gap-2 mx-auto">
+                {property.images.map((image, index) => (
+                  <motion.button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`relative flex-shrink-0 aspect-video w-24 sm:w-28 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                      currentImageIndex === index
+                        ? "border-white shadow-lg"
+                        : "border-white/30 hover:border-white/60"
+                    }`}
+                  >
+                    <img
+                      src={image.url}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {currentImageIndex === index && (
+                      <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px]" />
+                    )}
+                  </motion.button>
+                ))}
+              </div>
             </div>
           </div>
         </motion.div>
