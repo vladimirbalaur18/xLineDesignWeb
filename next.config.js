@@ -6,6 +6,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  images: {
+    domains: ["images.unsplash.com"],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.(mp4|webm)$/,

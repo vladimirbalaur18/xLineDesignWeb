@@ -13,6 +13,7 @@ import {
   Smile,
   Square,
 } from "lucide-react";
+import Image from "next/image";
 
 const ACTIVE_FROM_YEAR = 2019;
 const PROJECTS_COUNT = 250;
@@ -83,20 +84,26 @@ export default function About() {
             className="relative"
           >
             <div className="grid grid-cols-2 gap-2">
-              <img
+              <Image
                 src="/hero/1.jpg"
                 alt="Architectural sketch"
+                width={1200}
+                height={800}
                 className="rounded-lg shadow-xl w-full h-full object-cover "
               />
               <div className="space-y-2">
-                <img
+                <Image
                   src="/hero/2.jpg"
                   alt="Minimalist interior"
+                  width={1200}
+                  height={800}
                   className="rounded-lg shadow-xl w-full h-auto object-cover aspect-square"
                 />
-                <img
+                <Image
                   src="/hero/3.jpg"
                   alt="Architectural blueprint"
+                  width={1200}
+                  height={800}
                   className="rounded-lg shadow-xl w-full h-auto object-cover aspect-[4/3]"
                 />
               </div>

@@ -7,66 +7,69 @@ import { Card, CardContent } from "./ui/card";
 import { ExternalLink, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "./ui/button";
 import ProjectScene3D from "./ProjectScene3D";
+import { properties } from "../lib/properties";
+import Image from "next/image";
+import Link from "next/link";
 
 // Project data
-const projects = [
-  {
-    id: 1,
-    title: "Turnul Azure Sky",
-    description:
-      "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
-    category: "interiorDesign",
-    location: "Singapore",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1646917939502-5f124b08bd97",
-    tags: ["Sustenabil", "Înalt", "Urban"],
-  },
+// const projects = [
+//   {
+//     id: 1,
+//     title: "Turnul Azure Sky",
+//     description:
+//       "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
+//     category: "interiorDesign",
+//     location: "Singapore",
+//     year: "2023",
+//     image: "https://images.unsplash.com/photo-1646917939502-5f124b08bd97",
+//     tags: ["Sustenabil", "Înalt", "Urban"],
+//   },
 
-  {
-    id: 3,
-    title: "The Vertex",
-    description:
-      "Un complex de birouri premiat, cu un design inovator și spații de lucru colaborative.",
-    category: "interiorDesign",
-    location: "Toronto",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1661951933252-d8722effb21d",
-    tags: ["Birou", "Minimalist", "Colaborativ"],
-  },
-  {
-    id: 4,
-    title: "Biblioteca Echo",
-    description:
-      "O bibliotecă publică proiectată pentru a promova învățarea și implicarea comunității prin spații bine gândite.",
-    category: "landscapeDesign",
-    location: "Copenhaga",
-    year: "2022",
-    image: "https://images.unsplash.com/photo-1649496880872-6159f729f24e",
-    tags: ["Cultural", "Public", "Sustenabil"],
-  },
-  {
-    id: 5,
-    title: "Pavilionul Harmony",
-    description:
-      "Un spațiu multifuncțional pentru evenimente, adaptabil pentru diverse funcții culturale și de divertisment.",
-    category: "landscapeDesign",
-    location: "Melbourne",
-    year: "2021",
-    image: "https://images.unsplash.com/photo-1647705985300-2b63d0ac9e39",
-    tags: ["Evenimente", "Versatil", "Contemporan"],
-  },
-  {
-    id: 6,
-    title: "Casa Prism",
-    description:
-      "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
-    category: "architecture",
-    location: "Berlin",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1661951933413-5dda7807de41",
-    tags: ["Modern", "Geometric", "Concentrat pe lumină"],
-  },
-];
+//   {
+//     id: 3,
+//     title: "The Vertex",
+//     description:
+//       "Un complex de birouri premiat, cu un design inovator și spații de lucru colaborative.",
+//     category: "interiorDesign",
+//     location: "Toronto",
+//     year: "2023",
+//     image: "https://images.unsplash.com/photo-1661951933252-d8722effb21d",
+//     tags: ["Birou", "Minimalist", "Colaborativ"],
+//   },
+//   {
+//     id: 4,
+//     title: "Biblioteca Echo",
+//     description:
+//       "O bibliotecă publică proiectată pentru a promova învățarea și implicarea comunității prin spații bine gândite.",
+//     category: "landscapeDesign",
+//     location: "Copenhaga",
+//     year: "2022",
+//     image: "https://images.unsplash.com/photo-1649496880872-6159f729f24e",
+//     tags: ["Cultural", "Public", "Sustenabil"],
+//   },
+//   {
+//     id: 5,
+//     title: "Pavilionul Harmony",
+//     description:
+//       "Un spațiu multifuncțional pentru evenimente, adaptabil pentru diverse funcții culturale și de divertisment.",
+//     category: "landscapeDesign",
+//     location: "Melbourne",
+//     year: "2021",
+//     image: "https://images.unsplash.com/photo-1647705985300-2b63d0ac9e39",
+//     tags: ["Evenimente", "Versatil", "Contemporan"],
+//   },
+//   {
+//     id: 6,
+//     title: "Casa Prism",
+//     description:
+//       "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
+//     category: "architecture",
+//     location: "Berlin",
+//     year: "2023",
+//     image: "https://images.unsplash.com/photo-1661951933413-5dda7807de41",
+//     tags: ["Modern", "Geometric", "Concentrat pe lumină"],
+//   },
+// ];
 
 // Animation variants
 const containerVariants = {
@@ -110,8 +113,8 @@ export default function Projects() {
 
   const filteredProjects =
     activeFilter === "all"
-      ? projects
-      : projects.filter((project) => project.category === activeFilter);
+      ? properties
+      : properties.filter((project) => project.category === activeFilter);
 
   const loadMore = () => {
     setVisibleProjects((prev) => Math.min(prev + 3, filteredProjects.length));
@@ -248,136 +251,140 @@ export default function Projects() {
               onMouseLeave={() => setHoveredProject(null)}
               className="group"
             >
-              <div className="relative group h-full cursor-pointer">
-                {/* Glowing effect on hover */}
-                <motion.div
-                  className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
-                  animate={{
-                    boxShadow:
-                      hoveredProject === project.id
-                        ? [
-                            "0 0 5px 2px rgba(255, 255, 255, 0.1)",
-                            "0 0 10px 3px rgba(255, 255, 255, 0.15)",
-                            "0 0 5px 2px rgba(255, 255, 255, 0.1)",
-                          ]
-                        : "none",
-                  }}
-                  transition={{
-                    duration: 2,
-                  }}
-                />
-
-                <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 h-full hover:border-white/30 transition-all duration-300 relative rounded-none">
-                  {/* Project number indicator */}
-                  <div className="absolute top-3 right-3 z-30">
-                    <div className="bg-black/70 backdrop-blur-sm border border-white/20 w-8 h-8 flex items-center justify-center">
-                      <span className="text-white/80 font-mono text-xs">
-                        0{project.id}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Corner accent */}
+              <Link href={`property/${project.id}`}>
+                <div className="relative group h-full cursor-pointer">
+                  {/* Glowing effect on hover */}
                   <motion.div
-                    className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
-                    whileHover={{ scale: 1.1 }}
+                    className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
                     animate={{
-                      borderColor:
+                      boxShadow:
                         hoveredProject === project.id
                           ? [
-                              "rgba(255,255,255,0.2)",
-                              "rgba(255,255,255,0.4)",
-                              "rgba(255,255,255,0.2)",
+                              "0 0 5px 2px rgba(255, 255, 255, 0.1)",
+                              "0 0 10px 3px rgba(255, 255, 255, 0.15)",
+                              "0 0 5px 2px rgba(255, 255, 255, 0.1)",
                             ]
-                          : "rgba(255,255,255,0.2)",
+                          : "none",
                     }}
                     transition={{
                       duration: 2,
-                      repeat: hoveredProject === project.id ? Infinity : 0,
-                    }}
-                  />
-                  <motion.div
-                    className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-white/20 z-10"
-                    whileHover={{ scale: 1.1 }}
-                    animate={{
-                      borderColor:
-                        hoveredProject === project.id
-                          ? [
-                              "rgba(255,255,255,0.2)",
-                              "rgba(255,255,255,0.4)",
-                              "rgba(255,255,255,0.2)",
-                            ]
-                          : "rgba(255,255,255,0.2)",
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: hoveredProject === project.id ? Infinity : 0,
                     }}
                   />
 
-                  <div className="relative overflow-hidden aspect-[3/2]">
-                    <motion.div className="h-full w-full">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
-                      />
-                    </motion.div>
-
-                    {/* Overlay gradient with grid pattern */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40 group-hover:opacity-90 transition-opacity">
-                      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
+                  <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 h-full hover:border-white/30 transition-all duration-300 relative rounded-none">
+                    {/* Project number indicator */}
+                    <div className="absolute top-3 right-3 z-30">
+                      <div className="bg-black/70 backdrop-blur-sm border border-white/20 w-8 h-8 flex items-center justify-center">
+                        <span className="text-white/80 font-mono text-xs">
+                          0{project.id}
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Project title content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm">
-                      <div className="overflow-hidden">
-                        <motion.div
-                          initial={{ y: 20, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                          <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
-                            {
-                              filtersMap[
-                                project.category as keyof typeof filtersMap
+                    {/* Corner accent */}
+                    <motion.div
+                      className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{
+                        borderColor:
+                          hoveredProject === project.id
+                            ? [
+                                "rgba(255,255,255,0.2)",
+                                "rgba(255,255,255,0.4)",
+                                "rgba(255,255,255,0.2)",
                               ]
-                            }
-                          </span>
-                          <div className="flex justify-between items-baseline">
-                            <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                              {project.title}
-                            </h3>
-                            <span className="text-white/80 font-mono text-xs">
-                              {project.year}
-                            </span>
-                          </div>
+                            : "rgba(255,255,255,0.2)",
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: hoveredProject === project.id ? Infinity : 0,
+                      }}
+                    />
+                    <motion.div
+                      className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-white/20 z-10"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{
+                        borderColor:
+                          hoveredProject === project.id
+                            ? [
+                                "rgba(255,255,255,0.2)",
+                                "rgba(255,255,255,0.4)",
+                                "rgba(255,255,255,0.2)",
+                              ]
+                            : "rgba(255,255,255,0.2)",
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: hoveredProject === project.id ? Infinity : 0,
+                      }}
+                    />
 
-                          {/* Animated line */}
+                    <div className="relative overflow-hidden aspect-[3/2]">
+                      <motion.div className="h-full w-full">
+                        <Image
+                          src={`${project.image}?auto=format&fit=crop&w=1200&q=80`}
+                          alt={project.title}
+                          width={1200}
+                          height={800}
+                          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </motion.div>
+
+                      {/* Overlay gradient with grid pattern */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40 group-hover:opacity-90 transition-opacity">
+                        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
+                      </div>
+
+                      {/* Project title content */}
+                      <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm">
+                        <div className="overflow-hidden">
                           <motion.div
-                            className="h-[1px] bg-gradient-to-r from-white/80 via-white/40 to-transparent mt-2"
-                            initial={{ scaleX: 0, originX: 0 }}
-                            whileInView={{ scaleX: 1 }}
-                            transition={{ duration: 0.8 }}
-                            viewport={{ once: true }}
-                          />
-                        </motion.div>
-                      </div>
-                    </div>
-                  </div>
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                          >
+                            <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
+                              {
+                                filtersMap[
+                                  project.category as keyof typeof filtersMap
+                                ]
+                              }
+                            </span>
+                            <div className="flex justify-between items-baseline">
+                              <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                                {project.title}
+                              </h3>
+                              <span className="text-white/80 font-mono text-xs">
+                                {project.year}
+                              </span>
+                            </div>
 
-                  <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
-                    <div className="flex items-start gap-2 mb-4">
-                      <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
-                        {project.location}
+                            {/* Animated line */}
+                            <motion.div
+                              className="h-[1px] bg-gradient-to-r from-white/80 via-white/40 to-transparent mt-2"
+                              initial={{ scaleX: 0, originX: 0 }}
+                              whileInView={{ scaleX: 1 }}
+                              transition={{ duration: 0.8 }}
+                              viewport={{ once: true }}
+                            />
+                          </motion.div>
+                        </div>
                       </div>
-                      <p className="text-white/80 text-sm font-light leading-relaxed">
-                        {project.description}
-                      </p>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+
+                    <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
+                      <div className="flex items-start gap-2 mb-4">
+                        <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
+                          {project.location}
+                        </div>
+                        <p className="text-white/80 text-sm font-light leading-relaxed">
+                          {project.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

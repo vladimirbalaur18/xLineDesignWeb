@@ -1,8 +1,12 @@
 "use client";
 
+import React, { use } from "react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { properties } from "@/lib/properties";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,183 +37,18 @@ import {
 import PropertyStoryMode from "@/components/PropertyStoryMode";
 import { getVisiblePropertySections } from "@/lib/sectionsData";
 
-// Property data (in a real app, this would come from an API)
-const properties = [
-  {
-    id: 1,
-    title: "Modern Minimalist Villa",
-    address: "1234 Skyline Drive, Los Angeles, CA",
-    price: "$4,850,000",
-    bedrooms: 5,
-    bathrooms: 6,
-    area: "4,320",
-    yearBuilt: 2022,
-    description:
-      "An architectural masterpiece with panoramic ocean views, featuring open concept living spaces, a chef's kitchen, and a stunning infinity pool. This contemporary villa seamlessly blends indoor and outdoor living with floor-to-ceiling windows that frame spectacular sunset views. The home features sustainable materials throughout, including reclaimed teak flooring and locally sourced stone accents.",
-    fullDescription:
-      "This exceptional modern villa represents the pinnacle of contemporary architectural design, set on a prime 1.2-acre lot with unobstructed ocean views. The home's clean lines and geometric form create a striking silhouette against the dramatic coastal landscape.\n\nThe interior features soaring 12-foot ceilings and an open-concept layout that maximizes natural light and ocean views. The gourmet kitchen boasts custom Italian cabinetry, Calacatta marble countertops, and professional-grade appliances including a 60-inch dual-fuel range and built-in espresso station.\n\nThe master suite occupies the entire upper level, featuring a private terrace, walk-in closet with custom built-ins, and a spa-like bathroom with a freestanding soaking tub and rain shower. Four additional bedroom suites provide comfortable accommodations for family and guests.\n\nOutdoor amenities include an infinity pool with integrated spa, outdoor kitchen and dining area, fire pit lounge, and multiple terraces for entertaining. The property also features a three-car garage, wine cellar, home theater, and smart home automation throughout.",
-    features: [
-      "Ocean Views",
-      "Infinity Pool",
-      "Wine Cellar",
-      "Home Theater",
-      "Smart Home",
-      "3-Car Garage",
-      "Chef's Kitchen",
-      "Spa Bathroom",
-    ],
-    tags: ["Featured", "New Construction"],
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800",
-        description:
-          "Stunning exterior view showcasing the villa's modern architectural lines and natural landscape integration",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&h=800",
-        description:
-          "Open-concept living area with floor-to-ceiling windows and panoramic ocean views",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800",
-        description:
-          "Gourmet kitchen featuring custom Italian cabinetry and Calacatta marble countertops",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&h=800",
-        description:
-          "Master bedroom suite with private terrace access and premium furnishings",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&h=800",
-        description:
-          "Infinity pool area with integrated spa and outdoor entertaining spaces",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1560448075-bb485b067938?w=1200&h=800",
-        description:
-          "Spa-like master bathroom with freestanding soaking tub and rain shower",
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Sleek Downtown Penthouse",
-    address: "500 Urban Heights, New York, NY",
-    price: "$3,200,000",
-    bedrooms: 3,
-    bathrooms: 3.5,
-    area: "2,850",
-    yearBuilt: 2020,
-    description:
-      "Ultra-modern penthouse with floor-to-ceiling windows offering spectacular city views, smart home technology, and private rooftop terrace.",
-    fullDescription:
-      "This stunning penthouse represents the epitome of urban luxury living, occupying the top two floors of an exclusive Manhattan high-rise. The residence features 12-foot floor-to-ceiling windows that showcase breathtaking 360-degree views of the city skyline.\n\nThe main level houses an expansive living area with custom millwork and a gourmet kitchen featuring Boffi cabinetry, Calacatta gold marble countertops, and top-of-the-line Miele appliances. The master suite includes a private sitting area, custom walk-in closet, and marble bathroom with radiant heated floors.\n\nThe upper level features a private rooftop terrace with outdoor kitchen, dining area, and panoramic city views. Additional amenities include a home office, wine storage, and integrated smart home technology throughout.\n\nBuilding amenities include 24-hour concierge, fitness center, residents' lounge, and rooftop garden. The location offers easy access to the city's finest dining, shopping, and cultural attractions.",
-    features: [
-      "City Views",
-      "Rooftop Terrace",
-      "Smart Home",
-      "Concierge",
-      "Fitness Center",
-      "Wine Storage",
-      "Home Office",
-      "Prime Location",
-    ],
-    tags: ["Penthouse", "Smart Home"],
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&h=800",
-        description:
-          "Sleek penthouse exterior with modern glass facade and city skyline backdrop",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=800",
-        description:
-          "Contemporary living space with floor-to-ceiling windows and urban views",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?w=1200&h=800",
-        description:
-          "Ultra-modern kitchen with premium appliances and minimalist design",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1200&h=800",
-        description:
-          "Master suite with city views and sophisticated interior design",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&h=800",
-        description:
-          "Private rooftop terrace with outdoor seating and panoramic city views",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200&h=800",
-        description:
-          "Luxurious bathroom with smart home features and premium finishes",
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Geometric Glass Mansion",
-    address: "789 Lakefront Road, Austin, TX",
-    price: "$5,975,000",
-    bedrooms: 6,
-    bathrooms: 7,
-    area: "6,200",
-    yearBuilt: 2021,
-    description:
-      "Innovative geometric design with glass walls that connect indoor-outdoor living spaces, featuring a home theater, wine cellar, and meditation garden.",
-    fullDescription:
-      "This architectural marvel showcases cutting-edge design with its dramatic geometric form and extensive use of structural glass. Set on 2.5 acres of pristine lakefront property, the home creates a seamless connection between interior and exterior spaces.\n\nThe residence features soaring 20-foot ceilings in the main living areas, with custom steel and glass construction that maximizes natural light and lake views. The kitchen features European cabinetry, quartzite countertops, and professional-grade appliances.\n\nThe master wing includes a private study, walk-in closet with island, and spa bathroom with soaking tub overlooking the lake. Five additional bedroom suites provide ample space for family and guests.\n\nSpecial features include a state-of-the-art home theater, 1,500-bottle wine cellar, meditation garden with water features, and a boat dock. The property also includes a guest house, four-car garage, and extensive outdoor entertaining areas.",
-    features: [
-      "Lakefront",
-      "Glass Walls",
-      "Home Theater",
-      "Wine Cellar",
-      "Meditation Garden",
-      "Boat Dock",
-      "Guest House",
-      "4-Car Garage",
-    ],
-    tags: ["Luxury", "Waterfront"],
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1200&h=800",
-        description:
-          "Geometric glass mansion exterior with innovative architectural design and lakefront setting",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=1200&h=800",
-        description:
-          "Expansive glass walls connecting indoor and outdoor living spaces with lake views",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1560448075-bb485b067938?w=1200&h=800",
-        description:
-          "Open-concept interior featuring 20-foot ceilings and structural glass construction",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1618219944342-824e40a13285?w=1200&h=800",
-        description:
-          "State-of-the-art home theater with premium audio-visual equipment",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=800",
-        description:
-          "1,500-bottle wine cellar with temperature-controlled storage and tasting area",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1200&h=800",
-        description:
-          "Meditation garden with water features and serene lakefront views",
-      },
-    ],
-  },
-];
+export default function PropertyPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  console.log(params);
 
-export default function PropertyDetail() {
-  const params = useParams();
+  const { id: propertyId } = use(params);
+  const property = properties.find((p) => String(p.id) === String(propertyId));
+
+  if (!property) return notFound();
+
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -219,9 +58,6 @@ export default function PropertyDetail() {
 
   // Get dynamic sections from CMS
   const propertySections = getVisiblePropertySections();
-
-  const idParam = Array.isArray(params?.id) ? params.id[0] : params?.id;
-  const property = properties.find((p) => p.id === parseInt(idParam || "0"));
 
   useEffect(() => {
     // Trigger loading animation after component mounts
@@ -298,11 +134,14 @@ export default function PropertyDetail() {
             }}
             className="w-full h-full"
           >
-            <img
+            <Image
               src={property.images[currentImageIndex].url}
               alt={property.title}
+              width={1920}
+              height={1080}
               className="w-full h-full object-cover"
               onLoad={() => setHeroImageLoaded(true)}
+              priority
             />
           </motion.div>
 
@@ -584,9 +423,11 @@ export default function PropertyDetail() {
                           setIsImageModalOpen(true);
                         }}
                       >
-                        <img
+                        <Image
                           src={image.url}
                           alt={`${property.title} - Image ${index + 1}`}
+                          width={400}
+                          height={400}
                           className="w-full h-full object-cover"
                         />
                         {index === 3 && property.images.length > 4 && (
@@ -666,13 +507,15 @@ export default function PropertyDetail() {
                   className="relative group overflow-hidden rounded-lg"
                 >
                   <div className="aspect-[4/3] bg-gradient-to-br from-gray-800/20 via-black/90 to-gray-900/10 border border-white/10">
-                    <img
+                    <Image
                       src={
                         property.images[
                           (index * 2 + 2) % property.images.length
                         ]?.url || property.images[0]?.url
                       }
                       alt={`${section.name} Image 1`}
+                      width={800}
+                      height={600}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-700" />
@@ -686,13 +529,15 @@ export default function PropertyDetail() {
                   className="relative group overflow-hidden rounded-lg"
                 >
                   <div className="aspect-[4/3] bg-gradient-to-br from-gray-800/20 via-black/90 to-gray-900/10 border border-white/10">
-                    <img
+                    <Image
                       src={
                         property.images[
                           (index * 2 + 3) % property.images.length
                         ]?.url || property.images[1]?.url
                       }
                       alt={`${section.name} Image 2`}
+                      width={800}
+                      height={600}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-700" />
@@ -738,9 +583,11 @@ export default function PropertyDetail() {
                 className="relative bg-black rounded-lg overflow-hidden mb-4 flex-shrink-0"
                 style={{ maxHeight: "60vh" }}
               >
-                <img
+                <Image
                   src={property.images[currentImageIndex].url}
                   alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                  width={1200}
+                  height={800}
                   className="w-full h-full object-contain"
                 />
 
@@ -793,9 +640,11 @@ export default function PropertyDetail() {
                         : "border-white/30 hover:border-white/60"
                     }`}
                   >
-                    <img
+                    <Image
                       src={image.url}
                       alt={`Thumbnail ${index + 1}`}
+                      width={112}
+                      height={63}
                       className="w-full h-full object-cover"
                     />
                     {currentImageIndex === index && (

@@ -36,6 +36,7 @@ import { Label } from "./ui/label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import Image from "next/image";
 
 // Property data
 const properties = [
@@ -242,9 +243,11 @@ export default function PropertyForSale() {
                 >
                   {/* Property image */}
                   <div className="aspect-[4/3] relative overflow-hidden">
-                    <img
-                      src={property.images[0]}
+                    <Image
+                      src={`${property.images[0]}?auto=format&fit=crop&w=1200&q=80`}
                       alt={property.title}
+                      width={1200}
+                      height={800}
                       className="object-cover w-full h-full transition-all duration-700 group-hover:scale-110"
                     />
 
@@ -365,9 +368,11 @@ export default function PropertyForSale() {
                       {property.images.map((image, index) => (
                         <CarouselItem key={index}>
                           <div className="relative aspect-[16/9] overflow-hidden rounded-sm border border-white/10">
-                            <img
-                              src={image}
+                            <Image
+                              src={`${image}?auto=format&fit=crop&w=1200&q=80`}
                               alt={`${property.title} - Image ${index + 1}`}
+                              width={1200}
+                              height={800}
                               className="object-cover w-full h-full"
                             />
                           </div>

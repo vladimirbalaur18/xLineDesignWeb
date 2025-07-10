@@ -16,6 +16,7 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "./ui/dialog";
+import Image from "next/image";
 
 // Gallery data
 const galleryImages = [
@@ -170,9 +171,11 @@ export default function ProjectGallery() {
                   {/* Aspect ratio container */}
                   <div className="aspect-[4/3] relative">
                     {/* Image */}
-                    <img
-                      src={image.image}
+                    <Image
+                      src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
                       alt={image.title}
+                      width={1200}
+                      height={800}
                       className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0 grayscale-[20%]"
                     />
 
@@ -259,9 +262,11 @@ export default function ProjectGallery() {
 
                   {/* Image */}
                   <div className="relative overflow-hidden">
-                    <img
-                      src={image.image}
+                    <Image
+                      src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
                       alt={image.title}
+                      width={1200}
+                      height={800}
                       className="w-full h-auto max-h-[80vh] object-contain"
                     />
                   </div>
@@ -317,9 +322,11 @@ export default function ProjectGallery() {
                           setOpenDialog(true);
                         }}
                       >
-                        <img
-                          src={image.image}
+                        <Image
+                          src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
                           alt={image.title}
+                          width={1200}
+                          height={800}
                           className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
                         />
 
@@ -369,9 +376,11 @@ export default function ProjectGallery() {
 
                         {/* Image */}
                         <div className="relative overflow-hidden">
-                          <img
-                            src={image.image}
+                          <Image
+                            src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
                             alt={image.title}
+                            width={1200}
+                            height={800}
                             className="w-full h-auto max-h-[80vh] object-contain"
                           />
                         </div>

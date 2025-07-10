@@ -24,6 +24,7 @@ import {
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import Image from "next/image";
 
 const services = [
   {
@@ -59,7 +60,7 @@ const services = [
       "Clădiri guvernamentale",
       "Facilități științifice și de cercetare",
     ],
-    image: "hero/6.jpg",
+    image: "/hero/6.jpg",
   },
   {
     id: "landschaft-design",
@@ -76,7 +77,7 @@ const services = [
       "Planificare campusuri",
       "Arhitectură peisagistică",
     ],
-    image: "https://images.unsplash.com/photo-1717245232884-f03d8bce756d",
+    image: "/hero/5.jpg",
   },
 ];
 
@@ -354,9 +355,11 @@ export default function Services() {
                   className="relative h-[90%] aspect-[4/3] rounded-xl overflow-hidden group"
                 >
                   <div className="relative rounded-xl overflow-hidden border border-white/10 z-10 ">
-                    <img
+                    <Image
                       src={service.image}
                       alt={service.title}
+                      width={1200}
+                      height={800}
                       className="object-cover w-full h-full filter transition-all duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80"></div>

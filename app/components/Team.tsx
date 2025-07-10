@@ -11,6 +11,7 @@ import {
   Building,
   GraduationCap,
 } from "lucide-react";
+import Image from "next/image";
 
 const teamMembers = [
   {
@@ -115,9 +116,11 @@ export default function Team() {
             >
               <Card className="bg-gray-900/50 border-gray-800 overflow-hidden hover:border-primary/50 transition-all duration-300">
                 <div className="relative aspect-square overflow-hidden">
-                  <img
-                    src={member.image}
+                  <Image
+                    src={`${member.image}?auto=format&fit=crop&w=256&q=80`}
                     alt={member.name}
+                    width={256}
+                    height={256}
                     className="object-cover w-full h-full transition-transform duration-500"
                     style={{
                       transform:

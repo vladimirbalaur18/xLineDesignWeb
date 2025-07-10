@@ -2,19 +2,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
-
-interface StoryChapter {
-  id: number;
-  title: string;
-  narrative: string;
-  image: string;
-  focusPoint?: { x: number; y: number };
-  duration: number;
-  voiceOver?: string;
-}
+import { Property } from "../lib/properties";
 
 interface PropertyStoryModeProps {
-  property: any;
+  property: Property;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -29,48 +20,7 @@ export default function PropertyStoryMode({
   const [progress, setProgress] = useState(0);
 
   // Generate story chapters from property data
-  const storyChapters: StoryChapter[] = [
-    {
-      id: 1,
-      title: "First Impressions",
-      narrative: `Welcome to ${property.title}, where architectural brilliance meets modern living. As you approach this stunning property, notice how the facade creates a striking silhouette against the skyline, promising the extraordinary experience that awaits within.`,
-      image: property.images[0]?.url,
-      duration: 8000,
-      focusPoint: { x: 50, y: 30 },
-    },
-    {
-      id: 2,
-      title: "The Journey Begins",
-      narrative: `Step through the threshold and feel the immediate transformation. The entryway sets the tone with its soaring ceilings and carefully curated lighting, creating an atmosphere of sophistication that extends throughout every corner of this remarkable space.`,
-      image: property.images[1]?.url,
-      duration: 9000,
-      focusPoint: { x: 40, y: 60 },
-    },
-    {
-      id: 3,
-      title: "Living Spaces",
-      narrative: `The heart of the home reveals itself in the main living areas, where natural light cascades through expansive windows, illuminating spaces designed for both intimate gatherings and grand entertaining. Every element has been thoughtfully positioned to create harmony between form and function.`,
-      image: property.images[2]?.url,
-      duration: 10000,
-      focusPoint: { x: 60, y: 40 },
-    },
-    {
-      id: 4,
-      title: "Private Retreats",
-      narrative: `Discover the private sanctuaries within - bedrooms that serve as peaceful havens from the world outside. Here, luxury meets tranquility, with every detail crafted to ensure restful nights and inspiring mornings in your personal retreat.`,
-      image: property.images[3]?.url,
-      duration: 8500,
-      focusPoint: { x: 30, y: 50 },
-    },
-    {
-      id: 5,
-      title: "Your New Chapter",
-      narrative: `This is more than a property - it's the beginning of your next chapter. Imagine the memories you'll create, the moments you'll cherish, and the life you'll build in this extraordinary space. Your story begins here.`,
-      image: property.images[4]?.url || property.images[0]?.url,
-      duration: 9500,
-      focusPoint: { x: 50, y: 70 },
-    },
-  ];
+  const storyChapters = property.storyChapters;
 
   const intervalMs = 10;
   const progressIncrement =
