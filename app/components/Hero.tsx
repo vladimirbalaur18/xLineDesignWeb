@@ -110,7 +110,6 @@ export default function Hero() {
               <span className="relative z-10">EXPLOREAZĂ</span>
               <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
             </Button>
-
             <Button
               variant="outline"
               size="lg"

@@ -14,6 +14,17 @@ export interface PropertyStoryChapter {
   voiceOver?: string;
 }
 
+export interface PropertySection {
+  id: string;
+  name: string;
+  title: string;
+  content: string;
+  isVisible: boolean;
+  order: number;
+  type: "property-detail";
+  images: string[]; // 1 or 2 Unsplash or other image URLs
+}
+
 export interface Property {
   id: number;
   title: string;
@@ -33,6 +44,7 @@ export interface Property {
   tags: string[];
   images: PropertyImage[];
   storyChapters: PropertyStoryChapter[];
+  sections: PropertySection[];
 }
 
 export const properties: Property[] = [
@@ -127,6 +139,48 @@ export const properties: Property[] = [
         duration: 5000,
       },
     ],
+    sections: [
+      {
+        id: "luxury-living",
+        name: "Luxury Living",
+        title: "LUXURY LIVING",
+        content:
+          "Experience unmatched luxury in Azure Sky Tower, where every detail has been carefully curated for those who appreciate the finest things in life. From the grand entrance to the private terraces, luxury is not just a feature—it's a way of life.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+        ],
+      },
+      {
+        id: "sustainable-future",
+        name: "Sustainable Future",
+        title: "SUSTAINABLE FUTURE",
+        content:
+          "Azure Sky Tower sets new standards in sustainable urban living. With state-of-the-art energy systems, green spaces, and smart home technology, we're building not just for today, but for generations to come.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80",
+        ],
+      },
+      {
+        id: "panoramic-views",
+        name: "Panoramic Views",
+        title: "PANORAMIC VIEWS",
+        content:
+          "Wake up to breathtaking city views through floor-to-ceiling windows. Each residence is positioned to maximize natural light and provide unobstructed vistas of the urban landscape below.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80",
+        ],
+      },
+    ],
   },
   {
     id: 2,
@@ -218,6 +272,48 @@ export const properties: Property[] = [
         duration: 4000,
       },
     ],
+    sections: [
+      {
+        id: "innovative-design",
+        name: "Innovative Design",
+        title: "TEST2 DESIGN",
+        content:
+          "The Vertex is a masterpiece of modern architecture, featuring a unique design that promotes collaboration and creativity. Its fluid forms and sustainable materials make it a landmark of innovative design in Toronto.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366216548-37526070297c",
+          "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        ],
+      },
+      {
+        id: "smart-workspaces",
+        name: "Smart Workspaces",
+        title: "SMART2 WORKSPACES",
+        content:
+          "Equipped with the latest technology, the workspaces at The Vertex are designed to enhance productivity and comfort. From adjustable standing desks to advanced conferencing systems, every detail is tailored for the modern professional.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+        ],
+      },
+      {
+        id: "sustainable-features",
+        name: "Sustainable Features",
+        title: "2 FEATURES",
+        content:
+          "The Vertex is committed to sustainability, featuring green roofs, energy-efficient systems, and a design that minimizes environmental impact. It's a building that cares for the planet as much as its occupants.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
+        ],
+      },
+    ],
   },
   {
     id: 3,
@@ -225,7 +321,7 @@ export const properties: Property[] = [
     description:
       "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
     fullDescription:
-      "Casa Prism este o locuință modernă, cu linii geometrice îndrăznețe și ferestre ample care permit luminii să danseze în interior. Fiecare cameră oferă o perspectivă unică asupra grădinii și a peisajului urban.",
+      "Casa Prism este o locuință modernă, cu linii geometrice îndrăznețe și feronerie ample care permit luminii să danseze în interior. Fiecare cameră oferă o perspectivă unică asupra grădinii și a peisajului urban.",
     address: "789 Strada Luminii, Berlin",
     price: "$1,800,000",
     bedrooms: 3,
@@ -233,7 +329,7 @@ export const properties: Property[] = [
     area: 2100,
     yearBuilt: 2021,
     features: [
-      "Ferestre panoramice",
+      "Feronerie panoramice",
       "Grădină privată",
       "Garaj dublu",
       "Sistem de iluminat inteligent",
@@ -257,7 +353,7 @@ export const properties: Property[] = [
       },
       {
         url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
-        description: "Dormitor principal cu ferestre mari.",
+        description: "Dormitor principal cu feronerie mari.",
         focusPoint: { x: 40, y: 60 },
       },
       {
@@ -285,7 +381,7 @@ export const properties: Property[] = [
         id: 2,
         title: "Living with Nature",
         narrative:
-          "Spațiul de living se deschide către grădina privată, creând o conexiune perfectă între interior și exterior. Ferestrele panoramice permit luminii să inunde spațiul, în timp ce materialele naturale creează o atmosferă caldă și primitoare.",
+          "Spațiul de living se deschide către grădina privată, creând o conexiune perfectă între interior și exterior. Feronerie panoramice permit luminii să inunde spațiul, în timp ce materialele naturale creează o atmosferă caldă și primitoare.",
         image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
         focusPoint: { x: 50, y: 50 },
         duration: 7000,
@@ -294,7 +390,7 @@ export const properties: Property[] = [
         id: 3,
         title: "Private Retreats",
         narrative:
-          "Dormitoarele sunt proiectate ca retrageri private, cu ferestre strategice care oferă intimitate și lumină în același timp. Fiecare cameră are propria sa personalitate, reflectată în detaliile arhitecturale și în modul în care interacționează cu lumina.",
+          "Dormitoarele sunt proiectate ca retrageri private, cu feronerie strategice care oferă intimitate și lumină în același timp. Fiecare cameră are propria sa personalitate, reflectată în detaliile arhitecturale și în modul în care interacționează cu lumina.",
         image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
         focusPoint: { x: 40, y: 60 },
         duration: 6000,
@@ -307,6 +403,47 @@ export const properties: Property[] = [
         image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
         focusPoint: { x: 50, y: 30 },
         duration: 5000,
+      },
+    ],
+    sections: [
+      {
+        id: "architectural-brilliance",
+        name: "Architectural Brilliance",
+        title: "ARCHITECTURAL BRILLIANCE",
+        content:
+          "Casa Prism este o capodoperă a arhitecturii moderne, cu linii geometrice îndrăznețe și o interacțiune unică cu lumina. Fiecare cameră este proiectată pentru a oferi o experiență vizuală și spațială deosebită.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        ],
+      },
+      {
+        id: "nature-integration",
+        name: "Nature Integration",
+        title: "NATURE INTEGRATION",
+        content:
+          "Grădina privată și terasele acoperite sunt integrate perfect în designul casei, oferind nu doar frumusețe estetică, ci și o conexiune profundă cu natura. Este un spațiu unde poți trăi în armonie cu mediul înconjurător.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "luxury-finishes",
+        name: "Luxury Finishes",
+        title: "LUXURY FINISHES",
+        content:
+          "Fiecare detaliu al Casei Prism, de la feronerie la finisaje, este ales pentru a reflecta un standard înalt de lux și confort. Materialele premium și atenția la detalii sunt evidente în fiecare colț al casei.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        ],
       },
     ],
   },
@@ -401,6 +538,47 @@ export const properties: Property[] = [
         duration: 5000,
       },
     ],
+    sections: [
+      {
+        id: "biofilic-design",
+        name: "Biofilic Design",
+        title: "BIOFILIC DESIGN",
+        content:
+          "Villa Serenity este un exemplu strălucit de design biofilic, integrând natura în fiecare aspect al arhitecturii. De la grădinile organice la feronerie mari, fiecare detaliu este ales pentru a crea o conexiune profundă cu mediul înconjurător.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
+        ],
+      },
+      {
+        id: "luxury-features",
+        name: "Luxury Features",
+        title: "LUXURY FEATURES",
+        content:
+          "Vila oferă un standard de lux de neegalat, cu facilități precum piscină naturală, spa și cinema privat. Fiecare zonă a fost proiectată pentru a oferi confort și eleganță, creând un refugiu perfect pentru relaxare.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        ],
+      },
+      {
+        id: "sustainable-living",
+        name: "Sustainable Living",
+        title: "SUSTAINABLE LIVING",
+        content:
+          "Cu un sistem de energie solară și materiale organice, Villa Serenity este dedicată unui stil de viață sustenabil. Este un loc unde poți trăi în armonie cu natura, fără a compromite confortul sau luxul.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+    ],
   },
   {
     id: 5,
@@ -491,6 +669,47 @@ export const properties: Property[] = [
         image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
         focusPoint: { x: 60, y: 35 },
         duration: 6000,
+      },
+    ],
+    sections: [
+      {
+        id: "seamless-indoor-outdoor",
+        name: "Seamless Indoor-Outdoor",
+        title: "SEAMLESS INDOOR-OUTDOOR",
+        content:
+          "The Glass House este proiectată pentru a elimina barierele dintre interior și exterior, oferind o experiență de viață fluidă și conectată cu natura. Pereții de sticlă retractabili și terasele flotante creează o continuitate perfectă între spațiile interioare și cele exterioare.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        ],
+      },
+      {
+        id: "modern-luxury",
+        name: "Modern Luxury",
+        title: "MODERN LUXURY",
+        content:
+          "Fiecare detaliu al The Glass House reflectă un standard înalt de lux modern, cu materiale premium, tehnologie de vârf și un design care pune accent pe confort și estetică. Este un spațiu unde poți experimenta cu adevărat luxul contemporan.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "panoramic-living",
+        name: "Panoramic Living",
+        title: "PANORAMIC LIVING",
+        content:
+          "Cu feronerie mari și un design deschis, fiecare cameră din The Glass House oferă priveliști spectaculoase asupra peisajului înconjurător. Este un loc unde poți trăi în mijlocul frumuseții naturale, fără a compromite confortul modern.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        ],
       },
     ],
   },
@@ -585,6 +804,47 @@ export const properties: Property[] = [
         duration: 5000,
       },
     ],
+    sections: [
+      {
+        id: "urban-gardens",
+        name: "Urban Gardens",
+        title: "URBAN GARDENS",
+        content:
+          "Grădinile suspendate sunt inima Urban Oasis, oferind nu doar frumusețe estetică, ci și un spațiu pentru cultivarea plantelor și relaxare. Aceste grădini sunt un exemplu de integrare a naturii în viața urbană.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        ],
+      },
+      {
+        id: "sustainable-communities",
+        name: "Sustainable Communities",
+        title: "SUSTAINABLE COMMUNITIES",
+        content:
+          "Urban Oasis este mai mult decât un complex rezidențial; este o comunitate sustenabilă dedicată unui stil de viață sănătos și responsabil. Spațiile comune verzi și sistemele de reciclare sunt doar câteva dintre caracteristicile care promovează sustenabilitatea.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+        ],
+      },
+      {
+        id: "green-innovation",
+        name: "Green Innovation",
+        title: "GREEN INNOVATION",
+        content:
+          "Designul inovator al Urban Oasis integrează cele mai recente progrese în materie de sustenabilitate, de la grădini verticale la iluminat solar. Este un loc unde inovația și responsabilitatea ambientală merg mână în mână.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        ],
+      },
+    ],
   },
   {
     id: 7,
@@ -677,6 +937,48 @@ export const properties: Property[] = [
         duration: 5000,
       },
     ],
+    sections: [
+      {
+        id: "minimalist-design",
+        name: "Minimalist Design",
+        title: "MINIMALIST DESIGN",
+        content:
+          "Minimalist Haven este o celebrare a designului minimalist, cu linii curate, o paletă de culori neutre și o atenție deosebită la detalii. Fiecare cameră este proiectată pentru a oferi un spațiu deschis și aerisit, unde funcționalitatea se îmbină perfect cu estetica.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "functional-spaces",
+        name: "Functional Spaces",
+        title: "FUNCTIONAL SPACES",
+        content:
+          "Spațiile din Minimalist Haven sunt gândite pentru a fi extrem de funcționale, cu soluții inteligente de stocare și mobilă integrată. Fiecare zonă a fost optimizată pentru a oferi confort și utilitate, fără a compromite stilul.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "natural-materials",
+        name: "Natural Materials",
+        title: "NATURAL MATERIALS",
+        content:
+          "Utilizarea materialelor naturale, cum ar fi lemnul și piatra, adaugă o notă de căldură și autenticitate în fiecare cameră. Aceste materiale nu doar că îmbunătățesc estetica, dar contribuie și la un mediu interior sănătos.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        ],
+      },
+    ],
   },
   {
     id: 8,
@@ -767,6 +1069,47 @@ export const properties: Property[] = [
         image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
         focusPoint: { x: 45, y: 70 },
         duration: 6000,
+      },
+    ],
+    sections: [
+      {
+        id: "coastal-elegance",
+        name: "Coastal Elegance",
+        title: "COASTAL ELEGANCE",
+        content:
+          "Coastal Retreat este un exemplu strălucit de eleganță costieră, cu un design care se integrează perfect în peisajul marin. Fiecare cameră oferă priveliști spectaculoase asupra oceanului, iar terasele panoramice sunt ideale pentru a savura apusurile de soare.",
+        isVisible: true,
+        order: 1,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "luxury-coastal-living",
+        name: "Luxury Coastal Living",
+        title: "LUXURY COASTAL LIVING",
+        content:
+          "Vila oferă un stil de viață de lux pe coastă, cu facilități precum piscină infinită, spa și cinema privat. Este un loc unde poți experimenta cu adevărat eleganța și confortul vieții la malul mării.",
+        isVisible: true,
+        order: 2,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
+      },
+      {
+        id: "sustainable-coastal-design",
+        name: "Sustainable Coastal Design",
+        title: "SUSTAINABLE COASTAL DESIGN",
+        content:
+          "Designul sustenabil al Coastal Retreat integrează cele mai recente progrese în materie de eficiență energetică și utilizare a resurselor naturale. Este un loc unde poți trăi în armonie cu natura, bucurându-te în același timp de confortul modern.",
+        isVisible: true,
+        order: 3,
+        type: "property-detail",
+        images: [
+          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        ],
       },
     ],
   },

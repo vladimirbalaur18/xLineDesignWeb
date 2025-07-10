@@ -35,7 +35,6 @@ import {
   X,
 } from "lucide-react";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
-import { getVisiblePropertySections } from "@/lib/sectionsData";
 
 export default function PropertyPage({
   params,
@@ -56,8 +55,10 @@ export default function PropertyPage({
   const [isLoaded, setIsLoaded] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
-  // Get dynamic sections from CMS
-  const propertySections = getVisiblePropertySections();
+  // Get property-specific sections
+  const propertySections = property.sections
+    .filter((section) => section.isVisible)
+    .sort((a, b) => a.order - b.order);
 
   useEffect(() => {
     // Trigger loading animation after component mounts
@@ -499,51 +500,43 @@ export default function PropertyPage({
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 1.4 + index * 0.8 }}
-                  className="relative group overflow-hidden rounded-lg"
-                >
-                  <div className="aspect-[4/3] bg-gradient-to-br from-gray-800/20 via-black/90 to-gray-900/10 border border-white/10">
-                    <Image
-                      src={
-                        property.images[
-                          (index * 2 + 2) % property.images.length
-                        ]?.url || property.images[0]?.url
-                      }
-                      alt={`${section.name} Image 1`}
-                      width={800}
-                      height={600}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-700" />
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 1.6 + index * 0.8 }}
-                  className="relative group overflow-hidden rounded-lg"
-                >
-                  <div className="aspect-[4/3] bg-gradient-to-br from-gray-800/20 via-black/90 to-gray-900/10 border border-white/10">
-                    <Image
-                      src={
-                        property.images[
-                          (index * 2 + 3) % property.images.length
-                        ]?.url || property.images[1]?.url
-                      }
-                      alt={`${section.name} Image 2`}
-                      width={800}
-                      height={600}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-700" />
-                  </div>
-                </motion.div>
-              </div>
+              {/* Section Images */}
+              {section.images.length === 1 ? (
+                <div className="w-full aspect-video mb-8 relative overflow-hidden">
+                  {" "}
+                  {/* aspect-video = 16:9 */}
+                  <Image
+                    src={section.images[0]}
+                    alt={section.title}
+                    fill
+                    className="object-cover w-full h-full absolute inset-0"
+                    sizes="100vw"
+                    priority={index === 0}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
+                </div>
+              ) : section.images.length === 2 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                  {section.images.map((img, i) => (
+                    <div
+                      key={i}
+                      className="relative aspect-[4/3] overflow-hidden"
+                    >
+                      {" "}
+                      {/* 4:3 aspect ratio */}
+                      <Image
+                        src={img}
+                        alt={`${section.title} Image ${i + 1}`}
+                        fill
+                        className="object-cover w-full h-full absolute inset-0"
+                        sizes="50vw"
+                        priority={index === 0 && i === 0}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
 
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -573,7 +566,7 @@ export default function PropertyPage({
               {/* Close Button */}
               <button
                 onClick={() => setIsImageModalOpen(false)}
-                className="absolute -top-12 right-0 text-white hover:text-white/70 z-10 p-2"
+                className="absolute top-2 right-0 text-white hover:text-white/70 z-10 p-2"
               >
                 <X className="w-8 h-8" />
               </button>
@@ -581,7 +574,7 @@ export default function PropertyPage({
               {/* Main Image */}
               <div
                 className="relative bg-black rounded-lg overflow-hidden mb-4 flex-shrink-0"
-                style={{ maxHeight: "60vh" }}
+                style={{ maxHeight: "70vh" }}
               >
                 <Image
                   src={property.images[currentImageIndex].url}
