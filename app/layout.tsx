@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "./components/toaster";
+import RootLayoutComponent from "./RootLayoutComponent";
+import Footer from "./components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -39,10 +41,10 @@ export default function RootLayout({
           src="//unpkg.com/react-scan/dist/auto.global.js"
         /> */}
       </head>
-
       <body className={inter.className}>
         <Providers>
-          {children}
+          <RootLayoutComponent>{children}</RootLayoutComponent>
+          <Footer />
           <Toaster />
         </Providers>
       </body>

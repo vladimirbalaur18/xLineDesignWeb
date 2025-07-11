@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "./ui/button";
-
+import Image from "next/image";
 export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
@@ -64,9 +64,17 @@ export default function Hero() {
               return { scale: 1.05, x: 0, y: -20 };
             })()}
             transition={{ duration: 5, ease: "easeInOut" }}
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-          />
+            className="absolute inset-0 w-full h-full"
+          >
+            <Image
+              src={slides[currentSlide].image}
+              alt={`Slide ${currentSlide + 1}`}
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20" />
         </motion.div>
       </AnimatePresence>

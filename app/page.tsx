@@ -36,7 +36,7 @@ export default function HomePage() {
           {/* <Team /> */}
           <Contact />
         </main>
-        <Footer />
+        
         <LanguageSwitcher />
       </div>
     </ClientOnly>
