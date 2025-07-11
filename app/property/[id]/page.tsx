@@ -41,8 +41,6 @@ export default function PropertyPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  console.log(params);
-
   const { id: propertyId } = use(params);
   const property = properties.find((p) => String(p.id) === String(propertyId));
 
@@ -131,7 +129,6 @@ export default function PropertyPage({
             transition={{
               duration: 1.2,
               ease: [0.25, 0.46, 0.45, 0.94],
-              delay: 0.3,
             }}
             className="w-full h-full"
           >
@@ -232,12 +229,12 @@ export default function PropertyPage({
         )}
 
         {/* Property Info Overlay with Gradient Container */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+        <div className="absolute bottom-0 left-0 right-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-t from-black/90 via-black/70 to-transparent p-6 rounded-t-2xl backdrop-blur-sm  border-white/10"
+            className="bg-gradient-to-t from-black/60 via-black/40 to-transparent  p-12  backdrop-blur-sm  border-white/10"
           >
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
               {property.title}
