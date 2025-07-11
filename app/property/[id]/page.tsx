@@ -35,6 +35,7 @@ import {
   X,
 } from "lucide-react";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
+import Footer from "@/components/Footer";
 
 export default function PropertyPage({
   params,
@@ -654,6 +655,8 @@ export default function PropertyPage({
         isOpen={isStoryModeOpen}
         onClose={() => setIsStoryModeOpen(false)}
       />
+
+      <Footer />
     </motion.div>
   );
 }
