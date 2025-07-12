@@ -500,7 +500,7 @@ export default function PropertyPage({
 
               {/* Section Images */}
               {section.images.length === 1 ? (
-                <div className="w-full aspect-video mb-8 relative overflow-hidden">
+                <div className="w-full aspect-[16/7] mb-8 relative overflow-hidden">
                   {" "}
                   {/* aspect-video = 16:9 */}
                   <Image

@@ -11,66 +11,6 @@ import { properties } from "../lib/properties";
 import Image from "next/image";
 import Link from "next/link";
 
-// Project data
-// const projects = [
-//   {
-//     id: 1,
-//     title: "Turnul Azure Sky",
-//     description:
-//       "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
-//     category: "interiorDesign",
-//     location: "Singapore",
-//     year: "2023",
-//     image: "https://images.unsplash.com/photo-1646917939502-5f124b08bd97",
-//     tags: ["Sustenabil", "Înalt", "Urban"],
-//   },
-
-//   {
-//     id: 3,
-//     title: "The Vertex",
-//     description:
-//       "Un complex de birouri premiat, cu un design inovator și spații de lucru colaborative.",
-//     category: "interiorDesign",
-//     location: "Toronto",
-//     year: "2023",
-//     image: "https://images.unsplash.com/photo-1661951933252-d8722effb21d",
-//     tags: ["Birou", "Minimalist", "Colaborativ"],
-//   },
-//   {
-//     id: 4,
-//     title: "Biblioteca Echo",
-//     description:
-//       "O bibliotecă publică proiectată pentru a promova învățarea și implicarea comunității prin spații bine gândite.",
-//     category: "landscapeDesign",
-//     location: "Copenhaga",
-//     year: "2022",
-//     image: "https://images.unsplash.com/photo-1649496880872-6159f729f24e",
-//     tags: ["Cultural", "Public", "Sustenabil"],
-//   },
-//   {
-//     id: 5,
-//     title: "Pavilionul Harmony",
-//     description:
-//       "Un spațiu multifuncțional pentru evenimente, adaptabil pentru diverse funcții culturale și de divertisment.",
-//     category: "landscapeDesign",
-//     location: "Melbourne",
-//     year: "2021",
-//     image: "https://images.unsplash.com/photo-1647705985300-2b63d0ac9e39",
-//     tags: ["Evenimente", "Versatil", "Contemporan"],
-//   },
-//   {
-//     id: 6,
-//     title: "Casa Prism",
-//     description:
-//       "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
-//     category: "architecture",
-//     location: "Berlin",
-//     year: "2023",
-//     image: "https://images.unsplash.com/photo-1661951933413-5dda7807de41",
-//     tags: ["Modern", "Geometric", "Concentrat pe lumină"],
-//   },
-// ];
-
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -115,10 +55,6 @@ export default function Projects() {
     activeFilter === "all"
       ? properties
       : properties.filter((project) => project.category === activeFilter);
-
-  const loadMore = () => {
-    setVisibleProjects((prev) => Math.min(prev + 3, filteredProjects.length));
-  };
 
   const loadLess = () => {
     setVisibleProjects((prev) => Math.max(3, prev - 3));
@@ -173,7 +109,7 @@ export default function Projects() {
           </div>
 
           <motion.p
-            className="text-gray-300 max-w-2xl mx-auto font-light tracking-wide backdrop-blur-sm py-2 px-4 border-l border-r border-white/10"
+            className="text-gray-300 max-w-2xl mx-auto font-light tracking-wide backdrop-blur-sm py-2 px-4 border-l border-r border-white/10 mb-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -322,7 +258,7 @@ export default function Projects() {
                     <div className="relative overflow-hidden aspect-[3/2]">
                       <motion.div className="h-full w-full">
                         <Image
-                          src={`${project.image}?auto=format&fit=crop&w=1200&q=80`}
+                          src={`${project.image}`}
                           alt={project.title}
                           width={1200}
                           height={800}
@@ -331,7 +267,7 @@ export default function Projects() {
                       </motion.div>
 
                       {/* Overlay gradient with grid pattern */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/40 group-hover:opacity-90 transition-opacity">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity">
                         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
                       </div>
 
@@ -388,121 +324,23 @@ export default function Projects() {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Load more/less buttons with futuristic styling */}
+        {/* View All Projects Button */}
         <motion.div
-          className="flex justify-center mt-16 gap-8 relative"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
           viewport={{ once: true }}
+          className="flex justify-center my-6"
         >
-          {/* Decorative horizontal line */}
-          <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] max-w-xl h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          />
-
-          {visibleProjects > 3 && (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative group"
+          <Link href="/projects">
+            <Button
+              variant="outline"
+              className="border-white/30 text-white hover:border-white gap-2 uppercase tracking-wider text-sm px-6 py-3 transition-all duration-300 backdrop-blur-sm hover:bg-black/50"
             >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
-              <Button
-                variant="outline"
-                onClick={loadLess}
-                className="relative border-white/30 text-white hover:border-white gap-2 uppercase tracking-wider text-sm px-8 py-6 transition-all duration-300 backdrop-blur-sm group-hover:bg-black/50"
-              >
-                <motion.span
-                  initial={{ x: 0 }}
-                  whileHover={{ x: -3 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </motion.span>
-                <span className="relative overflow-hidden inline-block">
-                  <motion.span
-                    initial={{ y: 0 }}
-                    whileHover={{ y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="inline-block"
-                  >
-                    Arată mai puțin
-                  </motion.span>
-                  <motion.span
-                    initial={{ y: 20, position: "absolute", left: 0 }}
-                    whileHover={{ y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-white/80"
-                  >
-                    Înapoi
-                  </motion.span>
-                </span>
-
-                {/* Animated bottom line */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-[1px] bg-white"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Button>
-            </motion.div>
-          )}
-
-          {visibleProjects < filteredProjects.length && (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative group"
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
-              <Button
-                variant="outline"
-                onClick={loadMore}
-                className="relative border-white/30 text-white hover:border-white gap-2 uppercase tracking-wider text-sm px-8 py-6 transition-all duration-300 backdrop-blur-sm group-hover:bg-black/50"
-              >
-                <span className="relative overflow-hidden inline-block">
-                  <motion.span
-                    initial={{ y: 0 }}
-                    whileHover={{ y: -20 }}
-                    transition={{ duration: 0.3 }}
-                    className="inline-block"
-                  >
-                    Vezi mai mult
-                  </motion.span>
-                  <motion.span
-                    initial={{ y: 20, position: "absolute", left: 0 }}
-                    whileHover={{ y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-white/80"
-                  >
-                    Explorează
-                  </motion.span>
-                </span>
-                <motion.span
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 3 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ArrowRight className="h-4 w-4" />
-                </motion.span>
-
-                {/* Animated bottom line */}
-                <motion.div
-                  className="absolute bottom-0 right-0 h-[1px] bg-white"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </Button>
-            </motion.div>
-          )}
+              <span>Vezi toate proiectele</span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>

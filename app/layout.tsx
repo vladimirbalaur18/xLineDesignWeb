@@ -43,7 +43,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Providers>
-          <RootScreenLoader>{children}</RootScreenLoader>
+          {children}
           <Toaster />
         </Providers>
       </body>

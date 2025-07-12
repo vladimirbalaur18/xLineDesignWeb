@@ -25,6 +25,7 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import Image from "next/image";
+import ServiceCard from "./ServiceCard";
 
 const services = [
   {
@@ -125,16 +126,6 @@ export default function Services() {
     },
   ];
 
-  useEffect(() => {
-    if (!isMobile) return;
-    const ref = serviceRefs.current[activeService.id];
-    if (ref) {
-      const offset = 80; // Adjust this value if your sticky header is a different height
-      const top = ref.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  }, [activeService, isMobile]);
-
   return (
     <section id="services" className="pt-24 bg-black relative overflow-hidden">
       {/* Futuristic decorative elements */}
@@ -213,170 +204,90 @@ export default function Services() {
             computațional la execuția construcției.
           </motion.p>
         </motion.div>
-        {/* Futuristic Services tabs */}
-        <Tabs
-          defaultValue={activeService?.id}
-          onValueChange={(value) => {
-            const selected = services.find((s) => s.id === value);
-            if (selected) setActiveService(selected);
-            if (!isMobile && tabsListRef.current) {
-              // Scroll the tabs to the top of the viewport with a small offset
-              const offset = 64; // Adjust if you have a sticky header
-              const top =
-                tabsListRef.current.getBoundingClientRect().top +
-                window.scrollY -
-                offset;
-              window.scrollTo({ top, behavior: "smooth" });
-            }
-          }}
-        >
-          <TabsList
-            ref={tabsListRef}
-            className="
-              h-fit flex flex-col sm:flex-row justify-around
-              bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm
-              gap-2
-            "
-          >
-            {services.map((service) => (
-              <TabsTrigger
-                key={service.id}
-                value={service.id}
-                className="
-                  rounded-xl
-                  w-full sm:w-36
-                  py-2 sm:py-3
-                  px-2 sm:px-4
-                  text-xs sm:text-base
-                  data-[state=active]:bg-white data-[state=active]:text-black
-                  transition-all duration-300
-                  flex-shrink-0
-                "
-              >
-                <div className="flex flex-col items-center gap-3 py-1">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="relative w-12 h-12 flex items-center justify-center bg-black/50 rounded-xl border border-white/10"
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="text-white">{service.icon}</div>
-                    <div className="absolute -inset-0.5 bg-white/5 rounded-xl opacity-0 group-hover:opacity-100 blur-sm"></div>
-                  </motion.div>
-                  <span className="text-sm font-medium tracking-wider">
-                    {service.title}
-                  </span>
-                </div>
-              </TabsTrigger>
-            ))}
-          </TabsList>
 
-          {services.map((service) => (
-            <TabsContent key={service.id} value={service.id} className="mt-0">
-              <div className="grid md:grid-cols-2 gap-10 items-start">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="backdrop-blur-sm"
+        {/* Mobile view - Services as cards */}
+        {isMobile ? (
+          <div className="space-y-8">
+            {services.map((service, index) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                index={index}
+                isMobile={true}
+                serviceRefs={serviceRefs}
+              />
+            ))}
+          </div>
+        ) : (
+          /* Desktop view - Tabs */
+          <Tabs
+            defaultValue={activeService?.id}
+            onValueChange={(value) => {
+              const selected = services.find((s) => s.id === value);
+              if (selected) setActiveService(selected);
+              if (tabsListRef.current) {
+                // Scroll the tabs to the top of the viewport with a small offset
+                const offset = 64; // Adjust if you have a sticky header
+                const top =
+                  tabsListRef.current.getBoundingClientRect().top +
+                  window.scrollY -
+                  offset;
+                window.scrollTo({ top, behavior: "smooth" });
+              }
+            }}
+          >
+            <TabsList
+              ref={tabsListRef}
+              className="
+                h-fit flex flex-col sm:flex-row justify-around
+                bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm
+                gap-2
+              "
+            >
+              {services.map((service) => (
+                <TabsTrigger
+                  key={service.id}
+                  value={service.id}
+                  className="
+                    rounded-xl
+                    w-full sm:w-36
+                    py-2 sm:py-3
+                    px-2 sm:px-4
+                    text-xs sm:text-base
+                    data-[state=active]:bg-white data-[state=active]:text-black
+                    transition-all duration-300
+                    flex-shrink-0
+                  "
                 >
-                  <h3
-                    ref={(el) => {
-                      serviceRefs.current[service.id] = el;
-                    }}
-                    className="text-2xl font-bold mb-4 flex items-center gap-3 relative"
-                  >
+                  <div className="flex flex-col items-center gap-3 py-1">
                     <motion.div
-                      className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center"
                       whileHover={{ scale: 1.05 }}
+                      className="relative w-12 h-12 flex items-center justify-center bg-black/50 rounded-xl border border-white/10"
+                      transition={{ type: "spring", stiffness: 300 }}
                     >
-                      {service.icon}
+                      <div className="text-white">{service.icon}</div>
+                      <div className="absolute -inset-0.5 bg-white/5 rounded-xl opacity-0 group-hover:opacity-100 blur-sm"></div>
                     </motion.div>
-                    <span className="uppercase tracking-wide">
+                    <span className="text-sm font-medium tracking-wider">
                       {service.title}
                     </span>
-                    <motion.div
-                      className="absolute -bottom-2 left-0 h-[1px] w-1/3 bg-gradient-to-r from-white to-transparent"
-                      initial={{ width: 0 }}
-                      animate={{ width: "33%" }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    />
-                  </h3>
-
-                  <p className="text-white/70 mb-8 leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                    {service.features.map((feature, index) => (
-                      <motion.li
-                        key={index}
-                        className="flex items-center gap-3 text-white/80 group"
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        whileHover={{ x: 5 }}
-                      >
-                        <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/50 transition-all">
-                          <CheckCircle className="h-3.5 w-3.5 text-white/70 group-hover:text-white transition-colors" />
-                        </div>
-                        <span className="group-hover:text-white transition-colors">
-                          {feature}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </ul>
-
-                  <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Button className="relative overflow-hidden group bg-black hover:bg-white text-white hover:text-black border border-white/40 hover:border-white transition-all duration-300 py-6 px-8 rounded-lg">
-                      <span className="relative z-10 font-medium tracking-wider">
-                        Explorează proiectele {service.title}
-                      </span>
-                      <motion.span className="absolute right-4 group-hover:translate-x-1 transition-transform duration-300">
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </motion.span>
-
-                      <motion.div
-                        className="absolute inset-0 bg-white z-0"
-                        initial={{ x: "-100%" }}
-                        whileHover={{ x: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                      />
-                    </Button>
-                  </motion.div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="relative h-[90%] aspect-[4/3] rounded-xl overflow-hidden group"
-                >
-                  <div className="relative rounded-xl overflow-hidden border border-white/10 z-10 ">
-                    <Image
-                      src={service.image}
-                      alt={service.title}
-                      width={1200}
-                      height={800}
-                      className="object-cover w-full h-full filter transition-all duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                      <div className="h-[1px] w-24 bg-gradient-to-r from-white/70 to-transparent mb-4 transform-gpu scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                      <p className="text-white/90 font-light">
-                        Proiectele noastre de {service.title.toLowerCase()}{" "}
-                        îmbină tehnologia de ultimă generație, estetica și
-                        soluțiile sustenabile.
-                      </p>
-                    </div>
                   </div>
-                </motion.div>
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            {services.map((service) => (
+              <TabsContent key={service.id} value={service.id} className="mt-0">
+                <ServiceCard
+                  service={service}
+                  index={0}
+                  isMobile={false}
+                  serviceRefs={serviceRefs}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
+        )}
       </div>
     </section>
   );
