@@ -22,23 +22,21 @@ const LanguageSwitcher = dynamic(() => import("./components/LanguageSwitcher"));
 
 export default function HomePage() {
   return (
-    <ClientOnly>
-      <div className="min-h-screen font-sans ">
-        {/* <CustomCursor /> */}
-        <Header />
-        <main>
-          <Hero />
-          <About />
-          <Services />
-          <Projects />
-          {/* <ProjectGallery /> */}
-          {/* <PropertyForSale /> */}
-          {/* <Team /> */}
-          <Contact />
-        </main>
-        <Footer />
-        <LanguageSwitcher />
-      </div>
-    </ClientOnly>
+    <div className="min-h-screen font-sans ">
+      {/* <CustomCursor /> */}
+      <Header />
+      <main>
+        <Hero />
+        <About />
+        <Services />
+        <Projects />
+        {/* <ProjectGallery /> */}
+        {/* <PropertyForSale /> */}
+        {/* <Team /> */}
+        <Contact />
+      </main>
+      <Footer />
+      <LanguageSwitcher />
+    </div>
   );
 }

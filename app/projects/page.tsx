@@ -111,11 +111,27 @@ export default function ProjectsPage() {
     return filtered;
   }, [activeFilter, searchQuery, sortBy]);
 
+  // Group projects by year
+  const projectsByYear = useMemo(() => {
+    const grouped: { [year: string]: typeof filteredProjects } = {};
+    filteredProjects.forEach((project) => {
+      if (!grouped[project.year]) grouped[project.year] = [];
+      grouped[project.year].push(project);
+    });
+    // Sort years descending
+    return Object.entries(grouped)
+      .sort((a, b) => parseInt(a[0]) - parseInt(a[0]))
+      .reduce((acc, [year, projects]) => {
+        acc[year] = projects;
+        return acc;
+      }, {} as { [year: string]: typeof filteredProjects });
+  }, [filteredProjects]);
+  const years = Object.keys(projectsByYear);
+
   // Pagination
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
   const startIndex = (currentPage - 1) * projectsPerPage;
   const endIndex = startIndex + projectsPerPage;
-  const currentProjects = filteredProjects.slice(startIndex, endIndex);
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -313,353 +329,364 @@ export default function ProjectsPage() {
 
       {/* Projects Grid/List */}
       <section className="pb-24 relative">
-        <div className="container mx-auto px-4">
-          <motion.div
-            ref={sectionRef}
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            viewport={{ once: true }}
-          >
-            {currentProjects.map((project) => (
-              <motion.div
-                key={project.id}
-                variants={cardVariants}
-                onMouseEnter={() => setHoveredProject(project.id)}
-                onMouseLeave={() => setHoveredProject(null)}
-                className="group"
-              >
-                <Link href={`/property/${project.id}`}>
-                  <div className="relative group h-full cursor-pointer">
+        <div className="container mx-auto px-4 flex flex-col gap-12">
+          {/* Desktop timeline line (only render for lg and up) */}
+          <div className="hidden lg:block absolute left-0 top-0 h-full w-32 pointer-events-none z-0">
+            <div className="relative h-full flex items-end justify-end">
+              <div
+                className="absolute left-1/2 top-0 bottom-0 w-1 bg-white rounded-full"
+                style={{ left: "calc(50% - 1px)" }}
+              />
+            </div>
+          </div>
+          {years.map((year, idx) => (
+            <div key={year} className="relative z-10">
+              {/* Mobile: year heading and cards in column */}
+              <div className="block lg:hidden w-full mb-4">
+                <h2 className="text-xl font-bold text-white/90 mb-2">{year}</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  {projectsByYear[year].map((project) => (
                     <motion.div
-                      className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
-                      animate={{
-                        boxShadow:
-                          hoveredProject === project.id
-                            ? [
-                                "0 0 5px 2px rgba(255, 255, 255, 0.1)",
-                                "0 0 10px 3px rgba(255, 255, 255, 0.15)",
-                                "0 0 5px 2px rgba(255, 255, 255, 0.1)",
-                              ]
-                            : "none",
-                      }}
-                      transition={{ duration: 2 }}
-                    />
-
-                    <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 h-full hover:border-white/30 transition-all duration-300 relative rounded-none">
-                      {/* Project number indicator */}
-                      <div className="absolute top-3 right-3 z-30">
-                        <div className="bg-black/70 backdrop-blur-sm border border-white/20 w-8 h-8 flex items-center justify-center">
-                          <span className="text-white/80 font-mono text-xs">
-                            0{project.id}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Corner accents */}
-                      <motion.div
-                        className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
-                        whileHover={{ scale: 1.1 }}
-                        animate={{
-                          borderColor:
-                            hoveredProject === project.id
-                              ? [
-                                  "rgba(255,255,255,0.2)",
-                                  "rgba(255,255,255,0.4)",
-                                  "rgba(255,255,255,0.2)",
-                                ]
-                              : "rgba(255,255,255,0.2)",
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: hoveredProject === project.id ? Infinity : 0,
-                        }}
-                      />
-                      <motion.div
-                        className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-white/20 z-10"
-                        whileHover={{ scale: 1.1 }}
-                        animate={{
-                          borderColor:
-                            hoveredProject === project.id
-                              ? [
-                                  "rgba(255,255,255,0.2)",
-                                  "rgba(255,255,255,0.4)",
-                                  "rgba(255,255,255,0.2)",
-                                ]
-                              : "rgba(255,255,255,0.2)",
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: hoveredProject === project.id ? Infinity : 0,
-                        }}
-                      />
-
-                      <div className="relative overflow-hidden aspect-[3/2]">
-                        <motion.div className="h-full w-full">
-                          <Image
-                            src={`${project.image}`}
-                            alt={project.title}
-                            width={1200}
-                            height={800}
-                            className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                      key={project.id}
+                      variants={cardVariants}
+                      onMouseEnter={() => setHoveredProject(project.id)}
+                      onMouseLeave={() => setHoveredProject(null)}
+                      className="group"
+                    >
+                      <Link href={`/property/${project.id}`}>
+                        <div className="relative group h-full cursor-pointer">
+                          <motion.div
+                            className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
+                            animate={{
+                              boxShadow:
+                                hoveredProject === project.id
+                                  ? [
+                                      "0 0 5px 2px rgba(255, 255, 255, 0.1)",
+                                      "0 0 10px 3px rgba(255, 255, 255, 0.15)",
+                                      "0 0 5px 2px rgba(255, 255, 255, 0.1)",
+                                    ]
+                                  : "none",
+                            }}
+                            transition={{ duration: 2 }}
                           />
-                        </motion.div>
 
-                        {/* Overlay gradient with grid pattern */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity">
-                          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
-                        </div>
-
-                        {/* Project title content */}
-                        <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm">
-                          <div className="overflow-hidden">
-                            <motion.div
-                              initial={{ y: 20, opacity: 0 }}
-                              animate={{ y: 0, opacity: 1 }}
-                              transition={{ duration: 0.5, delay: 0.2 }}
-                            >
-                              <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
-                                {
-                                  filtersMap[
-                                    project.category as keyof typeof filtersMap
-                                  ]
-                                }
-                              </span>
-                              <div className="flex justify-between items-baseline">
-                                <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                                  {project.title}
-                                </h3>
+                          <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 h-full hover:border-white/30 transition-all duration-300 relative rounded-none">
+                            {/* Project number indicator */}
+                            <div className="absolute top-3 right-3 z-30">
+                              <div className="bg-black/70 backdrop-blur-sm border border-white/20 w-8 h-8 flex items-center justify-center">
                                 <span className="text-white/80 font-mono text-xs">
-                                  {project.year}
+                                  0{project.id}
                                 </span>
                               </div>
+                            </div>
 
-                              {/* Animated line */}
-                              <motion.div
-                                className="h-[1px] bg-gradient-to-r from-white/80 via-white/40 to-transparent mt-2"
-                                initial={{ scaleX: 0, originX: 0 }}
-                                whileInView={{ scaleX: 1 }}
-                                transition={{ duration: 0.8 }}
-                                viewport={{ once: true }}
-                              />
-                            </motion.div>
-                          </div>
+                            {/* Corner accents */}
+                            <motion.div
+                              className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
+                              whileHover={{ scale: 1.1 }}
+                              animate={{
+                                borderColor:
+                                  hoveredProject === project.id
+                                    ? [
+                                        "rgba(255,255,255,0.2)",
+                                        "rgba(255,255,255,0.4)",
+                                        "rgba(255,255,255,0.2)",
+                                      ]
+                                    : "rgba(255,255,255,0.2)",
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat:
+                                  hoveredProject === project.id ? Infinity : 0,
+                              }}
+                            />
+                            <motion.div
+                              className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-white/20 z-10"
+                              whileHover={{ scale: 1.1 }}
+                              animate={{
+                                borderColor:
+                                  hoveredProject === project.id
+                                    ? [
+                                        "rgba(255,255,255,0.2)",
+                                        "rgba(255,255,255,0.4)",
+                                        "rgba(255,255,255,0.2)",
+                                      ]
+                                    : "rgba(255,255,255,0.2)",
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat:
+                                  hoveredProject === project.id ? Infinity : 0,
+                              }}
+                            />
+
+                            <div className="relative overflow-hidden aspect-[3/2]">
+                              <motion.div className="h-full w-full">
+                                <Image
+                                  src={`${project.image}`}
+                                  alt={project.title}
+                                  width={1200}
+                                  height={800}
+                                  className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                />
+                              </motion.div>
+
+                              {/* Overlay gradient with grid pattern */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity">
+                                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
+                              </div>
+
+                              {/* Project title content */}
+                              <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm">
+                                <div className="overflow-hidden">
+                                  <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                  >
+                                    <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
+                                      {
+                                        filtersMap[
+                                          project.category as keyof typeof filtersMap
+                                        ]
+                                      }
+                                    </span>
+                                    <div className="flex justify-between items-baseline">
+                                      <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                                        {project.title}
+                                      </h3>
+                                      <span className="text-white/80 font-mono text-xs">
+                                        {project.year}
+                                      </span>
+                                    </div>
+
+                                    {/* Animated line */}
+                                    <motion.div
+                                      className="h-[1px] bg-gradient-to-r from-white/80 via-white/40 to-transparent mt-2"
+                                      initial={{ scaleX: 0, originX: 0 }}
+                                      whileInView={{ scaleX: 1 }}
+                                      transition={{ duration: 0.8 }}
+                                      viewport={{ once: true }}
+                                    />
+                                  </motion.div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
+                              <div className="flex items-start gap-2 mb-4">
+                                <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
+                                  {project.location}
+                                </div>
+                                <p className="text-white/80 text-sm font-light leading-relaxed">
+                                  {project.description}
+                                </p>
+                              </div>
+
+                              {/* Tags */}
+                              <div className="flex flex-wrap gap-2">
+                                {project.tags.slice(0, 3).map((tag, index) => (
+                                  <Badge
+                                    key={index}
+                                    variant="outline"
+                                    className="text-xs border-white/20 text-white/60"
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
-                      </div>
-
-                      <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
-                        <div className="flex items-start gap-2 mb-4">
-                          <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
-                            {project.location}
-                          </div>
-                          <p className="text-white/80 text-sm font-light leading-relaxed">
-                            {project.description}
-                          </p>
-                        </div>
-
-                        {/* Tags */}
-                        <div className="flex flex-wrap gap-2">
-                          {project.tags.slice(0, 3).map((tag, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="text-xs border-white/20 text-white/60"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <motion.div
-              className="flex justify-center items-center mt-16 gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <Button
-                variant="outline"
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="border-white/30 text-white hover:border-white disabled:opacity-50"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Anterior
-              </Button>
-
-              <div className="flex gap-2">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = currentPage - 2 + i;
-                  }
-
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={currentPage === pageNum ? "default" : "outline"}
-                      onClick={() => goToPage(pageNum)}
-                      className={`w-10 h-10 p-0 ${
-                        currentPage === pageNum
-                          ? "bg-white text-black"
-                          : "border-white/30 text-white hover:border-white"
-                      }`}
-                    >
-                      {pageNum}
-                    </Button>
-                  );
-                })}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
-
-              <Button
-                variant="outline"
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="border-white/30 text-white hover:border-white disabled:opacity-50"
-              >
-                Următor
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </motion.div>
-          )}
-
-          {/* No results message */}
-          {filteredProjects.length === 0 && (
-            <motion.div
-              className="text-center py-16"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              {/* SVG Illustration */}
-              <motion.div
-                className="mb-8 flex justify-center"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <svg
-                  width="200"
-                  height="200"
-                  viewBox="0 0 200 200"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="text-white"
-                >
-                  {/* Background circle */}
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="80"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    fill="none"
-                    opacity="0.3"
-                  />
-
-                  {/* Search magnifying glass */}
-                  <path
-                    d="M70 70 L90 90 M90 70 L70 90"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    opacity="0.6"
-                  />
-                  <circle
-                    cx="85"
-                    cy="85"
-                    r="15"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    fill="none"
-                    opacity="0.6"
-                  />
-
-                  {/* Building/architecture elements */}
-                  <rect
-                    x="120"
-                    y="80"
-                    width="20"
-                    height="30"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    fill="none"
-                    opacity="0.4"
-                  />
-                  <rect
-                    x="125"
-                    y="85"
-                    width="10"
-                    height="10"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    fill="none"
-                    opacity="0.4"
-                  />
-
-                  {/* Decorative lines */}
-                  <line
-                    x1="40"
-                    y1="130"
-                    x2="160"
-                    y2="130"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    opacity="0.2"
-                  />
-                  <line
-                    x1="50"
-                    y1="140"
-                    x2="150"
-                    y2="140"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    opacity="0.2"
-                  />
-
-                  {/* Question mark */}
-                  <text
-                    x="100"
-                    y="170"
-                    textAnchor="middle"
-                    fill="currentColor"
-                    fontSize="24"
-                    opacity="0.5"
-                    fontFamily="Arial, sans-serif"
+              {/* Desktop: timeline and cards in flex row */}
+              <div className="hidden lg:flex flex-row gap-8 items-start">
+                {/* Timeline marker */}
+                <div className="flex flex-col items-end w-32 relative">
+                  <div
+                    className="flex items-center min-h-[2.5rem]"
+                    style={{ minHeight: "2.5rem" }}
                   >
-                    ?
-                  </text>
-                </svg>
-              </motion.div>
+                    {/* Year label: normal flow, to the right of the line */}
+                    <span className="text-white text-lg font-bold ml-8">
+                      {year}
+                    </span>
+                  </div>
+                </div>
+                {/* Cards */}
+                <div className="flex-1">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {projectsByYear[year].map((project) => (
+                      <motion.div
+                        key={project.id}
+                        variants={cardVariants}
+                        onMouseEnter={() => setHoveredProject(project.id)}
+                        onMouseLeave={() => setHoveredProject(null)}
+                        className="group"
+                      >
+                        <Link href={`/property/${project.id}`}>
+                          <div className="relative group h-full cursor-pointer">
+                            <motion.div
+                              className="absolute -inset-0.5 bg-gradient-to-r from-white/5 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm -z-10"
+                              animate={{
+                                boxShadow:
+                                  hoveredProject === project.id
+                                    ? [
+                                        "0 0 5px 2px rgba(255, 255, 255, 0.1)",
+                                        "0 0 10px 3px rgba(255, 255, 255, 0.15)",
+                                        "0 0 5px 2px rgba(255, 255, 255, 0.1)",
+                                      ]
+                                    : "none",
+                              }}
+                              transition={{ duration: 2 }}
+                            />
 
-              <p className="text-white/70 text-lg mb-4">
-                Nu s-au găsit proiecte care să corespundă criteriilor tale.
-              </p>
-              <Button
-                variant="outline"
-                onClick={resetFilters}
-                className="border-white/30 text-white hover:border-white"
-              >
-                Resetează filtrele
-              </Button>
-            </motion.div>
-          )}
+                            <Card className="overflow-hidden bg-black/80 backdrop-blur-sm border-white/10 h-full hover:border-white/30 transition-all duration-300 relative rounded-none">
+                              {/* Project number indicator */}
+                              <div className="absolute top-3 right-3 z-30">
+                                <div className="bg-black/70 backdrop-blur-sm border border-white/20 w-8 h-8 flex items-center justify-center">
+                                  <span className="text-white/80 font-mono text-xs">
+                                    0{project.id}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Corner accents */}
+                              <motion.div
+                                className="absolute top-0 left-0 w-10 h-10 border-t border-l border-white/20 z-10"
+                                whileHover={{ scale: 1.1 }}
+                                animate={{
+                                  borderColor:
+                                    hoveredProject === project.id
+                                      ? [
+                                          "rgba(255,255,255,0.2)",
+                                          "rgba(255,255,255,0.4)",
+                                          "rgba(255,255,255,0.2)",
+                                        ]
+                                      : "rgba(255,255,255,0.2)",
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat:
+                                    hoveredProject === project.id
+                                      ? Infinity
+                                      : 0,
+                                }}
+                              />
+                              <motion.div
+                                className="absolute bottom-0 right-0 w-10 h-10 border-b border-r border-white/20 z-10"
+                                whileHover={{ scale: 1.1 }}
+                                animate={{
+                                  borderColor:
+                                    hoveredProject === project.id
+                                      ? [
+                                          "rgba(255,255,255,0.2)",
+                                          "rgba(255,255,255,0.4)",
+                                          "rgba(255,255,255,0.2)",
+                                        ]
+                                      : "rgba(255,255,255,0.2)",
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat:
+                                    hoveredProject === project.id
+                                      ? Infinity
+                                      : 0,
+                                }}
+                              />
+
+                              <div className="relative overflow-hidden aspect-[3/2]">
+                                <motion.div className="h-full w-full">
+                                  <Image
+                                    src={`${project.image}`}
+                                    alt={project.title}
+                                    width={1200}
+                                    height={800}
+                                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
+                                  />
+                                </motion.div>
+
+                                {/* Overlay gradient with grid pattern */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity">
+                                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
+                                </div>
+
+                                {/* Project title content */}
+                                <div className="absolute bottom-0 left-0 right-0 p-5 backdrop-blur-sm">
+                                  <div className="overflow-hidden">
+                                    <motion.div
+                                      initial={{ y: 20, opacity: 0 }}
+                                      animate={{ y: 0, opacity: 1 }}
+                                      transition={{ duration: 0.5, delay: 0.2 }}
+                                    >
+                                      <span className="text-white/70 text-xs tracking-widest uppercase font-light block mb-1">
+                                        {
+                                          filtersMap[
+                                            project.category as keyof typeof filtersMap
+                                          ]
+                                        }
+                                      </span>
+                                      <div className="flex justify-between items-baseline">
+                                        <h3 className="text-xl font-bold text-white uppercase tracking-wider bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
+                                          {project.title}
+                                        </h3>
+                                        <span className="text-white/80 font-mono text-xs">
+                                          {project.year}
+                                        </span>
+                                      </div>
+
+                                      {/* Animated line */}
+                                      <motion.div
+                                        className="h-[1px] bg-gradient-to-r from-white/80 via-white/40 to-transparent mt-2"
+                                        initial={{ scaleX: 0, originX: 0 }}
+                                        whileInView={{ scaleX: 1 }}
+                                        transition={{ duration: 0.8 }}
+                                        viewport={{ once: true }}
+                                      />
+                                    </motion.div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <CardContent className="p-5 bg-black/60 backdrop-blur-sm">
+                                <div className="flex items-start gap-2 mb-4">
+                                  <div className="text-white/50 text-xs uppercase tracking-wider min-w-[80px]">
+                                    {project.location}
+                                  </div>
+                                  <p className="text-white/80 text-sm font-light leading-relaxed">
+                                    {project.description}
+                                  </p>
+                                </div>
+
+                                {/* Tags */}
+                                <div className="flex flex-wrap gap-2">
+                                  {project.tags
+                                    .slice(0, 3)
+                                    .map((tag, index) => (
+                                      <Badge
+                                        key={index}
+                                        variant="outline"
+                                        className="text-xs border-white/20 text-white/60"
+                                      >
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
