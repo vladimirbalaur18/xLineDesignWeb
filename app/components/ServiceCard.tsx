@@ -134,12 +134,12 @@ const ServiceImage = ({
       : { animate: { opacity: 1, scale: 1 } })}
     transition={{ duration: 0.5, delay: 0.2 }}
     className={`relative ${
-      isMobile ? "h-64" : "h-full"
+      isMobile ? "w-full max-w-full" : "h-full"
     } aspect-[4/3] rounded-xl overflow-hidden group`}
   >
     <div
       className={`relative rounded-xl overflow-hidden border border-white/10 z-10 ${
-        isMobile ? "h-full" : ""
+        isMobile ? "w-full h-full" : ""
       }`}
     >
       <Image
@@ -177,13 +177,15 @@ export default function ServiceCard({
         viewport={{ once: true }}
         className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-8"
       >
-        <div className="grid grid-cols-1 gap-6">
+        <div className="space-y-8">
           <div className="backdrop-blur-sm">
             <ServiceContent
               service={service}
               serviceRefs={serviceRefs}
               isMobile={isMobile}
             />
+          </div>
+          <div className="backdrop-blur-sm">
             <ServiceImage service={service} isMobile={isMobile} />
           </div>
         </div>
