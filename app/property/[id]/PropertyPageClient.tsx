@@ -57,7 +57,6 @@ export default function PropertyPageClient({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
@@ -75,12 +74,6 @@ export default function PropertyPageClient({
   const propertySections = property?.sections
     .filter((section) => section.isVisible)
     .sort((a, b) => a.order - b.order);
-
-  useEffect(() => {
-    // Trigger loading animation after component mounts
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     // Auto-open story mode if URL contains story=true parameter
@@ -130,7 +123,7 @@ export default function PropertyPageClient({
     <>
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         className="min-h-screen bg-black"
       >
