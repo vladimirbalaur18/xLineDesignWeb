@@ -25,7 +25,8 @@ import { properties } from "../lib/properties";
 import Image from "next/image";
 import Link from "next/link";
 import Footer from "../components/Footer";
-
+import NotFoundIllustration from "../components/NotFoundIllustration";
+import * as _ from "lodash";
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -126,12 +127,16 @@ export default function ProjectsPage() {
         return acc;
       }, {} as { [year: string]: typeof filteredProjects });
   }, [filteredProjects]);
-  const years = Object.keys(projectsByYear);
+
+  const years = _.orderBy(
+    Object.keys(projectsByYear),
+    [(y) => parseInt(y)],
+    ["desc"]
+  );
 
   // Pagination
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
   const startIndex = (currentPage - 1) * projectsPerPage;
-  const endIndex = startIndex + projectsPerPage;
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -166,20 +171,20 @@ export default function ProjectsPage() {
       </div>
 
       {/* Header Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-16 relative overflow-hidden">
         {/* Background elements */}
         <div className="absolute inset-0 bg-gradient-to-b from-black to-background/90 -z-10"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:3rem_3rem] -z-10"></div>
         <div className="absolute h-full w-[1px] bg-white/10 -left-10 top-0 rotate-12 -z-10"></div>
         <div className="absolute h-full w-[1px] bg-white/10 -right-10 top-0 -rotate-12 -z-10"></div>
 
-        <div className="container mx-auto px-4 relative">
+        <div className="container mx-auto px-4 relative space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="mb-16 text-center relative"
+            className="text-center relative"
           >
             <div className="relative inline-block">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight uppercase relative">
@@ -226,8 +231,11 @@ export default function ProjectsPage() {
             viewport={{ once: true }}
           >
             {/* Search Bar */}
-            <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/50 h-4 w-4" />
+            <div className="relative max-w-2xl mx-auto">
+              {" "}
+              {/* Slightly less wide */}
+              <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-white/50 h-6 w-6" />{" "}
+              {/* Slightly smaller icon */}
               <Input
                 type="text"
                 placeholder="Caută proiecte..."
@@ -236,7 +244,7 @@ export default function ProjectsPage() {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-10 bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white/50"
+                className="pl-14 pr-6 py-5 h-16 text-lg bg-black/50 border-white/20 text-white placeholder:text-white/50 focus:border-white/50 rounded-full shadow-xl" // Slightly smaller, still rounded, moderate shadow
               />
             </div>
 
@@ -254,11 +262,7 @@ export default function ProjectsPage() {
                       variant={activeFilter === key ? "default" : "outline"}
                       className={`
                         relative text-sm py-2.5 px-6 cursor-pointer uppercase tracking-wider backdrop-blur-sm
-                        ${
-                          activeFilter === key
-                            ? "bg-black border border-white text-white hover:bg-white/10"
-                            : "border-white/20 text-white/70 hover:text-white hover:border-white/50"
-                        }
+                        
                       `}
                       onClick={() => {
                         setActiveFilter(key);
@@ -266,49 +270,9 @@ export default function ProjectsPage() {
                       }}
                     >
                       {filtersMap[key]}
-                      {activeFilter === key && (
-                        <motion.span
-                          className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-white/30 via-white to-white/30"
-                          layoutId="activeFilterLine"
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 30,
-                          }}
-                        />
-                      )}
                     </Badge>
                   </motion.div>
                 ))}
-              </div>
-
-              {/* Sort Controls */}
-              <div className="flex items-center gap-4">
-                <Select
-                  value={sortBy}
-                  onValueChange={(value) => {
-                    setSortBy(value);
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-40 bg-black/50 border-white/20 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-black border-white/20">
-                    <SelectItem value="newest">Cele mai noi</SelectItem>
-                    <SelectItem value="oldest">Cele mai vechi</SelectItem>
-                    <SelectItem value="name">Nume</SelectItem>
-                    <SelectItem value="location">Locație</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Button
-                  variant="outline"
-                  onClick={resetFilters}
-                  className="border-white/30 text-white hover:border-white text-sm"
-                >
-                  Resetează
-                </Button>
               </div>
             </div>
 
@@ -329,16 +293,33 @@ export default function ProjectsPage() {
 
       {/* Projects Grid/List */}
       <section className="pb-24 relative">
-        <div className="container mx-auto px-4 flex flex-col gap-12">
+        <div className="container mx-auto px-4 flex flex-col gap-12 relative">
           {/* Desktop timeline line (only render for lg and up) */}
-          <div className="hidden lg:block absolute left-0 top-0 h-full w-32 pointer-events-none z-0">
-            <div className="relative h-full flex items-end justify-end">
-              <div
-                className="absolute left-1/2 top-0 bottom-0 w-1 bg-white rounded-full"
-                style={{ left: "calc(50% - 1px)" }}
-              />
+          {filteredProjects?.length > 0 && (
+            <div className="hidden lg:block absolute top-0 bottom-0 w-1 left-16 bg-white rounded-full" />
+          )}
+          {/* Not Found Illustration */}
+          {filteredProjects.length === 0 && (
+            <div className="flex flex-col items-center justify-center">
+              <NotFoundIllustration />
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Niciun proiect găsit
+              </h3>
+              <p className="text-white/70 mb-6 text-center max-w-md">
+                Nu am găsit proiecte care să corespundă criteriilor tale de
+                căutare sau filtrare. Încearcă să resetezi filtrele sau să cauți
+                altceva.
+              </p>
+              <Button
+                variant="outline"
+                className="border-white/30 text-white hover:border-white hover:bg-white/10"
+                onClick={resetFilters}
+              >
+                Resetează filtrele
+              </Button>
             </div>
-          </div>
+          )}
+
           {years.map((year, idx) => (
             <div key={year} className="relative z-10">
               {/* Mobile: year heading and cards in column */}
