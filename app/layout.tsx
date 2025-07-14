@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "XLine Design",
     description:
       "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
-    url: "https://xlinedesign.md",
+
     siteName: "XLine Design",
     images: [
       {
