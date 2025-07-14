@@ -347,7 +347,7 @@ export const properties: Property[] = [
         focusPoint: { x: 60, y: 40 },
       },
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00", // replaced image 2
         description: "Living luminos cu vedere spre grădină.",
         focusPoint: { x: 50, y: 50 },
       },
@@ -362,7 +362,7 @@ export const properties: Property[] = [
         focusPoint: { x: 30, y: 70 },
       },
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd", // replaced image 5
         description: "Terasă acoperită pentru relaxare.",
         focusPoint: { x: 50, y: 30 },
       },
@@ -870,11 +870,11 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Stockholm",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+    image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
     tags: ["Minimalist", "Funcțional", "Calm"],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         description: "Exteriorul minimalist al Minimalist Haven.",
         focusPoint: { x: 50, y: 45 },
       },
@@ -889,7 +889,7 @@ export const properties: Property[] = [
         focusPoint: { x: 45, y: 65 },
       },
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
         description: "Dormitor cu design simplu și elegant.",
         focusPoint: { x: 40, y: 75 },
       },
@@ -905,7 +905,7 @@ export const properties: Property[] = [
         title: "Less is More",
         narrative:
           "Minimalist Haven demonstrează că frumusețea adevărată se află în simplitate. Fiecare element al designului a fost ales cu grijă pentru a servi unui scop specific, eliminând orice exces și creând un spațiu care promovează claritatea mentală.",
-        image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         focusPoint: { x: 50, y: 45 },
         duration: 8000,
       },
@@ -948,7 +948,7 @@ export const properties: Property[] = [
         order: 1,
         type: "property-detail",
         images: [
-          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+          "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         ],
       },
       {
@@ -962,7 +962,7 @@ export const properties: Property[] = [
         type: "property-detail",
         images: [
           "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
-          "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+          "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         ],
       },
       {
@@ -1004,11 +1004,11 @@ export const properties: Property[] = [
     category: "landscapeDesign",
     location: "Malibu",
     year: "2024",
-    image: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7", // replaced main image
     tags: ["Lux", "Coastal", "Panoramic"],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
         description: "Exteriorul elegant al Coastal Retreat pe coastă.",
         focusPoint: { x: 55, y: 40 },
       },
@@ -1023,7 +1023,7 @@ export const properties: Property[] = [
         focusPoint: { x: 50, y: 60 },
       },
       {
-        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        url: "https://images.unsplash.com/photo-1497366216548-37526070297c",
         description: "Piscină infinită cu vedere asupra mării.",
         focusPoint: { x: 45, y: 70 },
       },
