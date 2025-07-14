@@ -11,7 +11,7 @@ export async function generateMetadata({
   const property = properties.find((p) => String(p.id) === String(params.id));
   if (!property) return {};
 
-  const headersList = headers();
+  const headersList =await  headers();
   const host = headersList.get("host");
   const protocol = headersList.get("x-forwarded-proto") || "https";
   const propertyUrl = `${protocol}://${host}/property/${property.id}`;
