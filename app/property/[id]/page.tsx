@@ -36,6 +36,13 @@ import {
 } from "lucide-react";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
 import Footer from "@/components/Footer";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function PropertyPage({
   params,
@@ -53,6 +60,7 @@ export default function PropertyPage({
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
 
   // Get property-specific sections
   const propertySections = property.sections
@@ -199,6 +207,7 @@ export default function PropertyPage({
             variant="outline"
             size="sm"
             className="bg-black/50 border-white/20 hover:bg-black/70 text-white backdrop-blur-sm transition-all duration-300"
+            onClick={() => setIsLikeModalOpen(true)}
           >
             <Heart className="w-4 h-4" />
           </Button>
@@ -655,6 +664,33 @@ export default function PropertyPage({
         isOpen={isStoryModeOpen}
         onClose={() => setIsStoryModeOpen(false)}
       />
+
+      {/* Like Modal */}
+      <Dialog open={isLikeModalOpen} onOpenChange={setIsLikeModalOpen}>
+        <DialogContent className="bg-black/95 border-white/10">
+          <DialogHeader>
+            <DialogTitle className="text-white text-2xl text-center">
+              Ți-a plăcut acest proiect?
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-white/80 text-center py-4 text-lg">
+            Ne bucurăm că ți-a plăcut acest proiect! Dacă vrei să afli mai multe
+            sau să colaborezi cu noi, te rugăm să ne contactezi. Echipa noastră
+            îți stă la dispoziție cu drag!
+          </div>
+          <DialogFooter>
+            <Button
+              className="w-full bg-white text-black hover:bg-white/90 mt-2 rounded-full"
+              onClick={() => {
+                setIsLikeModalOpen(false);
+                router.push("/#contact");
+              }}
+            >
+              Contactează-ne
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </motion.div>
