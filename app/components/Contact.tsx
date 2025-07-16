@@ -21,6 +21,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { MapPin, Phone, Mail, Clock, Send, Loader2 } from "lucide-react";
+import GoogleMap from "./GoogleMap";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: " Numele nu este valid" }),
@@ -435,60 +436,14 @@ export default function Contact() {
           <div className="grid md:grid-cols-2">
             {/* Map section */}
             <div className="h-[250px] md:h-full relative overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
-              <div className="absolute inset-0 bg-white/5 flex items-center justify-center">
-                {/* Futuristic city grid/map */}
-                <div className="w-full h-full bg-black/40 relative overflow-hidden">
-                  {/* Grid pattern like a blueprint with perspective */}
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-
-                  {/* Map marker */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-                    <motion.div
-                      className="w-4 h-4 bg-white rounded-full"
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [1, 0.8, 1],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <div className="absolute -inset-2 border-2 border-white/30 rounded-full"></div>
-                      <div className="absolute -inset-4 border border-white/10 rounded-full"></div>
-                    </motion.div>
-                  </div>
-
-                  {/* Animated radiating circles */}
-                  <motion.div
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 border border-white/30 rounded-full"
-                    animate={{
-                      scale: [1, 3, 1],
-                      opacity: [0.2, 0, 0.2],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeOut",
-                    }}
-                  />
-
-                  {/* Intersecting grid lines for futuristic feel */}
-                  <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                    <div className="absolute top-1/3 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                    <div className="absolute top-2/3 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                    <div className="absolute top-0 left-0 h-full w-[1px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                    <div className="absolute top-0 left-1/3 h-full w-[1px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                    <div className="absolute top-0 left-2/3 h-full w-[1px] bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-                  </div>
-
-                  {/* Map coordinates */}
-                  <div className="absolute bottom-4 right-4 text-xs text-white/50 font-mono">
-                    40.7128° N, 74.0060° W
-                  </div>
-                </div>
+              <GoogleMap
+                center={{ lat: 47.0105, lng: 28.8638 }}
+                zoom={15}
+                className="w-full h-full"
+              />
+              {/* Map coordinates overlay */}
+              <div className="absolute bottom-4 right-4 text-xs text-white/70 font-mono bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
+                47.0105° N, 28.8638° E
               </div>
             </div>
 
