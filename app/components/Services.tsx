@@ -1,35 +1,16 @@
 "use client";
 
 // TODO: header cards to be same size as stats from about sectioj, increase text size
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useIsMobile } from "../hooks/use-mobile";
 import { motion } from "motion/react";
-import {
-  Pencil,
-  Building,
-  Home,
-  Landmark,
-  Presentation,
-  RefreshCw,
-  ArrowRight,
-  CheckCircle,
-  BrainCircuit,
-  Settings,
-  IterationCcw,
-  Globe,
-  Rocket,
-  Cpu,
-  Zap,
-} from "lucide-react";
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
+import { Home, Landmark, Presentation } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import Image from "next/image";
 import ServiceCard from "./ServiceCard";
 
 const services = [
   {
-    id: "interior-design",
+    id: "interiorDesign",
     title: "Design interior",
     icon: (
       <Home className="h-5 w-5 text-white group-data-[state=active]:text-black" />
@@ -64,7 +45,7 @@ const services = [
     image: "/hero/6.jpg",
   },
   {
-    id: "landschaft-design",
+    id: "landscapeDesign",
     title: "Design peisagistic",
     icon: (
       <Presentation className="h-5 w-5 text-white group-data-[state=active]:text-black" />
@@ -84,47 +65,9 @@ const services = [
 
 export default function Services() {
   const [activeService, setActiveService] = useState(services[0]);
-  const [hoveredStep, setHoveredStep] = useState<number | undefined>(undefined);
   const serviceRefs = useRef<{ [key: string]: HTMLHeadingElement | null }>({});
   const isMobile = useIsMobile();
   const tabsListRef = useRef<HTMLDivElement | null>(null);
-  const processSteps = [
-    {
-      number: "01",
-      icon: <Cpu className="h-6 w-6" />,
-      title: "Analiza datelor",
-      description:
-        "Analiză algoritmică avansată a nevoilor tale, a condițiilor terenului și a parametrilor de mediu.",
-    },
-    {
-      number: "02",
-      icon: <BrainCircuit className="h-6 w-6" />,
-      title: "Conceptualizare AI",
-      description:
-        "Generarea mai multor variante de design folosind instrumente avansate de proiectare computațională.",
-    },
-    {
-      number: "03",
-      icon: <IterationCcw className="h-6 w-6" />,
-      title: "Rafinare parametrică",
-      description:
-        "Optimizare iterativă în timp real prin sisteme sofisticate de modelare parametrică.",
-    },
-    {
-      number: "04",
-      icon: <Globe className="h-6 w-6" />,
-      title: "Prototipare virtuală",
-      description:
-        "Experiențe VR imersive ale spațiului tău cu ajutorul tehnologiei de gemeni digitali, înainte de construcție.",
-    },
-    {
-      number: "05",
-      icon: <Rocket className="h-6 w-6" />,
-      title: "Construcție inteligentă",
-      description:
-        "Construcție de precizie cu fabricație robotică și sisteme inteligente de materiale.",
-    },
-  ];
 
   return (
     <section id="services" className="pt-24 bg-black relative overflow-hidden">

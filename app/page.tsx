@@ -24,7 +24,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen font-sans ">
       {/* <CustomCursor /> */}
-      <Header />
+      
       <main>
         <Hero />
         <About />

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import Image from "next/image";
-
+import Link from "next/link";
 interface Service {
   id: string;
   title: string;
@@ -96,25 +96,27 @@ const ServiceContent = ({
 
     {/* Button */}
     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-      <Button
-        className={`relative overflow-hidden group bg-black hover:bg-white text-white hover:text-black border border-white/40 hover:border-white transition-all duration-300 py-6 px-8 rounded-lg ${
-          isMobile ? "w-full" : ""
-        }`}
-      >
-        <span className="relative z-10 font-medium tracking-wider">
-          Explorează proiectele {service.title}
-        </span>
-        <motion.span className="absolute right-4 group-hover:translate-x-1 transition-transform duration-300">
-          <ArrowRight className="ml-2 h-5 w-5" />
-        </motion.span>
+      <Link href={`/projects?filter=${service.id}`}>
+        <Button
+          className={`relative overflow-hidden group bg-black hover:bg-white text-white hover:text-black border border-white/40 hover:border-white transition-all duration-300 py-6 px-8 rounded-lg ${
+            isMobile ? "w-full" : ""
+          }`}
+        >
+          <span className="relative z-10 font-medium tracking-wider">
+            Explorează proiectele {service.title}
+          </span>
+          <motion.span className="absolute right-4 group-hover:translate-x-1 transition-transform duration-300">
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </motion.span>
 
-        <motion.div
-          className="absolute inset-0 bg-white z-0"
-          initial={{ x: "-100%" }}
-          whileHover={{ x: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-        />
-      </Button>
+          <motion.div
+            className="absolute inset-0 bg-white z-0"
+            initial={{ x: "-100%" }}
+            whileHover={{ x: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          />
+        </Button>
+      </Link>
     </motion.div>
   </>
 );

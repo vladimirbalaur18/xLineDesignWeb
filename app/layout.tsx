@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { Toaster } from "./components/toaster";
 import RootScreenLoader from "./RootScreenLoader";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export default function RootLayout({
         /> */}
       </head>
       <body className={inter.className}>
+        <Header />
         <Providers>
           {children}
           <Toaster />
