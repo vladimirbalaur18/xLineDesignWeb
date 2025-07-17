@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
 import { Property } from "../lib/properties";
+import { useSwipe } from "@/hooks/use-swipe";
 
 interface PropertyStoryModeProps {
   property: Property;
@@ -16,8 +17,21 @@ export default function PropertyStoryMode({
   onClose,
 }: PropertyStoryModeProps) {
   const [currentChapter, setCurrentChapter] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
+  const { onTouchStart, onTouchEnd } = useSwipe(
+    () => nextChapter(),
+    () => prevChapter()
+  );
+
+  // Reset state when story mode is re-opened
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentChapter(0);
+      setProgress(0);
+      setIsPlaying(true);
+    }
+  }, [isOpen]);
 
   // Generate story chapters from property data
   const storyChapters = property.storyChapters;
@@ -87,6 +101,8 @@ export default function PropertyStoryMode({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 bg-black z-50 flex flex-col"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         {/* Header Controls */}
         <motion.div
