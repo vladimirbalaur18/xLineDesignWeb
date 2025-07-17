@@ -79,7 +79,7 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
       </div>
 
       {/* Controls (Back, Story, Like, Share) */}
-      <div className="relative">{controls}</div>
+      <div className="relative top-24">{controls}</div>
 
       {/* Image Navigation */}
       {images.length > 1 && (
