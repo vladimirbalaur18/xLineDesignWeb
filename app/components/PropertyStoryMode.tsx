@@ -123,7 +123,7 @@ export default function PropertyStoryMode({
               </Button>
               <div className="text-white">
                 <h2 className="text-xl font-bold">{property.title}</h2>
-                <p className="text-sm text-gray-300">Immersive Story Mode</p>
+                <p className="text-sm text-gray-300">Prezentare</p>
               </div>
             </div>
 
@@ -255,7 +255,7 @@ export default function PropertyStoryMode({
 
                 <div className="flex items-center justify-between mt-6">
                   <div className="text-sm text-gray-400">
-                    Chapter {currentChapter + 1} of {storyChapters.length}
+                    Slide {currentChapter + 1} din {storyChapters.length}
                   </div>
 
                   {currentChapter === storyChapters.length - 1 && (
@@ -263,7 +263,7 @@ export default function PropertyStoryMode({
                       onClick={onClose}
                       className="bg-white text-black hover:bg-gray-200"
                     >
-                      Explore Property
+                      Vezi proiectul
                     </Button>
                   )}
                 </div>

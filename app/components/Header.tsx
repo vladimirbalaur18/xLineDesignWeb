@@ -54,11 +54,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed h-16 top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? " bg-transparent backdrop-blur-md py-2 border-b border-white/10"
-          : " bg-black/80 py-2"
-      }`}
+      className={`fixed h-16 top-0 left-0 right-0 z-50 transition-all duration-300  bg-black/80 backdrop-blur-md py-2 border-b border-white/10`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* LOGO */}
@@ -109,19 +105,17 @@ export default function Header() {
                   )}
                 </motion.a>
               ))}
-              <Button
-                variant="outline"
-                className="bg-white text-black hover:bg-white/90 hover:text-black border-none uppercase tracking-widest text-xs px-6"
-                onClick={(e) =>
-                  isHome
-                    ? smoothScroll(e, "#contact")
-                    : router.push("/#contact")
-                }
-              >
-                Contactează-ne
-              </Button>
             </motion.nav>
           )}
+          <Button
+            variant="outline"
+            className="bg-white text-black hover:bg-white/90 hover:text-black border-none uppercase tracking-widest text-xs px-6"
+            onClick={(e) =>
+              isHome ? smoothScroll(e, "#contact") : router.push("/#contact")
+            }
+          >
+            Contactează-ne
+          </Button>
         </div>
 
         {/* Mobile Navigation */}

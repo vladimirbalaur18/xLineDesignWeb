@@ -61,25 +61,10 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
         </motion.div>
 
         {/* Enhanced Multi-layer Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/20" />
-
-        {/* Animated Grid Pattern Overlay */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 1.5, delay: 0.8 }}
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "30px 30px",
-          }}
-        />
       </div>
 
       {/* Controls (Back, Story, Like, Share) */}
-      <div className="relative top-24">{controls}</div>
+      <div className="relative top-16">{controls}</div>
 
       {/* Image Navigation */}
       {images.length > 1 && (

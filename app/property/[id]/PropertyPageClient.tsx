@@ -153,7 +153,7 @@ export default function PropertyPageClient({
                   className="bg-black/50 border-white/20 hover:bg-black/70 text-white backdrop-blur-sm transition-all duration-300"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+                  Înapoi
                 </Button>
               </motion.div>
 
@@ -170,7 +170,7 @@ export default function PropertyPageClient({
                   className="bg-black/50 border-white/20 hover:bg-black/70 text-white backdrop-blur-sm transition-all duration-300"
                 >
                   <Play className="w-4 h-4 mr-2" />
-                  Story Mode
+                  Vizualizare prezentare
                 </Button>
                 <Button
                   variant="outline"
@@ -214,18 +214,22 @@ export default function PropertyPageClient({
                           {
                             icon: Bed,
                             value: property.bedrooms,
-                            label: "Bedrooms",
+                            label: "Dormitoare",
                           },
                           {
                             icon: Bath,
                             value: property.bathrooms,
-                            label: "Bathrooms",
+                            label: "Blocuri sanitare",
                           },
-                          { icon: Grid, value: property.area, label: "Sq Ft" },
+                          {
+                            icon: Grid,
+                            value: property.area,
+                            label: "Suprafață",
+                          },
                           {
                             icon: Calendar,
                             value: property.yearBuilt,
-                            label: "Year Built",
+                            label: "An construcție",
                           },
                         ]}
                       />
@@ -247,7 +251,7 @@ export default function PropertyPageClient({
                         transition={{ duration: 0.5, delay: 0.9 }}
                         className="text-2xl font-bold text-white mb-4"
                       >
-                        Description
+                        Descriere
                       </motion.h2>
                       <motion.div
                         initial={{ opacity: 0 }}
@@ -275,7 +279,7 @@ export default function PropertyPageClient({
                         transition={{ duration: 0.5, delay: 1.1 }}
                         className="text-2xl font-bold text-white mb-4"
                       >
-                        Features & Amenities
+                        Caracteristici
                       </motion.h2>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {property.features.map((feature, index) => (
@@ -327,7 +331,7 @@ export default function PropertyPageClient({
                 <Card className="bg-gradient-to-br from-black/95 via-gray-900/25 to-black/90 border-white/10 backdrop-blur-sm">
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold text-white mb-4">
-                      Interested in this property?
+                      Ești interesat de acest proiect?
                     </h3>
                     <div className="space-y-3">
                       <Button
@@ -383,7 +387,6 @@ export default function PropertyPageClient({
                       sizes="100vw"
                       priority={index === 0}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
                   </div>
                 ) : section.images.length === 2 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -402,7 +405,6 @@ export default function PropertyPageClient({
                           sizes="50vw"
                           priority={index === 0 && i === 0}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
                       </div>
                     ))}
                   </div>
