@@ -101,7 +101,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen pt-24 bg-black">
       {/* Back Button */}
       <div className="container mx-auto px-4 pt-8">
         <motion.div
@@ -275,15 +275,19 @@ export default function ProjectsPage() {
                 <h2 className="text-xl font-bold text-white/90 mb-2">{year}</h2>
                 <div className="grid grid-cols-1 gap-6">
                   {projectsByYear[year].map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      projectCategory={
-                        filtersMap[project.category as keyof typeof filtersMap]
-                      }
-                      showTags={true}
-                      className=""
-                    />
+                    <Link key={project.id} href={`/property/${project.id}`}>
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        projectCategory={
+                          filtersMap[
+                            project.category as keyof typeof filtersMap
+                          ]
+                        }
+                        showTags={true}
+                        className=""
+                      />
+                    </Link>
                   ))}
                 </div>
               </div>

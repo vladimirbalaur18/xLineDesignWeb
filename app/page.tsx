@@ -4,7 +4,6 @@ import Services from "./components/Services";
 import PropertyForSale from "./components/PropertyForSale";
 
 // Dynamically import components to avoid server-side rendering of client components
-const Header = dynamic(() => import("./components/Header"));
 const Hero = dynamic(() => import("./components/Hero"));
 const Projects = dynamic(() => import("./components/Projects"));
 const ProjectGallery = dynamic(() => import("./components/ProjectGallery"));
@@ -24,7 +23,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen font-sans ">
       {/* <CustomCursor /> */}
-      
       <main>
         <Hero />
         <About />
