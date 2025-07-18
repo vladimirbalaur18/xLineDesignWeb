@@ -1,58 +1,65 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { useHydrated } from "./hooks/use-hydrated";
-import { Spinner } from "./components/Spinner";
+import { useHydrated } from "@/hooks/use-hydrated";
+
+const MIN_VISIBLE_MS = 1_000; // 1 s  ⟵  adjust if you need more
+const FADE_MS = 600; // length of the exit animation
 
 export default function RootScreenLoader({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = useState(false);
   const pathname = usePathname();
-  const durationSeconds = 2;
   const hydrated = useHydrated();
-  // Reset loading state when pathname changes
+  const [show, setShow] = useState(true); // controls DOM presence
+  const startTimeRef = useRef<number>(Date.now());
+
+  /* ─────────────── 1. show on every client‑side nav ─────────────── */
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, durationSeconds * 1000);
+    startTimeRef.current = Date.now(); // remember when the new page started
+    setShow(true);
+  }, [pathname]);
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
+  /* ─────────────── 2. hide only after min duration ──────────────── */
+  useEffect(() => {
+    if (!hydrated) return; // page not ready yet
 
-  if (!hydrated)
-    return (
-      <>
-        <AnimatePresence>
-          {
-            <motion.div
-              key={pathname}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "linear" }}
-              className="fixed inset-0 z-[9999] flex items-center justify-center bg-black pointer-events-none"
-            >
-              <div className="flex flex-col items-center gap-2">
-                <Image
-                  src="/logo.jpg"
-                  alt="xLine Design Logo"
-                  width={400}
-                  height={400}
-                  priority
-                />
-              </div>
-            </motion.div>
-          }
-        </AnimatePresence>
-      </>
-    );
+    const elapsed = Date.now() - startTimeRef.current;
+    const waitFor = Math.max(MIN_VISIBLE_MS - elapsed, 0);
 
-  return children;
+    const id = setTimeout(() => setShow(false), waitFor);
+    return () => clearTimeout(id); // clean up if nav changes mid‑timer
+  }, [hydrated, pathname]); // re‑run on every new page
+
+  return (
+    <>
+      <AnimatePresence mode="wait">
+        {show && (
+          <motion.div
+            key="root-loader"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: FADE_MS / 1000, ease: "linear" }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center
+                       bg-black pointer-events-none"
+          >
+            <Image
+              src="/logo.jpg"
+              alt="xLine Design Logo"
+              width={400}
+              height={400}
+              priority
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {children}
+    </>
+  );
 }

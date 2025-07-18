@@ -44,11 +44,13 @@ export default function RootLayout({
         /> */}
       </head>
       <body className={inter.className}>
-        <Providers>
-          <Header />
-          {children}
-          <Toaster />
-        </Providers>
+        <RootScreenLoader>
+          <Providers>
+            <Header />
+            {children}
+            <Toaster />
+          </Providers>
+        </RootScreenLoader>
       </body>
     </html>
   );
