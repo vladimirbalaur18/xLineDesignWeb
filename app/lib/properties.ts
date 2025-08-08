@@ -5,7 +5,6 @@ export interface PropertyImage {
 }
 
 export interface PropertyStoryChapter {
-  id: number;
   title: string;
   narrative: string;
   image: string;
@@ -15,7 +14,6 @@ export interface PropertyStoryChapter {
 }
 
 export interface PropertySection {
-  id: string;
   name: string;
   title: string;
   content: string;
@@ -26,7 +24,7 @@ export interface PropertySection {
 }
 
 export interface Property {
-  id: number;
+  slug: string;
   title: string;
   description: string;
   fullDescription: string;
@@ -49,7 +47,7 @@ export interface Property {
 
 export const properties: Property[] = [
   {
-    id: 1,
+    slug: "turnul-azure-sky",
     title: "Turnul Azure Sky",
     description:
       "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
@@ -103,7 +101,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "First Impressions",
         narrative:
           "Welcome to Turnul Azure Sky, where architectural brilliance meets modern living. As you step into the grand lobby, the soaring ceilings and ambient lighting create an immediate sense of luxury and sophistication. The building's sustainable design philosophy is evident in every detail, from the energy-efficient lighting to the natural ventilation systems.",
@@ -112,7 +109,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 2,
         title: "Living Spaces",
         narrative:
           "The spacious living areas are designed to maximize natural light and city views. Floor-to-ceiling windows frame the stunning Singapore skyline, while the open-concept layout encourages social interaction and family bonding. Premium materials and finishes create an atmosphere of refined elegance.",
@@ -121,7 +117,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 3,
         title: "Master Suite",
         narrative:
           "The master suite is a private sanctuary offering unparalleled comfort and luxury. The minimalist design philosophy creates a calming atmosphere, while the panoramic views provide a constant connection to the vibrant city below. The en-suite bathroom features premium fixtures and spa-like amenities.",
@@ -130,7 +125,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 4,
         title: "Outdoor Living",
         narrative:
           "The private terrace offers an outdoor living experience like no other. Whether enjoying morning coffee or evening cocktails, residents can soak in the breathtaking views of Singapore's iconic skyline. The infinity pool creates a seamless connection between indoor and outdoor living.",
@@ -141,7 +135,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "luxury-living",
         name: "Luxury Living",
         title: "LUXURY LIVING",
         content:
@@ -154,7 +147,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "sustainable-future",
         name: "Sustainable Future",
         title: "SUSTAINABLE FUTURE",
         content:
@@ -168,7 +160,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "panoramic-views",
         name: "Panoramic Views",
         title: "PANORAMIC VIEWS",
         content:
@@ -183,7 +174,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 2,
+    slug: "the-vertex",
     title: "The Vertex",
     description:
       "Un complex de birouri premiat, cu un design inovator și spații de lucru colaborative.",
@@ -236,7 +227,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Arrival at The Vertex",
         narrative:
           "Descoperă un spațiu de lucru unde inovația și colaborarea sunt la ele acasă. Fațada impresionantă a The Vertex reflectă filosofia modernă de lucru, cu linii curbe și materiale sustenabile care se integrează perfect în peisajul urban al Torontoului.",
@@ -245,7 +235,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 2,
         title: "Collaborative Workspaces",
         narrative:
           "Spațiile de lucru deschise sunt proiectate pentru a încuraja colaborarea și creativitatea. Lumină naturală abundentă, mobilier ergonomic și tehnologie de ultimă generație creează un mediu ideal pentru inovație și productivitate.",
@@ -254,7 +243,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 3,
         title: "Wellness Zones",
         narrative:
           "Zonele de relaxare și wellness sunt integrate strategic în întregul complex. De la spații de meditație până la sali de fitness, The Vertex înțelege importanța echilibrului între muncă și sănătate.",
@@ -263,7 +251,6 @@ export const properties: Property[] = [
         duration: 5000,
       },
       {
-        id: 4,
         title: "Green Innovation",
         narrative:
           "Terasă verde de pe acoperiș nu este doar un spațiu de relaxare, ci și un simbol al angajamentului față de sustenabilitate. Grădinile verticale și sistemele de reciclare a apei demonstrează că inovația și responsabilitatea ambientală pot merge mână în mână.",
@@ -274,7 +261,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "innovative-design",
         name: "Innovative Design",
         title: "TEST2 DESIGN",
         content:
@@ -288,7 +274,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "smart-workspaces",
         name: "Smart Workspaces",
         title: "SMART2 WORKSPACES",
         content:
@@ -301,7 +286,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "sustainable-features",
         name: "Sustainable Features",
         title: "2 FEATURES",
         content:
@@ -316,7 +300,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 3,
+    slug: "casa-prism",
     title: "Casa Prism",
     description:
       "O clădire rezidențială angulară care joacă cu lumina și umbrele pe parcursul zilei.",
@@ -369,7 +353,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Geometry in Light",
         narrative:
           "Casa Prism te întâmpină cu forme îndrăznețe și lumini jucăușe. Fiecare unghi și fiecare suprafață a fost calculată pentru a maximiza interacțiunea cu lumina naturală, creând un spectacol vizual care se schimbă pe parcursul zilei.",
@@ -378,7 +361,6 @@ export const properties: Property[] = [
         duration: 9000,
       },
       {
-        id: 2,
         title: "Living with Nature",
         narrative:
           "Spațiul de living se deschide către grădina privată, creând o conexiune perfectă între interior și exterior. Feronerie panoramice permit luminii să inunde spațiul, în timp ce materialele naturale creează o atmosferă caldă și primitoare.",
@@ -387,7 +369,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 3,
         title: "Private Retreats",
         narrative:
           "Dormitoarele sunt proiectate ca retrageri private, cu feronerie strategice care oferă intimitate și lumină în același timp. Fiecare cameră are propria sa personalitate, reflectată în detaliile arhitecturale și în modul în care interacționează cu lumina.",
@@ -396,7 +377,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 4,
         title: "Outdoor Sanctuary",
         narrative:
           "Terasă acoperită extinde spațiul de viață în aer liber, oferind un refugiu perfect pentru relaxare și divertisment. Designul integrează perfect elementele naturale cu confortul modern, creând o experiență de viață unică.",
@@ -407,7 +387,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "architectural-brilliance",
         name: "Architectural Brilliance",
         title: "ARCHITECTURAL BRILLIANCE",
         content:
@@ -420,7 +399,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "nature-integration",
         name: "Nature Integration",
         title: "NATURE INTEGRATION",
         content:
@@ -433,7 +411,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "luxury-finishes",
         name: "Luxury Finishes",
         title: "LUXURY FINISHES",
         content:
@@ -448,7 +425,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 4,
+    slug: "villa-serenity",
     title: "Villa Serenity",
     description:
       "O vilă de lux integrată perfect în peisajul natural, cu design biofilic și spații de relaxare.",
@@ -502,7 +479,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Nature's Embrace",
         narrative:
           "Villa Serenity te întâmpină cu o armonie perfectă între arhitectură și natură. Fiecare element al designului a fost ales pentru a crea o conexiune profundă cu mediul natural, de la materialele organice până la orientarea strategică a ferestrelor.",
@@ -511,7 +487,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 2,
         title: "Living in Harmony",
         narrative:
           "Spațiul de living este centrul spiritual al casei, unde elementele naturale se împletesc cu confortul modern. Pădurea devine o extensie a spațiului interior, iar lumina naturală dansează prin cameră pe parcursul zilei.",
@@ -520,7 +495,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 3,
         title: "Culinary Excellence",
         narrative:
           "Bucătăria gourmet este proiectată pentru pasionații de gastronomie, cu echipamente de ultimă generație și o insulă centrală care devine punctul focal al întâlnirilor sociale. Vederea spre grădina organică inspiră creativitatea culinară.",
@@ -529,7 +503,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 4,
         title: "Wellness Sanctuary",
         narrative:
           "Spa-ul și sauna oferă o experiență de relaxare completă, în timp ce piscina naturală permite o conexiune directă cu elementele naturale. Fiecare detaliu este proiectat pentru a promova sănătatea și echilibrul interior.",
@@ -540,7 +513,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "biofilic-design",
         name: "Biofilic Design",
         title: "BIOFILIC DESIGN",
         content:
@@ -553,7 +525,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "luxury-features",
         name: "Luxury Features",
         title: "LUXURY FEATURES",
         content:
@@ -566,7 +537,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "sustainable-living",
         name: "Sustainable Living",
         title: "SUSTAINABLE LIVING",
         content:
@@ -581,7 +551,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 5,
+    slug: "the-glass-house",
     title: "The Glass House",
     description:
       "O casă modernă cu pereți de sticlă care elimină barierele între interior și exterior.",
@@ -635,7 +605,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Transparency Redefined",
         narrative:
           "The Glass House elimină complet barierele între interior și exterior, creând o experiență de viață unică. Pereții de sticlă retractabili permit transformarea completă a spațiului, făcând ca natura să devină o parte integrantă a vieții de zi cu zi.",
@@ -644,7 +613,6 @@ export const properties: Property[] = [
         duration: 9000,
       },
       {
-        id: 2,
         title: "Living Without Boundaries",
         narrative:
           "Spațiul de living se extinde natural către exterior, cu pereții de sticlă care dispar complet pentru a crea o experiență de viață în aer liber. Mobila modernă și tehnologia inteligentă se integrează perfect în acest concept transparent.",
@@ -653,7 +621,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 3,
         title: "Sleeping Under the Stars",
         narrative:
           "Dormitoarele oferă o experiență de somn unică, cu tavanul de sticlă care permite privirea spre cerul înstelat. Sistemul de iluminat inteligent creează atmosfera perfectă pentru relaxare, în timp ce pereții de sticlă oferă intimitate când este necesar.",
@@ -662,7 +629,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 4,
         title: "Floating in Space",
         narrative:
           "Terasă flotantă pare să plutească deasupra peisajului, oferind priveliști spectaculoase asupra Los Angeles-ului. Designul minimalist și materialele premium creează o experiență de viață care transcende limitele tradiționale ale arhitecturii rezidențiale.",
@@ -673,7 +639,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "seamless-indoor-outdoor",
         name: "Seamless Indoor-Outdoor",
         title: "SEAMLESS INDOOR-OUTDOOR",
         content:
@@ -686,7 +651,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "modern-luxury",
         name: "Modern Luxury",
         title: "MODERN LUXURY",
         content:
@@ -699,7 +663,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "panoramic-living",
         name: "Panoramic Living",
         title: "PANORAMIC LIVING",
         content:
@@ -714,7 +677,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 6,
+    slug: "urban-oasis",
     title: "Urban Oasis",
     description:
       "Un complex rezidențial cu grădini suspendate și spații verzi integrate în designul urban.",
@@ -768,7 +731,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Green Living in the City",
         narrative:
           "Urban Oasis demonstrează că viața urbană poate fi în armonie perfectă cu natura. Grădinile suspendate și spațiile verzi integrate în design creează o experiență de viață unică, unde locuitorii pot sănătoșească în mijlocul orașului.",
@@ -777,7 +739,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 2,
         title: "Private Garden Retreat",
         narrative:
           "Fiecare apartament are acces la propria grădină privată, unde locuitorii pot cultiva plante, relaxa sau organiza întâlniri cu prietenii. Designul integrează perfect spațiile interioare cu zonele exterioare, creând o continuitate naturală.",
@@ -786,7 +747,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 3,
         title: "Community Spaces",
         narrative:
           "Spațiile comune verzi sunt proiectate pentru a încuraja interacțiunea socială și sănătoșirea comunității. De la grădini comunitare până la zone de relaxare, fiecare element promovează un stil de viață sustenabil și conectat.",
@@ -795,7 +755,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 4,
         title: "Sustainable Innovation",
         narrative:
           "Sistemul de reciclare și iluminatul solar demonstrează angajamentul față de sustenabilitate. Fiecare detaliu al designului a fost ales pentru a minimiza impactul asupra mediului, creând un model pentru viața urbană de viitor.",
@@ -806,7 +765,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "urban-gardens",
         name: "Urban Gardens",
         title: "URBAN GARDENS",
         content:
@@ -819,7 +777,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "sustainable-communities",
         name: "Sustainable Communities",
         title: "SUSTAINABLE COMMUNITIES",
         content:
@@ -832,7 +789,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "green-innovation",
         name: "Green Innovation",
         title: "GREEN INNOVATION",
         content:
@@ -847,7 +803,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 7,
+    slug: "minimalist-haven",
     title: "Minimalist Haven",
     description:
       "O casă cu design minimalist care pune accentul pe funcționalitate și estetică simplă.",
@@ -901,7 +857,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Less is More",
         narrative:
           "Minimalist Haven demonstrează că frumusețea adevărată se află în simplitate. Fiecare element al designului a fost ales cu grijă pentru a servi unui scop specific, eliminând orice exces și creând un spațiu care promovează claritatea mentală.",
@@ -910,7 +865,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 2,
         title: "Functional Beauty",
         narrative:
           "Spațiul de living combină funcționalitatea cu estetica, cu mobilă integrată care maximizează spațiul disponibil. Paleta de culori neutre creează o atmosferă calmă, în timp ce materialele naturale aduc caldura în spațiu.",
@@ -919,7 +873,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 3,
         title: "Smart Storage",
         narrative:
           "Sistemul de stocare inteligent este integrat discret în design, oferind soluții creative pentru organizarea spațiului. Fiecare cameră are propriile soluții de stocare, menținând curățenia și ordinea în întregul spațiu.",
@@ -928,7 +881,6 @@ export const properties: Property[] = [
         duration: 6000,
       },
       {
-        id: 4,
         title: "Multifunctional Living",
         narrative:
           "Spațiile sunt proiectate pentru a fi multifuncționale, adaptându-se nevoilor diverse ale locuitorilor. De la spațiu de lucru integrat până la zone de relaxare, fiecare zonă servește mai multor scopuri, maximizând eficiența spațiului.",
@@ -939,7 +891,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "minimalist-design",
         name: "Minimalist Design",
         title: "MINIMALIST DESIGN",
         content:
@@ -952,7 +903,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "functional-spaces",
         name: "Functional Spaces",
         title: "FUNCTIONAL SPACES",
         content:
@@ -966,7 +916,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "natural-materials",
         name: "Natural Materials",
         title: "NATURAL MATERIALS",
         content:
@@ -981,7 +930,7 @@ export const properties: Property[] = [
     ],
   },
   {
-    id: 8,
+    slug: "coastal-retreat",
     title: "Coastal Retreat",
     description:
       "O vilă de lux pe coastă care combină eleganța modernă cu frumusețea naturală a mării.",
@@ -1035,7 +984,6 @@ export const properties: Property[] = [
     ],
     storyChapters: [
       {
-        id: 1,
         title: "Ocean's Embrace",
         narrative:
           "Coastal Retreat te întâmpină cu priveliști spectaculoase asupra oceanului, unde fiecare zi începe cu răsăritul soarelui și se termină cu apusul pe orizont. Designul modern se integrează perfect în peisajul marin, creând o experiență de viață de neegalat.",
@@ -1044,7 +992,6 @@ export const properties: Property[] = [
         duration: 9000,
       },
       {
-        id: 2,
         title: "Living with the Sea",
         narrative:
           "Spațiul de living se deschide complet către ocean, cu pereți de sticlă care permit luminii să inunde spațiul. Sunetul valurilor devine parte integrantă din experiența de viață, creând o atmosferă de relaxare constantă.",
@@ -1053,7 +1000,6 @@ export const properties: Property[] = [
         duration: 8000,
       },
       {
-        id: 3,
         title: "Master Sanctuary",
         narrative:
           "Master suite-ul oferă o experiență de lux de neegalat, cu acces direct la terasă privată și priveliști panoramice asupra oceanului. Designul elegant și materialele premium creează un refugiu perfect pentru relaxare și intimitate.",
@@ -1062,7 +1008,6 @@ export const properties: Property[] = [
         duration: 7000,
       },
       {
-        id: 4,
         title: "Infinity Pool Experience",
         narrative:
           "Piscina infinită pare să se împletescă cu oceanul, creând o experiență vizuală spectaculoasă. Terasa panoramică oferă spațiul perfect pentru divertisment și relaxare, cu priveliști care se extind până la orizont.",
@@ -1073,7 +1018,6 @@ export const properties: Property[] = [
     ],
     sections: [
       {
-        id: "coastal-elegance",
         name: "Coastal Elegance",
         title: "COASTAL ELEGANCE",
         content:
@@ -1086,7 +1030,6 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "luxury-coastal-living",
         name: "Luxury Coastal Living",
         title: "LUXURY COASTAL LIVING",
         content:
@@ -1099,11 +1042,10 @@ export const properties: Property[] = [
         ],
       },
       {
-        id: "sustainable-coastal-design",
         name: "Sustainable Coastal Design",
         title: "SUSTAINABLE COASTAL DESIGN",
         content:
-          "Designul sustenabil al Coastal Retreat integrează cele mai recente progrese în materie de eficiență energetică și utilizare a resurselor naturale. Este un loc unde poți trăi în armonie cu natura, bucurându-te în același timp de confortul modern.",
+          "Designul sustenabil al Coastal Retreat integrează cele mai  recente progrese în materie de eficiență energetică și utilizare a resurselor naturale. Este un loc unde poți trăi în armonie cu natura, bucurându-te în același timp de confortul modern.",
         isVisible: true,
         order: 3,
         type: "property-detail",

@@ -48,11 +48,11 @@ import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { AnimatePresence } from "framer-motion";
 
 export default function PropertyPageClient({
-  propertyId,
+  propertySlug,
 }: {
-  propertyId: string;
+  propertySlug: string;
 }) {
-  const property = properties.find((p) => String(p.id) === String(propertyId));
+  const property = properties.find((p) => p.slug === propertySlug);
   const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -64,7 +64,7 @@ export default function PropertyPageClient({
   // Compute the canonical property URL for sharing
   const propertyUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/property/${propertyId}`
+      ? `${window.location.origin}/property/${propertySlug}`
       : "";
 
   const shareText =
@@ -351,7 +351,7 @@ export default function PropertyPageClient({
           <div className="space-y-16 mt-16">
             {propertySections?.map((section, index) => (
               <motion.div
-                key={section.id}
+                key={section.name}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 1.1 + index * 0.8 }}

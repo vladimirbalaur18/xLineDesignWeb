@@ -275,9 +275,9 @@ export default function ProjectsPage() {
                 <h2 className="text-xl font-bold text-white/90 mb-2">{year}</h2>
                 <div className="grid grid-cols-1 gap-6">
                   {projectsByYear[year].map((project) => (
-                    <Link key={project.id} href={`/property/${project.id}`}>
+                    <Link key={project.slug} href={`/property/${project.slug}`}>
                       <ProjectCard
-                        key={project.id}
+                        key={project.slug}
                         project={project}
                         projectCategory={
                           filtersMap[
@@ -309,7 +309,10 @@ export default function ProjectsPage() {
                 <div className="flex-1">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {projectsByYear[year].map((project) => (
-                      <Link key={project.id} href={`/property/${project.id}`}>
+                      <Link
+                        key={project.slug}
+                        href={`/property/${project.slug}`}
+                      >
                         <ProjectCard
                           project={project}
                           projectCategory={

@@ -181,7 +181,7 @@ export default function Projects() {
           viewport={{ once: true }}
         >
           {filteredProjects.slice(0, visibleProjects).map((project) => (
-            <Link key={project.id} href={`/property/${project.id}`}>
+            <Link key={project.slug} href={`/property/${project.slug}`}>
               <ProjectCard
                 project={project}
                 projectCategory={
