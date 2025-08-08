@@ -26,6 +26,10 @@ import GoogleMap from "./GoogleMap";
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: " Numele nu este valid" }),
   email: z.string().email({ message: "Te rugăm să introduci adresa de email" }),
+  phone: z
+    .string()
+    .min(8, { message: "Numărul de telefon nu este valid" })
+    .max(8, { message: "Numărul de telefon nu poate fi mai lung de 8 cifre" }),
   message: z.string().min(10, { message: "Mesajul e prea scurt" }),
   createdAt: z.string().optional(),
 });
@@ -41,6 +45,7 @@ export default function Contact() {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
     },
   });
@@ -50,10 +55,11 @@ export default function Contact() {
       const res = await apiRequest("POST", "/api/contact", data);
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Mesaj trimis!",
         description:
+          data.message ||
           "Mesajul tău a fost trimis cu succes. Te vom contacta în curând.",
         variant: "default",
       });
@@ -74,6 +80,7 @@ export default function Contact() {
   const onSubmit = (data: ContactFormValues) => {
     const contactData: InsertContactMessage = {
       ...data,
+      phone: `+373 ${data.phone}`, // Add the prefix to the phone number
       createdAt: new Date().toISOString(),
     };
     contactMutation.mutate(contactData);
@@ -349,9 +356,52 @@ export default function Contact() {
                 </div>
 
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-white text-sm uppercase tracking-wider">
+                          <span className="flex items-center gap-2">
+                            <span className="inline-block h-[1px] w-4 bg-white/50"></span>
+                            Telefon
+                          </span>
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative group">
+                            <div className=" absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium">
+                              +373
+                            </div>
+                            <Input
+                              placeholder="601 31 693"
+                              type="tel"
+                              maxLength={8}
+                              {...field}
+                              onChange={(e) => {
+                                // Only allow digits
+                                const value = e.target.value.replace(/\D/g, "");
+                                field.onChange(value);
+                              }}
+                              className="bg-black/50 border-white/20 focus:border-white rounded-lg p-6 pl-16 text-white placeholder:text-white/40 backdrop-blur-sm group-hover:border-white/40 transition-all duration-300"
+                            />
+                            <div className="absolute top-0 left-0 h-full w-[1px] bg-gradient-to-b from-white/5 to-transparent group-focus-within:from-white/30 transition-all duration-300"></div>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-white/70" />
+                      </FormItem>
+                    )}
+                  />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.4 }}
                   viewport={{ once: true }}
                 >
                   <FormField
@@ -370,6 +420,7 @@ export default function Contact() {
                             <Textarea
                               placeholder="Împărtășește viziunea ta cu noi.."
                               rows={6}
+                              maxLength={5000}
                               {...field}
                               className="bg-black/50 border-white/20 focus:border-white rounded-lg p-6 text-white placeholder:text-white/40 resize-none backdrop-blur-sm group-hover:border-white/40 transition-all duration-300"
                             />
@@ -385,7 +436,7 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.4 }}
+                  transition={{ duration: 0.4, delay: 0.5 }}
                   viewport={{ once: true }}
                   className="pt-4"
                 >
