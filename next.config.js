@@ -7,8 +7,18 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ["images.unsplash.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "p6a7dqe3nols6dlo.public.blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
+
   webpack: (config) => {
     config.module.rules.push({
       test: /\.(mp4|webm)$/,

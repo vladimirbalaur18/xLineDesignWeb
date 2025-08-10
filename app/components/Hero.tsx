@@ -8,22 +8,22 @@ export default function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      image: "/hero/1.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/1.jpg",
     },
     {
-      image: "/hero/2.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/2.jpg",
     },
     {
-      image: "/hero/3.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/3.jpg",
     },
     {
-      image: "/hero/4.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/4.jpg",
     },
     {
-      image: "/hero/5.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/1.jpg",
     },
     {
-      image: "/hero/6.jpg",
+      image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/5.jpg",
     },
   ];
 
