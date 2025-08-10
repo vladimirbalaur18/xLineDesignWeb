@@ -164,7 +164,7 @@ export default function About() {
               {stats.map((stat, index) => (
                 <Card
                   key={index}
-                  className="bg-gray-900/50 border-gray-800 hover:border-primary/50 transition-all hover:transform hover:-translate-y-1 flex flex-col h-full"
+                  className="bg-gray-900/50 border-gray-800 flex flex-col h-full"
                 >
                   <CardContent className="p-6 text-center flex flex-col h-full justify-center">
                     <div className="flex justify-center mb-4">{stat.icon}</div>
