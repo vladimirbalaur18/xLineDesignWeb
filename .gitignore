@@ -46,3 +46,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .next/cache/webpack/client-development/11.pack.gz
+.env.local
