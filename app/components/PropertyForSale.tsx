@@ -244,7 +244,7 @@ export default function PropertyForSale() {
                   {/* Property image */}
                   <div className="aspect-[4/3] relative overflow-hidden">
                     <Image
-                      src={`${property.images[0]}?auto=format&fit=crop&w=1200&q=80`}
+                      src={`${property.images[0]}`}
                       alt={property.title}
                       width={1200}
                       height={800}
@@ -369,7 +369,7 @@ export default function PropertyForSale() {
                         <CarouselItem key={index}>
                           <div className="relative aspect-[16/9] overflow-hidden rounded-sm border border-white/10">
                             <Image
-                              src={`${image}?auto=format&fit=crop&w=1200&q=80`}
+                              src={`${image}`}
                               alt={`${property.title} - Image ${index + 1}`}
                               width={1200}
                               height={800}

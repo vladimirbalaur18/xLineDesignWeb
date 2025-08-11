@@ -117,7 +117,7 @@ export default function Team() {
               <Card className="bg-gray-900/50 border-gray-800 overflow-hidden hover:border-primary/50 transition-all duration-300">
                 <div className="relative aspect-square overflow-hidden">
                   <Image
-                    src={`${member.image}?auto=format&fit=crop&w=256&q=80`}
+                    src={`${member.image}`}
                     alt={member.name}
                     width={256}
                     height={256}

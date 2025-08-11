@@ -85,7 +85,7 @@ export default function About() {
           >
             <div className="grid grid-cols-2 gap-2">
               <Image
-                src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/hero/1.jpg"
+                src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/1.jpg"
                 alt="Architectural sketch"
                 width={1200}
                 height={800}
@@ -93,14 +93,14 @@ export default function About() {
               />
               <div className="space-y-2">
                 <Image
-                  src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/hero/2.jpg"
+                  src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/2.jpg"
                   alt="Minimalist interior"
                   width={1200}
                   height={800}
                   className="rounded-lg shadow-xl w-full h-auto object-cover aspect-square"
                 />
                 <Image
-                  src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/hero/3.jpg"
+                  src="https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/3.jpg"
                   alt="Architectural blueprint"
                   width={1200}
                   height={800}

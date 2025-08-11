@@ -263,7 +263,7 @@ export default function ProjectGallery() {
                   {/* Image */}
                   <div className="relative overflow-hidden">
                     <Image
-                      src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
+                      src={`${image.image}`}
                       alt={image.title}
                       width={1200}
                       height={800}
@@ -323,7 +323,7 @@ export default function ProjectGallery() {
                         }}
                       >
                         <Image
-                          src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
+                          src={`${image.image}`}
                           alt={image.title}
                           width={1200}
                           height={800}
@@ -377,7 +377,7 @@ export default function ProjectGallery() {
                         {/* Image */}
                         <div className="relative overflow-hidden">
                           <Image
-                            src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
+                            src={`${image.image}`}
                             alt={image.title}
                             width={1200}
                             height={800}
