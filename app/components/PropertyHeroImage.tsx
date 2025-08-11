@@ -52,8 +52,8 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
           <Image
             src={images[currentImageIndex].url}
             alt={title}
-            width={1920}
-            height={1080}
+            fill
+            sizes="100vw"
             className="w-full h-full object-cover"
             onLoad={onImageLoad}
             priority

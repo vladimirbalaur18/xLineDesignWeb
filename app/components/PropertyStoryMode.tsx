@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, X, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
 import { Property } from "../lib/properties";
 import { useSwipe } from "@/hooks/use-swipe";
+import Image from "next/image";
 
 interface PropertyStoryModeProps {
   property: Property;
@@ -183,13 +184,7 @@ export default function PropertyStoryMode({
             >
               {/* Background Image with Ken Burns Effect */}
               <motion.div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${currentStory.image})`,
-                  backgroundPosition: currentStory.focusPoint
-                    ? `${currentStory.focusPoint.x}% ${currentStory.focusPoint.y}%`
-                    : "center",
-                }}
+                className="absolute inset-0"
                 animate={{
                   scale: isPlaying ? [1, 1.05] : 1,
                 }}
@@ -197,10 +192,28 @@ export default function PropertyStoryMode({
                   duration: currentStory.duration / 1000,
                   ease: "easeInOut",
                 }}
-              />
-
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/40" />
+                style={{
+                  overflow: "hidden",
+                }}
+              >
+                <div className="absolute inset-0">
+                  <Image
+                    src={currentStory.image}
+                    alt={currentStory.title}
+                    fill
+                    sizes="100vw"
+                    priority
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: currentStory.focusPoint
+                        ? `${currentStory.focusPoint.x}% ${currentStory.focusPoint.y}%`
+                        : "center",
+                    }}
+                    className="pointer-events-none select-none"
+                  />
+                  <div className="absolute inset-0 bg-black/40" />
+                </div>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
 

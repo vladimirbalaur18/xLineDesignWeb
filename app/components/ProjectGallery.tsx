@@ -172,10 +172,10 @@ export default function ProjectGallery() {
                   <div className="aspect-[4/3] relative">
                     {/* Image */}
                     <Image
-                      src={`${image.image}?auto=format&fit=crop&w=1200&q=80`}
+                      src={`${image.image}`}
                       alt={image.title}
-                      width={1200}
-                      height={800}
+                      fill
+                      sizes="100vw"
                       className="object-cover w-full h-full transition-all duration-500 group-hover:scale-105 group-hover:grayscale-0 grayscale-[20%]"
                     />
 
