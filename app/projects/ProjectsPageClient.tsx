@@ -45,8 +45,8 @@ export default function ProjectsPage() {
         (project) =>
           project.title.toLowerCase().includes(query) ||
           project.description.toLowerCase().includes(query) ||
-          project.location.toLowerCase().includes(query) ||
-          project.tags.some((tag) => tag.toLowerCase().includes(query))
+          project?.location?.toLowerCase().includes(query) ||
+          project?.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
     }
 
@@ -62,7 +62,9 @@ export default function ProjectsPage() {
         filtered.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "location":
-        filtered.sort((a, b) => a.location.localeCompare(b.location));
+        filtered.sort(
+          (a, b) => a?.location?.localeCompare(b?.location || "") || 0
+        );
         break;
     }
 
