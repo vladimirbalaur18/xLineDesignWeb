@@ -27,151 +27,228 @@ export interface Property {
   slug: string;
   title: string;
   description: string;
-  fullDescription: string;
-  address: string;
-  price: string;
-  bedrooms: number;
-  bathrooms: number;
-  area: number;
-  yearBuilt: number;
-  features: string[];
+  fullDescription?: string;
+  address?: string;
+  price?: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: number;
+  yearBuilt?: number;
+  features?: string[];
   category: "interiorDesign" | "architecture" | "landscapeDesign";
-  location: string;
+  location?: string;
   year: string;
   image: string;
-  tags: string[];
-  images: PropertyImage[];
+  tags?: string[];
+  heroImages: PropertyImage[];
+  galleryImages: PropertyImage[];
   storyChapters: PropertyStoryChapter[];
   sections: PropertySection[];
 }
 
 export const properties: Property[] = [
   {
-    slug: "turnul-azure-sky",
-    title: "Turnul Azure Sky",
-    description:
-      "Un zgârie-nori modern cu caracteristici sustenabile și priveliști panoramice ale orizontului orașului.",
-    fullDescription:
-      "Turnul Azure Sky este un simbol al inovației și sustenabilității, oferind locuitorilor săi o experiență de viață de neegalat. Fiecare detaliu a fost proiectat pentru a maximiza confortul și eficiența energetică, cu spații luminoase și priveliști spectaculoase asupra orașului.",
-    address: "123 Strada Principală, Singapore",
-    price: "$2,500,000",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 3200,
-    yearBuilt: 2023,
-    features: [
-      "Piscină Infinity",
-      "Sală de fitness",
-      "Parcare subterană",
-      "Sistem smart home",
-      "Terasă panoramică",
-      "Securitate 24/7",
-    ],
+    slug: "apartament-exfactor",
+    title: "Apartament Exfactor",
+    description: "",
+    fullDescription: "",
+    address: "Chișinău",
+    price: "",
+    area: 85,
+    yearBuilt: 2025,
+    features: [],
     category: "interiorDesign",
-    location: "Singapore",
-    year: "2023",
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
-    tags: ["Sustenabil", "Înalt", "Urban"],
-    images: [
+    location: "Chisinau",
+    year: "2025",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/1.jpg",
+    tags: [],
+    heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
-        description: "Fațada modernă a Turnului Azure Sky la apus.",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
       {
-        url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2",
-        description: "Holul de intrare cu tavan înalt și iluminat ambiental.",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/2.jpg",
         focusPoint: { x: 40, y: 60 },
       },
       {
-        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
-        description: "Zona de living spațioasă cu vedere panoramică.",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/3.jpg",
         focusPoint: { x: 60, y: 40 },
       },
-      {
-        url: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae",
-        description: "Dormitor principal cu design minimalist.",
-        focusPoint: { x: 30, y: 50 },
-      },
-      {
-        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
-        description: "Terasă panoramică cu vedere asupra orașului.",
-        focusPoint: { x: 50, y: 70 },
-      },
     ],
-    storyChapters: [
+    galleryImages: [
       {
-        title: "First Impressions",
-        narrative:
-          "Welcome to Turnul Azure Sky, where architectural brilliance meets modern living. As you step into the grand lobby, the soaring ceilings and ambient lighting create an immediate sense of luxury and sophistication. The building's sustainable design philosophy is evident in every detail, from the energy-efficient lighting to the natural ventilation systems.",
-        image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/1.jpg",
         focusPoint: { x: 50, y: 30 },
-        duration: 8000,
       },
       {
-        title: "Living Spaces",
-        narrative:
-          "The spacious living areas are designed to maximize natural light and city views. Floor-to-ceiling windows frame the stunning Singapore skyline, while the open-concept layout encourages social interaction and family bonding. Premium materials and finishes create an atmosphere of refined elegance.",
-        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/2.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/3.jpg",
         focusPoint: { x: 60, y: 40 },
-        duration: 7000,
       },
       {
-        title: "Master Suite",
-        narrative:
-          "The master suite is a private sanctuary offering unparalleled comfort and luxury. The minimalist design philosophy creates a calming atmosphere, while the panoramic views provide a constant connection to the vibrant city below. The en-suite bathroom features premium fixtures and spa-like amenities.",
-        image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/4.jpg",
         focusPoint: { x: 30, y: 50 },
-        duration: 6000,
       },
       {
-        title: "Outdoor Living",
-        narrative:
-          "The private terrace offers an outdoor living experience like no other. Whether enjoying morning coffee or evening cocktails, residents can soak in the breathtaking views of Singapore's iconic skyline. The infinity pool creates a seamless connection between indoor and outdoor living.",
-        image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/5.jpg",
         focusPoint: { x: 50, y: 70 },
-        duration: 5000,
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/6.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/7.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/8.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/9.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/10.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/11.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/12.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/13.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/14.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/15.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/16.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/17.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/18.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/19.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/20.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/21.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/22.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/23.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/24.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/25.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/26.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/27.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/28.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/29.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/30.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/31.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/32.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/33.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/34.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/35.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/36.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/37.jpg",
+        focusPoint: { x: 40, y: 60 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/38.jpg",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/39.jpg",
+        focusPoint: { x: 30, y: 50 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/40.jpg",
+        focusPoint: { x: 50, y: 70 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/41.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/102/42.jpg",
+        focusPoint: { x: 40, y: 60 },
       },
     ],
-    sections: [
-      {
-        name: "Luxury Living",
-        title: "LUXURY LIVING",
-        content:
-          "Experience unmatched luxury in Azure Sky Tower, where every detail has been carefully curated for those who appreciate the finest things in life. From the grand entrance to the private terraces, luxury is not just a feature—it's a way of life.",
-        isVisible: true,
-        order: 1,
-        type: "property-detail",
-        images: [
-          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-        ],
-      },
-      {
-        name: "Sustainable Future",
-        title: "SUSTAINABLE FUTURE",
-        content:
-          "Azure Sky Tower sets new standards in sustainable urban living. With state-of-the-art energy systems, green spaces, and smart home technology, we're building not just for today, but for generations to come.",
-        isVisible: true,
-        order: 2,
-        type: "property-detail",
-        images: [
-          "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
-          "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80",
-        ],
-      },
-      {
-        name: "Panoramic Views",
-        title: "PANORAMIC VIEWS",
-        content:
-          "Wake up to breathtaking city views through floor-to-ceiling windows. Each residence is positioned to maximize natural light and provide unobstructed vistas of the urban landscape below.",
-        isVisible: true,
-        order: 3,
-        type: "property-detail",
-        images: [
-          "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80",
-        ],
-      },
-    ],
+    storyChapters: [],
+    sections: [],
   },
   {
     slug: "the-vertex",
@@ -198,7 +275,24 @@ export const properties: Property[] = [
     year: "2022",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c",
     tags: ["Birou", "Minimalist", "Colaborativ"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        description: "Fațada principală a complexului The Vertex.",
+        focusPoint: { x: 55, y: 40 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+        description: "Spațiu de lucru deschis cu lumină naturală.",
+        focusPoint: { x: 60, y: 50 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
+        description: "Zonă de relaxare cu mobilier modern.",
+        focusPoint: { x: 45, y: 60 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1497366216548-37526070297c",
         description: "Fațada principală a complexului The Vertex.",
@@ -324,14 +418,31 @@ export const properties: Property[] = [
     year: "2021",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
     tags: ["Modern", "Geometric", "Concentrat pe lumină"],
-    images: [
+    heroImages: [
       {
         url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
         description: "Exteriorul geometric al Casei Prism.",
         focusPoint: { x: 60, y: 40 },
       },
       {
-        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00", // replaced image 2
+        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
+        description: "Living luminos cu vedere spre grădină.",
+        focusPoint: { x: 50, y: 50 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        description: "Dormitor principal cu feronerie mari.",
+        focusPoint: { x: 40, y: 60 },
+      },
+    ],
+    galleryImages: [
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Exteriorul geometric al Casei Prism.",
+        focusPoint: { x: 60, y: 40 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00",
         description: "Living luminos cu vedere spre grădină.",
         focusPoint: { x: 50, y: 50 },
       },
@@ -346,7 +457,7 @@ export const properties: Property[] = [
         focusPoint: { x: 30, y: 70 },
       },
       {
-        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd", // replaced image 5
+        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         description: "Terasă acoperită pentru relaxare.",
         focusPoint: { x: 50, y: 30 },
       },
@@ -450,7 +561,34 @@ export const properties: Property[] = [
     year: "2024",
     image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
     tags: ["Biofilic", "Lux", "Sustenabil"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
+        description: "Exteriorul elegant al Villa Serenity integrat în natură.",
+        focusPoint: { x: 50, y: 40 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Living spațios cu elemente naturale integrate.",
+        focusPoint: { x: 60, y: 50 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        description: "Bucătărie gourmet cu insulă centrală.",
+        focusPoint: { x: 45, y: 60 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        description: "Piscină naturală cu design organic.",
+        focusPoint: { x: 40, y: 70 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Spa și saună pentru relaxare completă.",
+        focusPoint: { x: 30, y: 80 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9",
         description: "Exteriorul elegant al Villa Serenity integrat în natură.",
@@ -576,7 +714,24 @@ export const properties: Property[] = [
     year: "2023",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
     tags: ["Transparent", "Modern", "Conectat cu natura"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Exteriorul transparent al The Glass House.",
+        focusPoint: { x: 55, y: 45 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687644-c7171b42498b",
+        description: "Living cu pereți de sticlă retractabili.",
+        focusPoint: { x: 65, y: 55 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        description: "Dormitor cu vedere panoramică.",
+        focusPoint: { x: 50, y: 65 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
         description: "Exteriorul transparent al The Glass House.",
@@ -702,7 +857,24 @@ export const properties: Property[] = [
     year: "2022",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c",
     tags: ["Urban", "Verde", "Comunitate"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1497366216548-37526070297c",
+        description: "Exteriorul verde al Urban Oasis cu grădini suspendate.",
+        focusPoint: { x: 50, y: 40 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+        description: "Living cu acces direct la grădina privată.",
+        focusPoint: { x: 55, y: 50 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2",
+        description: "Dormitor cu vedere spre grădina suspendată.",
+        focusPoint: { x: 45, y: 60 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1497366216548-37526070297c",
         description: "Exteriorul verde al Urban Oasis cu grădini suspendate.",
@@ -828,7 +1000,24 @@ export const properties: Property[] = [
     year: "2023",
     image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
     tags: ["Minimalist", "Funcțional", "Calm"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
+        description: "Exteriorul minimalist al Minimalist Haven.",
+        focusPoint: { x: 50, y: 45 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        description: "Living cu design curat și spațios.",
+        focusPoint: { x: 60, y: 55 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Bucătărie integrată cu mobilă minimalistă.",
+        focusPoint: { x: 45, y: 65 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd",
         description: "Exteriorul minimalist al Minimalist Haven.",
@@ -955,7 +1144,24 @@ export const properties: Property[] = [
     year: "2024",
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7", // replaced main image
     tags: ["Lux", "Coastal", "Panoramic"],
-    images: [
+    heroImages: [
+      {
+        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+        description: "Exteriorul elegant al Coastal Retreat pe coastă.",
+        focusPoint: { x: 55, y: 40 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d",
+        description: "Living cu vedere panoramică asupra oceanului.",
+        focusPoint: { x: 65, y: 50 },
+      },
+      {
+        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        description: "Master suite cu acces direct la terasă.",
+        focusPoint: { x: 50, y: 60 },
+      },
+    ],
+    galleryImages: [
       {
         url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
         description: "Exteriorul elegant al Coastal Retreat pe coastă.",

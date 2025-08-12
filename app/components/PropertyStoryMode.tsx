@@ -37,6 +37,8 @@ export default function PropertyStoryMode({
   // Generate story chapters from property data
   const storyChapters = property.storyChapters;
 
+  if (!storyChapters.length) return null;
+
   const intervalMs = 10;
   const progressIncrement =
     100 / (storyChapters[currentChapter].duration / intervalMs);
