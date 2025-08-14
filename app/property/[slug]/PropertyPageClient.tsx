@@ -3,7 +3,7 @@ import React, { use, useRef } from "react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { properties } from "@/lib/properties";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,6 @@ import {
   Share2,
   Camera,
   Eye,
-  ChevronLeft,
-  ChevronRight,
   Home,
   Building2,
   TreePine,
@@ -29,7 +27,6 @@ import {
   Wifi,
   Shield,
   Zap,
-  X,
   Link as LinkIcon,
 } from "lucide-react";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
@@ -45,7 +42,7 @@ import { SharePopover } from "@/components/SharePopover";
 import { PropertyGallerySmall } from "@/components/PropertyGallerySmall";
 import { PropertyStats } from "@/components/PropertyStats";
 import { PropertyHeroImage } from "@/components/PropertyHeroImage";
-import { AnimatePresence } from "framer-motion";
+import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
 
 export default function PropertyPageClient({
   propertySlug,
@@ -55,14 +52,13 @@ export default function PropertyPageClient({
   const property = properties.find((p) => p.slug === propertySlug);
   const router = useRouter();
   const [currentHeroImageIndex, setCurrentHeroImageIndex] = useState(0);
-  const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
   // Compute the canonical property URL for sharing
   const propertyUrl =
     typeof window !== "undefined"
@@ -89,45 +85,6 @@ export default function PropertyPageClient({
   useEffect(() => {
     setHeroImageLoaded(false);
   }, [currentHeroImageIndex, property]);
-
-  // Reset gallery index when property changes
-  useEffect(() => {
-    setCurrentGalleryImageIndex(0);
-  }, [property]);
-
-  // Ensure gallery index is valid when modal opens and scroll thumbnails to beginning
-  useEffect(() => {
-    if (
-      isImageModalOpen &&
-      property?.galleryImages &&
-      property.galleryImages.length > 0
-    ) {
-      const validIndex = Math.min(
-        Math.max(0, currentGalleryImageIndex),
-        property.galleryImages.length - 1
-      );
-      if (validIndex !== currentGalleryImageIndex) {
-        setCurrentGalleryImageIndex(validIndex);
-      }
-
-      // Scroll to show the currently active thumbnail
-      setTimeout(() => {
-        if (thumbnailContainerRef.current) {
-          const thumbnailWidth = 112; // w-28 = 112px
-          const gap = 8; // gap-2 = 8px
-          const scrollPosition = validIndex * (thumbnailWidth + gap);
-          thumbnailContainerRef.current.scrollLeft = scrollPosition;
-        }
-      }, 100);
-    }
-  }, [isImageModalOpen, currentGalleryImageIndex, property?.galleryImages]);
-
-  // Scroll to active thumbnail whenever currentGalleryImageIndex changes
-  useEffect(() => {
-    if (isImageModalOpen && currentGalleryImageIndex >= 0) {
-      scrollToActiveThumbnail(currentGalleryImageIndex);
-    }
-  }, [currentGalleryImageIndex, isImageModalOpen]);
 
   if (!property) {
     return (
@@ -165,36 +122,6 @@ export default function PropertyPageClient({
           (prev - 1 + property.heroImages.length) % property.heroImages.length
       );
     }
-  };
-
-  const nextGalleryImage = () => {
-    if (property.galleryImages && property.galleryImages.length > 0) {
-      setCurrentGalleryImageIndex(
-        (prev: number) => (prev + 1) % property.galleryImages.length
-      );
-    }
-  };
-
-  const prevGalleryImage = () => {
-    if (property.galleryImages && property.galleryImages.length > 0) {
-      setCurrentGalleryImageIndex(
-        (prev: number) =>
-          (prev - 1 + property.galleryImages.length) %
-          property.galleryImages.length
-      );
-    }
-  };
-
-  // Function to scroll to active thumbnail
-  const scrollToActiveThumbnail = (index: number) => {
-    setTimeout(() => {
-      if (thumbnailContainerRef.current) {
-        const thumbnailWidth = 112; // w-28 = 112px
-        const gap = 8; // gap-2 = 8px
-        const scrollPosition = index * (thumbnailWidth + gap);
-        thumbnailContainerRef.current.scrollLeft = scrollPosition;
-      }
-    }, 50);
   };
 
   return (
@@ -486,7 +413,7 @@ export default function PropertyPageClient({
                     <div className="w-full aspect-[16/7] mb-8 relative overflow-hidden">
                       {" "}
                       {/* aspect-video = 16:9 */}
-                      <Image
+                      <OptimizedImage
                         src={section.images[0]}
                         alt={section.title}
                         fill
@@ -504,7 +431,7 @@ export default function PropertyPageClient({
                         >
                           {" "}
                           {/* 4:3 aspect ratio */}
-                          <Image
+                          <OptimizedImage
                             src={img}
                             alt={`${section.title} Image ${i + 1}`}
                             fill
@@ -533,129 +460,14 @@ export default function PropertyPageClient({
           )}
         </motion.section>
 
-        {/* Enhanced Image Modal with Thumbnails and Descriptions */}
-        <AnimatePresence>
-          {isImageModalOpen &&
-            property.galleryImages &&
-            property.galleryImages.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="fixed inset-0 bg-black/95 z-50 flex flex-col p-4 max-h-screen"
-              >
-                <div className="flex-1 flex items-center justify-center min-h-0 overflow-hidden p-4">
-                  <div className="relative w-full h-full flex flex-col items-center justify-center">
-                    {/* Close Button */}
-                    <button
-                      onClick={() => setIsImageModalOpen(false)}
-                      className="absolute top-4 right-4 text-white hover:text-white/70 z-10 p-2 bg-black/50 rounded-full backdrop-blur-sm"
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
-
-                    {/* Main Image Container */}
-                    <div className="relative bg-black rounded-lg overflow-hidden mb-4 flex items-center justify-center w-full h-full">
-                      <Image
-                        src={
-                          property.galleryImages[currentGalleryImageIndex]
-                            ?.url ||
-                          property.galleryImages[0]?.url ||
-                          "/logo.png"
-                        }
-                        alt={`${property.title} - Image ${
-                          currentGalleryImageIndex + 1
-                        }`}
-                        width={1200}
-                        height={800}
-                        className="max-w-full max-h-full object-contain"
-                        style={{
-                          maxHeight: "calc(100vh - 200px)", // Account for thumbnails and padding
-                          maxWidth: "calc(100vw - 80px)", // Account for padding
-                        }}
-                      />
-
-                      {/* Navigation Arrows */}
-                      {property.galleryImages.length > 1 && (
-                        <>
-                          <button
-                            onClick={prevGalleryImage}
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-150 z-10"
-                          >
-                            <ChevronLeft className="w-6 h-6" />
-                          </button>
-                          <button
-                            onClick={nextGalleryImage}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-150 z-10"
-                          >
-                            <ChevronRight className="w-6 h-6" />
-                          </button>
-                        </>
-                      )}
-
-                      {/* Image Counter */}
-                      <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10">
-                        {currentGalleryImageIndex + 1} /{" "}
-                        {property.galleryImages.length}
-                      </div>
-                    </div>
-
-                    {/* Current Image Description */}
-                    <div className="text-center mb-4 flex-shrink-0">
-                      <p className="text-white/90 text-base leading-relaxed max-w-2xl mx-auto">
-                        {property.galleryImages[currentGalleryImageIndex]
-                          ?.description || ""}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Thumbnail Gallery at Bottom */}
-                <div className="max-w-5xl mx-auto w-full flex-shrink-0">
-                  <div
-                    ref={thumbnailContainerRef}
-                    className="flex gap-2 overflow-x-auto pb-2 px-2 scroll-smooth"
-                  >
-                    <div className="flex gap-2">
-                      {property.galleryImages.map((image, index) => (
-                        <motion.button
-                          key={index}
-                          onClick={() => {
-                            if (
-                              property.galleryImages &&
-                              property.galleryImages[index]
-                            ) {
-                              setCurrentGalleryImageIndex(index);
-                            }
-                          }}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          transition={{ duration: 0.15 }}
-                          className={`relative flex-shrink-0 aspect-video w-24 sm:w-28 rounded-lg overflow-hidden border-2 transition-all duration-150 ${
-                            currentGalleryImageIndex === index
-                              ? "border-white shadow-lg"
-                              : "border-white/30 hover:border-white/60"
-                          }`}
-                        >
-                          <Image
-                            src={image.url || "/logo.png"}
-                            alt={`Thumbnail ${index + 1}`}
-                            width={112}
-                            height={63}
-                            className="w-full h-full object-cover"
-                          />
-                          {currentGalleryImageIndex === index && (
-                            <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px]" />
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-        </AnimatePresence>
+        {/* Property Gallery Modal */}
+        <PropertyGalleryModal
+          isOpen={isImageModalOpen}
+          onClose={() => setIsImageModalOpen(false)}
+          images={property.galleryImages || []}
+          initialImageIndex={currentGalleryImageIndex}
+          propertyTitle={property.title}
+        />
 
         {/* Property Story Mode */}
         <PropertyStoryMode

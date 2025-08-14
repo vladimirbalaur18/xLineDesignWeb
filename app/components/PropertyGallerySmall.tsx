@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { OptimizedImage } from "./OptimizedImage";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 
@@ -39,7 +39,7 @@ export const PropertyGallerySmall: React.FC<PropertyGallerySmallProps> = ({
             className="relative aspect-square cursor-pointer overflow-hidden rounded-lg"
             onClick={() => onImageClick(index)}
           >
-            <Image
+            <OptimizedImage
               src={image.url}
               alt={title + " - Image " + (index + 1)}
               width={400}

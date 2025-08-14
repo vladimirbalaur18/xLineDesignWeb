@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { OptimizedImage } from "./OptimizedImage";
 
 interface PropertyHeroImageProps {
   images: { url: string }[];
@@ -64,7 +64,7 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
             }}
             className="w-full h-full"
           >
-            <Image
+            <OptimizedImage
               src={currentImage.url}
               alt={title}
               fill
