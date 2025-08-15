@@ -42,7 +42,8 @@ const services = [
       "Clădiri guvernamentale",
       "Facilități științifice și de cercetare",
     ],
-    image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/6.jpg",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/0.jpg",
   },
   {
     id: "landscapeDesign",

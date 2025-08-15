@@ -1,16 +1,21 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "motion/react";
 import { Badge } from "./ui/badge";
-import { Card, CardContent } from "./ui/card";
-import { ExternalLink, ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
-import ProjectScene3D from "./ProjectScene3D";
 import { properties } from "../lib/properties";
-import Image from "next/image";
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "./ui/carousel";
 
 // Animation variants
 const containerVariants = {
@@ -23,23 +28,10 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-    },
-  },
-};
-
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-  const [visibleProjects, setVisibleProjects] = useState(2);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px 0px" });
 
@@ -57,9 +49,29 @@ export default function Projects() {
       ? properties
       : properties.filter((project) => project.category === activeFilter);
 
-  const loadLess = () => {
-    setVisibleProjects((prev) => Math.max(3, prev - 3));
-  };
+  // Autoplay: advance slide every 3s, pause on hover
+  useEffect(() => {
+    if (!carouselApi) return;
+    const id = setInterval(() => {
+      if (isAutoplayPaused) return;
+      try {
+        carouselApi.scrollNext();
+      } catch (_) {
+        // noop
+      }
+    }, 3000);
+    return () => clearInterval(id);
+  }, [carouselApi, isAutoplayPaused]);
+
+  // Reset to first slide when filter changes
+  useEffect(() => {
+    if (!carouselApi) return;
+    try {
+      carouselApi.scrollTo(0);
+    } catch (_) {
+      // noop
+    }
+  }, [activeFilter, carouselApi]);
 
   return (
     <section id="projects" className="py-24 relative overflow-hidden">
@@ -140,58 +152,59 @@ export default function Projects() {
               whileTap={{ scale: 0.95 }}
             >
               <Badge
-                variant={
-                  activeFilter === filtersMap[key] ? "default" : "outline"
-                }
+                variant={activeFilter === key ? "default" : "outline"}
                 className={`
                   relative text-sm py-2.5 px-6 cursor-pointer uppercase tracking-wider backdrop-blur-sm
-                  ${
-                    activeFilter === filtersMap[key]
-                      ? "bg-black border border-white text-white hover:bg-white/10"
-                      : "border-white/20 text-white/70 hover:text-white hover:border-white/50"
-                  }
+                 
                 `}
                 onClick={() => {
                   setActiveFilter(key);
-                  setVisibleProjects(3);
                 }}
               >
                 {filtersMap[key]}
 
                 {/* Active indicator line */}
-                {activeFilter === filtersMap[key] && (
-                  <motion.span
-                    className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-white/30 via-white to-white/30"
-                    layoutId="activeFilterLine"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
               </Badge>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* Projects Carousel */}
         <motion.div
           ref={sectionRef}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-1 md:grid-cols-2 gap-2"
           viewport={{ once: true }}
         >
-          {filteredProjects.slice(0, visibleProjects).map((project) => (
-            <Link key={project.slug} href={`/property/${project.slug}`}>
-              <ProjectCard
-                project={project}
-                projectCategory={
-                  filtersMap[project.category as keyof typeof filtersMap]
-                }
-                showTags={false}
-                className=""
-              />
-            </Link>
-          ))}
+          <Carousel
+            className="relative"
+            opts={{ align: "start", containScroll: "trimSnaps", loop: true }}
+            setApi={setCarouselApi}
+            onMouseEnter={() => setIsAutoplayPaused(true)}
+            onMouseLeave={() => setIsAutoplayPaused(false)}
+          >
+            <CarouselContent>
+              {filteredProjects.map((project) => (
+                <CarouselItem
+                  key={project.slug}
+                  className="basis-full md:basis-1/2 lg:basis-1/3"
+                >
+                  <Link href={`/property/${project.slug}`}>
+                    <ProjectCard
+                      project={project}
+                      projectCategory={
+                        filtersMap[project.category as keyof typeof filtersMap]
+                      }
+                      showTags={false}
+                    />
+                  </Link>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
+            <CarouselNext className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
+          </Carousel>
         </motion.div>
         {/* View All Projects Button */}
         <motion.div

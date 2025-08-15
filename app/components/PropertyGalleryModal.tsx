@@ -112,8 +112,6 @@ export function PropertyGalleryModal({
       setNextImageLoaded(false);
     }
   };
-
-  // Function to scroll to active thumbnail
   const scrollToActiveThumbnail = (index: number) => {
     setTimeout(() => {
       if (thumbnailContainerRef.current) {
@@ -242,7 +240,7 @@ export function PropertyGalleryModal({
                     }`}
                   >
                     <OptimizedImage
-                      src={image.url || "/logo.png"}
+                      src={image.url}
                       alt={`Thumbnail ${index + 1}`}
                       width={112}
                       height={63}

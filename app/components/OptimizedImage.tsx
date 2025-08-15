@@ -79,7 +79,7 @@ export function OptimizedImage({
     placeholder,
     blurDataURL,
     loader: wsrvLoader,
-  } as const;
+} as const;
 
   if (fill) {
     return <NextImage {...commonProps} fill {...props} />;
