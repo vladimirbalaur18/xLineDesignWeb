@@ -7,6 +7,7 @@ import RootScreenLoader from "./RootScreenLoader";
 // Dynamically import components to avoid server-side rendering of client components
 const Hero = dynamic(() => import("./components/Hero"));
 const Projects = dynamic(() => import("./components/Projects"));
+const WhyUs = dynamic(() => import("./components/WhyUs"));
 const ProjectGallery = dynamic(() => import("./components/ProjectGallery"));
 const About = dynamic(() => import("./components/About"));
 
@@ -27,6 +28,7 @@ export default function HomePage() {
       <main>
         <Hero />
         <About />
+        <WhyUs />
         <Services />
         <Projects />
         {/* <ProjectGallery /> */}

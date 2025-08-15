@@ -16,7 +16,7 @@ const services = [
       <Home className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
     description:
-      "Creăm locuințe deosebite care reflectă personalitatea și stilul de viață al proprietarilor, optimizând în același timp funcționalitatea și confortul.",
+      "Amenajări personalizate pentru locuințe rezidențiale, spații comerciale și proiecte HoReCa. De la minimalism modern la clasic elegant, creăm interioare care inspiră și funcționează impecabil.",
     features: [
       "Proiectare case personalizate",
       "Locuințe multifamiliale",
@@ -35,7 +35,7 @@ const services = [
       <Landmark className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
     description:
-      "Creăm spații funcționale și inspiraționale pentru educație, sănătate și instituții culturale care deservesc comunitățile.",
+      "Servicii complete de proiectare pentru construcții noi, renovări și dezvoltări mixte. Combinăm estetica, funcționalitatea și responsabilitatea față de mediu.",
     features: [
       "Instituții de învățământ",
       "Clădiri medicale",
@@ -53,7 +53,7 @@ const services = [
       <Presentation className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
     description:
-      "Servicii complete de master planning și design urban care creează comunități coerente, sustenabile și vibrante.",
+      "Spații exterioare care îmbină natura și arhitectura — de la grădini private la parcuri publice. Planificăm cu accent pe frumusețe, sustenabilitate și durabilitate.",
     features: [
       "Design urban",
       "Master planning",

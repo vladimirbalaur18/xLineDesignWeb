@@ -123,19 +123,16 @@ export default function About() {
             </h2>
             <div className="md:text-xl space-y-4 text-justify">
               <p className="text-gray-400">
-                xLine Design a evoluat într-o firmă de design cu renume
-                național, recunoscută pentru crearea de spații care inspiră,
-                inovează și rezistă în timp. Echipa noastră multidisciplinară
-                îmbină viziunea artistică cu expertiza tehnică pentru a oferi
-                soluții arhitecturale de excepție.
+                XLine Design este un studio premiat de arhitectură și design
+                interior din Chișinău, Moldova, care creează spații vizionare
+                din 2019.
               </p>
 
               <p className="text-gray-400">
-                Credem că arhitectura deosebită nu ar trebui doar să captiveze
-                vizual, ci și să îmbunătățească modul în care oamenii trăiesc,
-                lucrează și interacționează. Proiectele noastre sunt ghidate de
-                o înțelegere profundă a nevoilor clienților, a aspectelor de
-                mediu și a contextului cultural.
+                Cu peste 250 de proiecte finalizate în 3 țări și mai mult de
+                10.000 m² de spații proiectate, echipa noastră combină
+                creativitatea, funcționalitatea și sustenabilitatea pentru a
+                transforma locuințe, birouri și spații exterioare..
               </p>
             </div>
           </motion.div>

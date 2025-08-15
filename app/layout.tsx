@@ -11,11 +11,11 @@ import { Root } from "vaul";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "XLine Design",
+  title: "XLine Design | Arhitectură modernă și design interior în Moldova",
   description:
     "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
   openGraph: {
-    title: "XLine Design",
+    title: "XLine Design | Arhitectură modernă și design interior în Moldova",
     description:
       "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
 
@@ -28,6 +28,47 @@ export const metadata: Metadata = {
       },
     ],
   },
+  keywords: [
+    "arhitectură modernă",
+    "design interior",
+    "design interior în Moldova",
+    "design interior în Chișinău",
+    "design interior în Republica Moldova",
+    "arhitectură Moldova",
+    "design interior Chișinău",
+    "arhitect Chișinău",
+    "design peisagistic Moldova",
+    "casă modernă Moldova",
+    "vile de lux",
+    "amenajare apartament Chișinău",
+    "arhitectură sustenabilă",
+    "modern architecture",
+    "interior design",
+    "interior design in Moldova",
+    "interior design in Chișinău",
+    "interior design in the Republic of Moldova",
+    "architecture Moldova",
+    "interior design Chișinău",
+    "architect Chișinău",
+    "landscape design Moldova",
+    "modern house Moldova",
+    "luxury villas",
+    "apartment decoration Chișinău",
+    "sustainable architecture",
+    "современная архитектура",
+    "дизайн интерьера",
+    "дизайн интерьера в Молдове",
+    "дизайн интерьера в Кишиневе",
+    "дизайн интерьера в Республике Молдова",
+    "архитектура Молдова",
+    "дизайн интерьера Кишинев",
+    "архитектор Кишинев",
+    "ландшафтный дизайн Молдова",
+    "современный дом Молдова",
+    "роскошные виллы",
+    "оформление квартиры Кишинев",
+    "устойчивая архитектура",
+  ],
 };
 
 export default function RootLayout({
