@@ -32,6 +32,9 @@ export function PropertyGalleryModal({
   const [shouldScrollThumbnails, setShouldScrollThumbnails] = useState(false);
   const [currentImageLoading, setCurrentImageLoading] = useState(false);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+  const spinnerStartRef = useRef<number>(0);
+  const hideSpinnerTimeoutRef = useRef<number | null>(null);
+  const MIN_SPINNER_MS = 500;
 
   // Reset gallery index when modal opens or images change
   useEffect(() => {
@@ -117,32 +120,18 @@ export function PropertyGalleryModal({
   };
 
   const handleImageChange = (newIndex: number) => {
+    // Start spinner immediately and ensure minimum visible duration
+    if (hideSpinnerTimeoutRef.current) {
+      clearTimeout(hideSpinnerTimeoutRef.current);
+      hideSpinnerTimeoutRef.current = null;
+    }
+    spinnerStartRef.current =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+    setCurrentImageLoading(true);
+
     setCurrentImageIndex(newIndex);
     setGalleryImageLoading(false);
     setNextImageLoaded(false);
-
-    // Add a small delay before showing loading spinner to avoid flashing for fast loads
-    const loadingTimeout = setTimeout(() => {
-      setCurrentImageLoading(true);
-    }, 150);
-
-    // Preload the new image with optimized size for faster loading
-    const newImageUrl = optimizeImageUrl(images[newIndex]?.url, 800, 600);
-    if (newImageUrl) {
-      const img = new window.Image();
-      img.onload = () => {
-        clearTimeout(loadingTimeout);
-        setCurrentImageLoading(false);
-      };
-      img.onerror = () => {
-        clearTimeout(loadingTimeout);
-        setCurrentImageLoading(false);
-      };
-      img.src = newImageUrl;
-    } else {
-      clearTimeout(loadingTimeout);
-      setCurrentImageLoading(false);
-    }
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -180,6 +169,7 @@ export function PropertyGalleryModal({
                   </div>
                 )}
                 <OptimizedImage
+                  key={images[currentImageIndex]?.url || "fallback"}
                   src={
                     images[currentImageIndex]?.url ||
                     images[0]?.url ||
@@ -196,6 +186,36 @@ export function PropertyGalleryModal({
                   style={{
                     maxHeight: "calc(100vh - 200px)", // Account for thumbnails and padding
                     maxWidth: "calc(100vw - 80px)", // Account for padding
+                  }}
+                  onLoad={() => {
+                    const now =
+                      typeof performance !== "undefined"
+                        ? performance.now()
+                        : Date.now();
+                    const elapsed = Math.max(0, now - spinnerStartRef.current);
+                    const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+                    if (hideSpinnerTimeoutRef.current) {
+                      clearTimeout(hideSpinnerTimeoutRef.current);
+                    }
+                    hideSpinnerTimeoutRef.current = window.setTimeout(() => {
+                      setCurrentImageLoading(false);
+                      hideSpinnerTimeoutRef.current = null;
+                    }, remaining);
+                  }}
+                  onError={() => {
+                    const now =
+                      typeof performance !== "undefined"
+                        ? performance.now()
+                        : Date.now();
+                    const elapsed = Math.max(0, now - spinnerStartRef.current);
+                    const remaining = Math.max(0, MIN_SPINNER_MS - elapsed);
+                    if (hideSpinnerTimeoutRef.current) {
+                      clearTimeout(hideSpinnerTimeoutRef.current);
+                    }
+                    hideSpinnerTimeoutRef.current = window.setTimeout(() => {
+                      setCurrentImageLoading(false);
+                      hideSpinnerTimeoutRef.current = null;
+                    }, remaining);
                   }}
                 />
 
