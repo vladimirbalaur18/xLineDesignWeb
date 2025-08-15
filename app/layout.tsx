@@ -101,9 +101,9 @@ export const metadata: Metadata = {
   },
   referrer: "origin-when-cross-origin",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 
