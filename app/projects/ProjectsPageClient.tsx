@@ -309,7 +309,7 @@ export default function ProjectsPage() {
                 </div>
                 {/* Cards */}
                 <div className="flex-1">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 xl:gap-2">
                     {projectsByYear[year].map((project) => (
                       <Link
                         key={project.slug}

@@ -24,7 +24,8 @@ const services = [
       "Vile de lux",
       "Renovări rezidențiale",
     ],
-    image: "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/31%2C1.jpg",
   },
 
   {
