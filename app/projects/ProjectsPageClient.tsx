@@ -246,7 +246,7 @@ export default function ProjectsPage() {
         <div className="container mx-auto px-4 flex flex-col gap-12 relative">
           {/* Desktop timeline line (only render for lg and up) */}
           {filteredProjects?.length > 0 && (
-            <div className="hidden lg:block absolute top-0 bottom-0 w-1 left-16 bg-white rounded-full" />
+            <div className="hidden lg:block absolute top-0 bottom-0 w-[2px] left-[47px] bg-white rounded-full" />
           )}
           {/* Not Found Illustration */}
           {filteredProjects.length === 0 && (
