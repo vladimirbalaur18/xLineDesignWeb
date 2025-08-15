@@ -23,6 +23,14 @@ import { Button } from "./ui/button";
 import { MapPin, Phone, Mail, Clock, Send, Loader2 } from "lucide-react";
 import GoogleMap from "./GoogleMap";
 
+const BUSINESS_PHONE =
+  process.env.NEXT_PUBLIC_BUSINESS_PHONE ?? "+373 601 31 693";
+const BUSINESS_ADDRESS_LINE1 =
+  process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1 ?? "Habad Liubavici 12";
+const BUSINESS_ADDRESS_LINE2 =
+  process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE2 ??
+  "mun. Chișinău, Republica Moldova";
+
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: " Numele nu este valid" }),
   email: z.string().email({ message: "Te rugăm să introduci adresa de email" }),
@@ -526,9 +534,9 @@ export default function Contact() {
                       Adresă
                     </h4>
                     <p className="text-white/70 font-light">
-                      Str. Habad Liubavici 12
+                      {BUSINESS_ADDRESS_LINE1}
                       <br />
-                      mun. Chișinău, Republica Moldova
+                      {BUSINESS_ADDRESS_LINE2}
                     </p>
                   </div>
                 </motion.div>
@@ -567,7 +575,7 @@ export default function Contact() {
                     <h4 className="text-white text-sm uppercase tracking-wider mb-1">
                       Telefon
                     </h4>
-                    <p className="text-white/70 font-light">+373 601 31 693</p>
+                    <p className="text-white/70 font-light">{BUSINESS_PHONE}</p>
                   </div>
                 </motion.div>
 

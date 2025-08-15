@@ -11,15 +11,26 @@ import { Root } from "vaul";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
+  ),
   title: "XLine Design | Arhitectură modernă și design interior în Moldova",
   description:
     "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  themeColor: "#000000",
   openGraph: {
     title: "XLine Design | Arhitectură modernă și design interior în Moldova",
     description:
       "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
-
+    url: "/",
     siteName: "XLine Design",
+    type: "website",
+    locale: "en_US",
     images: [
       {
         url: "/logo.jpg",
@@ -69,6 +80,31 @@ export const metadata: Metadata = {
     "оформление квартиры Кишинев",
     "устойчивая архитектура",
   ],
+  twitter: {
+    card: "summary_large_image",
+    title: "XLine Design | Arhitectură modernă și design interior în Moldova",
+    description:
+      "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
+    images: ["/logo.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
+    },
+  },
+  referrer: "origin-when-cross-origin",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -87,7 +123,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <RootScreenLoader>
           <Providers>
-            <Header />
+            <header>
+              <Header />
+            </header>
             {children}
             <Toaster />
           </Providers>
