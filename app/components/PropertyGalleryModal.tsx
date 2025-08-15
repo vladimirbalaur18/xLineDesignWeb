@@ -29,6 +29,8 @@ export function PropertyGalleryModal({
   const [galleryImageLoading, setGalleryImageLoading] = useState(false);
   const [nextImageUrl, setNextImageUrl] = useState<string | null>(null);
   const [nextImageLoaded, setNextImageLoaded] = useState(false);
+  const [shouldScrollThumbnails, setShouldScrollThumbnails] = useState(false);
+  const [currentImageLoading, setCurrentImageLoading] = useState(false);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
 
   // Reset gallery index when modal opens or images change
@@ -42,6 +44,7 @@ export function PropertyGalleryModal({
       setNextImageUrl(null);
       setNextImageLoaded(false);
       setGalleryImageLoading(false);
+      setCurrentImageLoading(false);
     }
   }, [isOpen, images, initialImageIndex]);
 
@@ -62,7 +65,7 @@ export function PropertyGalleryModal({
     }
   }, [isOpen, currentImageIndex, images]);
 
-  // Ensure gallery index is valid when modal opens and scroll thumbnails
+  // Ensure gallery index is valid when modal opens
   useEffect(() => {
     if (isOpen && images.length > 0) {
       const validIndex = Math.min(
@@ -75,43 +78,17 @@ export function PropertyGalleryModal({
 
       // Reset loading state when modal opens
       setGalleryImageLoading(false);
-
-      // Scroll to show the currently active thumbnail
-      setTimeout(() => {
-        if (thumbnailContainerRef.current) {
-          const thumbnailWidth = 112; // w-28 = 112px
-          const gap = 8; // gap-2 = 8px
-          const scrollPosition = validIndex * (thumbnailWidth + gap);
-          thumbnailContainerRef.current.scrollLeft = scrollPosition;
-        }
-      }, 100);
     }
   }, [isOpen, currentImageIndex, images]);
 
-  // Scroll to active thumbnail whenever currentImageIndex changes
+  // Scroll to active thumbnail only when navigation buttons are used
   useEffect(() => {
-    if (isOpen && currentImageIndex >= 0) {
+    if (isOpen && currentImageIndex >= 0 && shouldScrollThumbnails) {
       scrollToActiveThumbnail(currentImageIndex);
+      setShouldScrollThumbnails(false); // Reset the flag after scrolling
     }
-  }, [currentImageIndex, isOpen]);
+  }, [currentImageIndex, isOpen, shouldScrollThumbnails]);
 
-  const nextImage = () => {
-    if (images.length > 0) {
-      const nextIndex = (currentImageIndex + 1) % images.length;
-      setCurrentImageIndex(nextIndex);
-      setGalleryImageLoading(false);
-      setNextImageLoaded(false);
-    }
-  };
-
-  const prevImage = () => {
-    if (images.length > 0) {
-      const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
-      setCurrentImageIndex(prevIndex);
-      setGalleryImageLoading(false);
-      setNextImageLoaded(false);
-    }
-  };
   const scrollToActiveThumbnail = (index: number) => {
     setTimeout(() => {
       if (thumbnailContainerRef.current) {
@@ -123,11 +100,55 @@ export function PropertyGalleryModal({
     }, 50);
   };
 
+  const nextImage = () => {
+    if (images.length > 0) {
+      const nextIndex = (currentImageIndex + 1) % images.length;
+      handleImageChange(nextIndex);
+      setShouldScrollThumbnails(true); // Enable thumbnail scrolling for navigation
+    }
+  };
+
+  const prevImage = () => {
+    if (images.length > 0) {
+      const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
+      handleImageChange(prevIndex);
+      setShouldScrollThumbnails(true); // Enable thumbnail scrolling for navigation
+    }
+  };
+
+  const handleImageChange = (newIndex: number) => {
+    setCurrentImageIndex(newIndex);
+    setGalleryImageLoading(false);
+    setNextImageLoaded(false);
+
+    // Add a small delay before showing loading spinner to avoid flashing for fast loads
+    const loadingTimeout = setTimeout(() => {
+      setCurrentImageLoading(true);
+    }, 150);
+
+    // Preload the new image with optimized size for faster loading
+    const newImageUrl = optimizeImageUrl(images[newIndex]?.url, 800, 600);
+    if (newImageUrl) {
+      const img = new window.Image();
+      img.onload = () => {
+        clearTimeout(loadingTimeout);
+        setCurrentImageLoading(false);
+      };
+      img.onerror = () => {
+        clearTimeout(loadingTimeout);
+        setCurrentImageLoading(false);
+      };
+      img.src = newImageUrl;
+    } else {
+      clearTimeout(loadingTimeout);
+      setCurrentImageLoading(false);
+    }
+  };
+
   const handleThumbnailClick = (index: number) => {
     if (images && images[index]) {
-      setCurrentImageIndex(index);
-      setGalleryImageLoading(false);
-      setNextImageLoaded(false);
+      handleImageChange(index);
+      // Don't set shouldScrollThumbnails to true - let user manually scroll if needed
     }
   };
 
@@ -153,9 +174,9 @@ export function PropertyGalleryModal({
 
               {/* Main Image Container */}
               <div className="relative bg-black rounded-lg overflow-hidden mb-4 flex items-center justify-center w-full h-full">
-                {galleryImageLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+                {(galleryImageLoading || currentImageLoading) && (
+                  <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/20 backdrop-blur-sm">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white/80"></div>
                   </div>
                 )}
                 <OptimizedImage
@@ -165,10 +186,12 @@ export function PropertyGalleryModal({
                     "/logo.png"
                   }
                   alt={`${propertyTitle} - Image ${currentImageIndex + 1}`}
-                  width={1200}
-                  height={800}
-                  className={`max-w-full max-h-full object-contain transition-opacity duration-300 ${
-                    galleryImageLoading ? "opacity-50" : "opacity-100"
+                  width={1920}
+                  height={1080}
+                  className={`max-w-full max-h-full object-contain transition-opacity duration-200 ${
+                    galleryImageLoading || currentImageLoading
+                      ? "opacity-70"
+                      : "opacity-100"
                   }`}
                   style={{
                     maxHeight: "calc(100vh - 200px)", // Account for thumbnails and padding
@@ -181,9 +204,9 @@ export function PropertyGalleryModal({
                   <>
                     <button
                       onClick={prevImage}
-                      disabled={galleryImageLoading}
+                      disabled={galleryImageLoading || currentImageLoading}
                       className={`absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-150 z-10 ${
-                        galleryImageLoading
+                        galleryImageLoading || currentImageLoading
                           ? "opacity-50 cursor-not-allowed"
                           : ""
                       }`}
@@ -192,9 +215,9 @@ export function PropertyGalleryModal({
                     </button>
                     <button
                       onClick={nextImage}
-                      disabled={galleryImageLoading}
+                      disabled={galleryImageLoading || currentImageLoading}
                       className={`absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full backdrop-blur-sm transition-all duration-150 z-10 ${
-                        galleryImageLoading
+                        galleryImageLoading || currentImageLoading
                           ? "opacity-50 cursor-not-allowed"
                           : ""
                       }`}
