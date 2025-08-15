@@ -107,8 +107,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             </motion.div>
 
             {/* Overlay gradient with grid pattern */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/20 group-hover:opacity-90 transition-opacity">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-40"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/10 to-black/5 group-hover:opacity-90 transition-opacity">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px] opacity-10"></div>
             </div>
 
             {/* Project title content */}
