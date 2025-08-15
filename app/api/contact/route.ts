@@ -8,7 +8,7 @@ const contactFormSchema = z.object({
   phone: z
     .string()
     .min(12, { message: "Numărul de telefon nu este valid" })
-    .max(12, { message: "Numărul de telefon nu poate fi mai lung de 8 cifre" }), // Updated for prefix
+    .max(13, { message: "Numărul de telefon nu poate fi mai lung de 8 cifre" }), // Updated for prefix
   message: z.string().min(10, { message: "Mesajul e prea scurt" }),
   createdAt: z.string().optional(),
 });
