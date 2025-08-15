@@ -23,13 +23,12 @@ import { Button } from "./ui/button";
 import { MapPin, Phone, Mail, Clock, Send, Loader2 } from "lucide-react";
 import GoogleMap from "./GoogleMap";
 
-const BUSINESS_PHONE =
-  process.env.NEXT_PUBLIC_BUSINESS_PHONE ?? "+373 601 31 693";
-const BUSINESS_ADDRESS_LINE1 =
-  process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1 ?? "Habad Liubavici 12";
-const BUSINESS_ADDRESS_LINE2 =
-  process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE2 ??
-  "mun. Chișinău, Republica Moldova";
+const BUSINESS_PHONE = process.env.NEXT_PUBLIC_BUSINESS_PHONE;
+const BUSINESS_ADDRESS_LINE1 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1;
+const BUSINESS_ADDRESS_LINE2 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE2;
+const BUSINESS_EMAIL = process.env.NEXT_PUBLIC_BUSINESS_EMAIL;
+const OVERLAY_LAT = Number(process.env.NEXT_PUBLIC_OFFICE_LAT ?? 47.0233113);
+const OVERLAY_LNG = Number(process.env.NEXT_PUBLIC_OFFICE_LNG ?? 28.841683);
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: " Numele nu este valid" }),
@@ -502,7 +501,7 @@ export default function Contact() {
               />
               {/* Map coordinates overlay */}
               <div className="absolute bottom-4 right-4 text-xs text-white/70 font-mono bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
-                47.0105° N, 28.8638° E
+                {OVERLAY_LAT}, {OVERLAY_LNG}
               </div>
             </div>
 
@@ -555,9 +554,7 @@ export default function Contact() {
                     <h4 className="text-white text-sm uppercase tracking-wider mb-1">
                       Email
                     </h4>
-                    <p className="text-white/70 font-light">
-                      xlinemd@gmail.com
-                    </p>
+                    <p className="text-white/70 font-light">{BUSINESS_EMAIL}</p>
                   </div>
                 </motion.div>
 

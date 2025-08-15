@@ -88,33 +88,22 @@ export const metadata: Metadata = {
 // const PropertyForSale = dynamic(() => import("./components/PropertyForSale"));
 
 export default function HomePage() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const mapsPlaceUrl = process.env.NEXT_PUBLIC_GOOGLE_MAPS_PLACE_URL;
-  const officeLatitude = Number(
-    process.env.NEXT_PUBLIC_OFFICE_LAT ?? 47.0233113
-  );
-  const officeLongitude = Number(
-    process.env.NEXT_PUBLIC_OFFICE_LNG ?? 28.841683
-  );
-  const officeElevation = Number(
-    process.env.NEXT_PUBLIC_OFFICE_ELEVATION ?? 132
-  );
+  const officeLatitude = Number(process.env.NEXT_PUBLIC_OFFICE_LAT);
+  const officeLongitude = Number(process.env.NEXT_PUBLIC_OFFICE_LNG);
+  const officeElevation = Number(process.env.NEXT_PUBLIC_OFFICE_ELEVATION);
   const fallbackMapUrl = `https://www.google.com/maps?q=${officeLatitude},${officeLongitude}`;
   const facebookUrl = process.env.NEXT_PUBLIC_FACEBOOK_URL;
   const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
   const linkedinUrl = process.env.NEXT_PUBLIC_LINKEDIN_URL;
   const email = process.env.NEXT_PUBLIC_BUSINESS_EMAIL;
   const priceRange = process.env.NEXT_PUBLIC_PRICE_RANGE; // e.g., $, $$, $$$
-  const businessPhone =
-    process.env.NEXT_PUBLIC_BUSINESS_PHONE ?? "+373 601 31 693";
-  const addressLine1 =
-    process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1 ?? "Habad Liubavici 12";
-  const addressLocality =
-    process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LOCALITY ?? "Chișinău";
-  const addressRegion =
-    process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_REGION ?? "Chișinău";
-  const addressCountry =
-    process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_COUNTRY ?? "MD";
+  const businessPhone = process.env.NEXT_PUBLIC_BUSINESS_PHONE;
+  const addressLine1 = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1;
+  const addressLocality = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LOCALITY;
+  const addressRegion = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_REGION;
+  const addressCountry = process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_COUNTRY;
 
   const socialProfiles = [
     mapsPlaceUrl ?? fallbackMapUrl,

@@ -109,21 +109,24 @@ export default function Footer() {
             <h4 className="font-bold mb-4">Contact Us</h4>
             <ul className="space-y-2">
               <li className="text-gray-400">
-                Str. Habad Liubavici 12
+                {process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1}
                 <br />
-                mun. Chisinau, Republica Moldova
+                {process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE2}
               </li>
               <li className="text-gray-400">
-                <a href="tel:+37360131693" className="hover:text-primary">
-                  0601 31 693
+                <a
+                  href={`tel:${process.env.NEXT_PUBLIC_BUSINESS_PHONE}`}
+                  className="hover:text-primary"
+                >
+                  {process.env.NEXT_PUBLIC_BUSINESS_PHONE}
                 </a>
               </li>
               <li className="text-gray-400">
                 <a
-                  href="mailto:xlinemd@gmail.com"
+                  href={`mailto:${process.env.NEXT_PUBLIC_BUSINESS_EMAIL}`}
                   className="hover:text-primary"
                 >
-                  xlinemd@gmail.com
+                  {process.env.NEXT_PUBLIC_BUSINESS_EMAIL}
                 </a>
               </li>
             </ul>
