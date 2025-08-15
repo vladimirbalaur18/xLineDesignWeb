@@ -49,7 +49,7 @@ export interface Property {
 export const properties: Property[] = [
   {
     slug: "apartament-buiucani",
-    title: "Apartament Buiucani",
+    title: "Buiucani",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -60,11 +60,20 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2025",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/101/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/101/1.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/101/16.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/101/24.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -238,8 +247,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "nicolaie-rascanovca",
-    title: "Nicolaie rascanovca",
+    slug: "riscanovca",
+    title: "Rîșcanovca",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -250,11 +259,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2025",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/100/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/100/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -392,11 +402,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2025",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/99/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/99/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -646,23 +657,24 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "ap-durlesti-120",
-    title: "Ap. durlesti 120",
+    slug: "durlesti",
+    title: "Durlesti",
     description: "",
     fullDescription: "",
     address: "Chișinău",
     price: "",
-    area: 0, // Unknown area
+    area: 120,
     yearBuilt: 2025,
     features: [],
     category: "interiorDesign",
     location: "Chisinau",
     year: "2025",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/95/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/95/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -825,7 +837,7 @@ export const properties: Property[] = [
   },
   {
     slug: "casa-doua-nivele",
-    title: "Casa doua nivele",
+    title: "Casa cu două nivele, Moldova",
     description: "",
     fullDescription: "",
     address: "Moldova",
@@ -836,11 +848,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Moldova",
     year: "2025",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/82/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/82/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -1068,7 +1081,7 @@ export const properties: Property[] = [
 
   {
     slug: "mircea-cel-batran",
-    title: "Mircea cel batran",
+    title: "Mircea cel Bătrîn",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -1079,11 +1092,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/61/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/61/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -1265,8 +1279,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "strada-spartacus",
-    title: "Strada spartacus",
+    slug: "spartacus",
+    title: "Spartacus",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -1277,11 +1291,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/60/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/60/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -1507,8 +1522,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "office-calea-iesilor",
-    title: "Office calea iesilor",
+    slug: "romanescu-office",
+    title: "Romanescu Office",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -1519,11 +1534,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2024",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/58/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/58/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -1689,11 +1705,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/56/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/56/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -1852,11 +1869,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/44/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/44/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -2078,8 +2096,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "str-ioan-radu-27",
-    title: "Str. ioan radu 27",
+    slug: "ioana-radu",
+    title: "Ioana Radu",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -2090,11 +2108,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/38/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/38/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -2212,8 +2231,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "or-hincesti",
-    title: "Or.Hîncești",
+    slug: "hincesti",
+    title: "Hîncești",
     description: "",
     fullDescription: "",
     address: "Hîncești",
@@ -2224,11 +2243,20 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Hîncești",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/35/0.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/35/1.5.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/35/10.5.jpg",
+        focusPoint: { x: 50, y: 30 },
+      },
+      {
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/35/11.5.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -2422,11 +2450,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/33/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/33/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -2576,8 +2605,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "str-florilor",
-    title: "Str. Florilor",
+    slug: "florilor",
+    title: "Apartament, Florilor",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -2588,11 +2617,12 @@ export const properties: Property[] = [
     category: "interiorDesign",
     location: "Chisinau",
     year: "2023",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/32/1.jpg",
     tags: [],
     heroImages: [
       {
-        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/32/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
@@ -2774,8 +2804,8 @@ export const properties: Property[] = [
     sections: [],
   },
   {
-    slug: "bd-mircea-cel-batran-41b",
-    title: "BD.Mircea cel batran 41/B",
+    slug: "mircea-cel-batran-41b",
+    title: "Apartament, Mircea cel Bătrîn 41/B",
     description: "",
     fullDescription: "",
     address: "Chișinău",
@@ -2791,7 +2821,7 @@ export const properties: Property[] = [
     tags: [],
     heroImages: [
       {
-        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/0.jpg",
+        url: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/1.jpg",
         focusPoint: { x: 50, y: 30 },
       },
     ],
