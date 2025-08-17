@@ -342,23 +342,25 @@ export default function PropertyPageClient({
               {/* Sidebar */}
               <div className="space-y-6">
                 {/* Image Gallery */}
-                <Card className="bg-gradient-to-br from-gray-900/20 via-black/85 to-gray-800/25 border-white/10 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <PropertyGallerySmall
-                      images={property.galleryImages}
-                      title="Galerie"
-                      onImageClick={(index) => {
-                        // Ensure index is within bounds
-                        const safeIndex = Math.min(
-                          Math.max(0, index),
-                          property.galleryImages.length - 1
-                        );
-                        setCurrentGalleryImageIndex(safeIndex);
-                        setIsImageModalOpen(true);
-                      }}
-                    />
-                  </CardContent>
-                </Card>
+                {property.galleryImages.length > 0 && (
+                  <Card className="bg-gradient-to-br from-gray-900/20 via-black/85 to-gray-800/25 border-white/10 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <PropertyGallerySmall
+                        images={property.galleryImages}
+                        title="Galerie"
+                        onImageClick={(index) => {
+                          // Ensure index is within bounds
+                          const safeIndex = Math.min(
+                            Math.max(0, index),
+                            property.galleryImages.length - 1
+                          );
+                          setCurrentGalleryImageIndex(safeIndex);
+                          setIsImageModalOpen(true);
+                        }}
+                      />
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Contact Agent */}
                 <Card className="bg-gradient-to-br from-black/95 via-gray-900/25 to-black/90 border-white/10 backdrop-blur-sm">
