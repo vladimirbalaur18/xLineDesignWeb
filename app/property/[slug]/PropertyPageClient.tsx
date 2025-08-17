@@ -1,7 +1,7 @@
 "use client";
 import React, { use, useRef } from "react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { properties } from "@/lib/properties";
@@ -43,6 +43,169 @@ import { PropertyGallerySmall } from "@/components/PropertyGallerySmall";
 import { PropertyStats } from "@/components/PropertyStats";
 import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
+
+// Lazy Loading Section Component
+function LazySection({
+  section,
+  index,
+  totalSections,
+}: {
+  section: any;
+  index: number;
+  totalSections: number;
+}) {
+  const sectionRef = useRef(null);
+  const [loadingStates, setLoadingStates] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const isInView = useInView(sectionRef, {
+    once: true,
+    margin: "-50px 0px",
+  });
+
+  // Initialize loading states when section comes into view
+  useEffect(() => {
+    if (isInView && section.images.length > 0) {
+      const initialStates: { [key: number]: boolean } = {};
+      // Only start loading the first image initially
+      initialStates[0] = true; // true means loading
+      // Set other images as not started (undefined means not started yet)
+      for (let i = 1; i < section.images.length; i++) {
+        // Don't add to initialStates - undefined means not started
+      }
+      setLoadingStates(initialStates);
+    }
+  }, [isInView, section.images.length]);
+
+  const handleImageLoad = (imageIndex: number) => {
+    setLoadingStates((prev) => {
+      const newStates = {
+        ...prev,
+        [imageIndex]: false, // false means loaded
+      };
+
+      // Start loading the next image if it exists and hasn't started loading yet
+      const nextIndex = imageIndex + 1;
+      if (nextIndex < section.images.length && !(nextIndex in newStates)) {
+        newStates[nextIndex] = true; // Start loading next image
+      }
+
+      return newStates;
+    });
+  };
+
+  const isAnyImageLoading = Object.values(loadingStates).some(
+    (loading) => loading
+  );
+
+  return (
+    <motion.div
+      ref={sectionRef}
+      key={section.name}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 1.1 + index * 0.8 }}
+      className="relative"
+    >
+      <div className="text-center mb-12">
+        <motion.h2
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 1.3 + index * 0.8 }}
+          className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-wider"
+        >
+          {section.title}
+        </motion.h2>
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: "100px" }}
+          transition={{ duration: 0.8, delay: 1.5 + index * 0.8 }}
+          className="h-0.5 bg-white mx-auto"
+        />
+      </div>
+
+      {/* Only render images when section is in view */}
+      {isInView && (
+        <>
+          {/* Loading Indicator */}
+          {isAnyImageLoading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center items-center py-16 mb-8"
+            >
+              <div className="flex justify-center items-center">
+                <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Section Images */}
+          {section.images.length === 1 ? (
+            <div className="w-full mb-8 relative">
+              {/* Only render image if it has started loading */}
+              {0 in loadingStates && (
+                <div
+                  className={`transition-opacity duration-300 ${
+                    loadingStates[0] ? "opacity-0" : "opacity-100"
+                  }`}
+                >
+                  <OptimizedImage
+                    src={section.images[0]}
+                    alt={section.title}
+                    width={1920}
+                    height={1080}
+                    className="object-contain w-full h-auto max-h-[80vh]"
+                    sizes="100vw"
+                    priority={index === 0}
+                    onLoad={() => handleImageLoad(0)}
+                  />
+                </div>
+              )}
+            </div>
+          ) : section.images.length === 2 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {section.images.map((img: string, i: number) => (
+                <div key={i} className="relative">
+                  {/* Only render image if it has started loading */}
+                  {i in loadingStates && (
+                    <div
+                      className={`transition-opacity duration-300 ${
+                        loadingStates[i] ? "opacity-0" : "opacity-100"
+                      }`}
+                    >
+                      <OptimizedImage
+                        src={img}
+                        alt={`${section.title} Image ${i + 1}`}
+                        width={960}
+                        height={720}
+                        className="object-contain w-full h-auto max-h-[60vh]"
+                        sizes="50vw"
+                        priority={index === 0 && i === 0}
+                        onLoad={() => handleImageLoad(i)}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </>
+      )}
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 1.8 + index * 0.8 }}
+        className="text-center mt-8"
+      >
+        <p className="text-gray-300 text-lg leading-relaxed max-w-3xl mx-auto">
+          {section.content}
+        </p>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 export default function PropertyPageClient({
   propertySlug,
@@ -386,77 +549,12 @@ export default function PropertyPageClient({
           {propertySections && propertySections.length > 0 && (
             <div className="space-y-16 mt-16">
               {propertySections.map((section, index) => (
-                <motion.div
+                <LazySection
                   key={section.name}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 1.1 + index * 0.8 }}
-                  className="relative"
-                >
-                  <div className="text-center mb-12">
-                    <motion.h2
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: 1.3 + index * 0.8 }}
-                      className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-wider"
-                    >
-                      {section.title}
-                    </motion.h2>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: "100px" }}
-                      transition={{ duration: 0.8, delay: 1.5 + index * 0.8 }}
-                      className="h-0.5 bg-white mx-auto"
-                    />
-                  </div>
-
-                  {/* Section Images */}
-                  {section.images.length === 1 ? (
-                    <div className="w-full aspect-[16/7] mb-8 relative overflow-hidden">
-                      {" "}
-                      {/* aspect-video = 16:9 */}
-                      <OptimizedImage
-                        src={section.images[0]}
-                        alt={section.title}
-                        fill
-                        className="object-cover w-full h-full absolute inset-0"
-                        sizes="100vw"
-                        priority={index === 0}
-                      />
-                    </div>
-                  ) : section.images.length === 2 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                      {section.images.map((img, i) => (
-                        <div
-                          key={i}
-                          className="relative aspect-[4/3] overflow-hidden"
-                        >
-                          {" "}
-                          {/* 4:3 aspect ratio */}
-                          <OptimizedImage
-                            src={img}
-                            alt={`${section.title} Image ${i + 1}`}
-                            fill
-                            className="object-cover w-full h-full absolute inset-0"
-                            sizes="50vw"
-                            priority={index === 0 && i === 0}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 1.8 + index * 0.8 }}
-                    className="text-center mt-8"
-                  >
-                    <p className="text-gray-300 text-lg leading-relaxed max-w-3xl mx-auto">
-                      {section.content}
-                    </p>
-                  </motion.div>
-                </motion.div>
+                  section={section}
+                  index={index}
+                  totalSections={propertySections.length}
+                />
               ))}
             </div>
           )}
