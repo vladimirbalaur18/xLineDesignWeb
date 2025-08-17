@@ -155,7 +155,7 @@ function LazySection({
                     alt={section.title}
                     width={1920}
                     height={1080}
-                    className="object-contain w-full h-auto max-h-[80vh]"
+                    className="object-contain w-full h-auto max-h-[90vh]"
                     sizes="100vw"
                     priority={index === 0}
                     onLoad={() => handleImageLoad(0)}
