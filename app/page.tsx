@@ -276,7 +276,7 @@ export default function HomePage() {
         </section>
       </main>
       <Footer />
-      <LanguageSwitcher />
+      {/* <LanguageSwitcher /> */}
     </div>
   );
 }
