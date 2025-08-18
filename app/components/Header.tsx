@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Menu, X, MailIcon } from "lucide-react";
+import { Menu, X, MailIcon, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { navItems } from "@shared/navitems";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,7 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const router = useRouter();
+  const isAdminRoute = pathname.includes("/admin");
   // Track scroll position to change header style
   useEffect(() => {
     const handleScroll = () => {
@@ -107,15 +109,23 @@ export default function Header() {
               ))}
             </motion.nav>
           )}
-          <Button
-            variant="outline"
-            className="bg-white text-black hover:bg-white/90 hover:text-black border-none uppercase tracking-widest text-xs px-6"
-            onClick={(e) =>
-              isHome ? smoothScroll(e, "#contact") : router.push("/#contact")
-            }
-          >
-            Contactează-ne
-          </Button>
+          {isAdminRoute ? (
+            <Link href="/logout">
+              <Button variant="outline">
+                <LogOut />
+              </Button>
+            </Link>
+          ) : (
+            <Button
+              variant="outline"
+              className="bg-white text-black hover:bg-white/90 hover:text-black border-none uppercase tracking-widest text-xs px-6"
+              onClick={(e) =>
+                isHome ? smoothScroll(e, "#contact") : router.push("/#contact")
+              }
+            >
+              Contactează-ne
+            </Button>
+          )}
         </div>
 
         {/* Mobile Navigation */}

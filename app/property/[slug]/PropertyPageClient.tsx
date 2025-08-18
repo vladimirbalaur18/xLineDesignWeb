@@ -232,9 +232,7 @@ export default function PropertyPageClient({
     "Privește acest proiect interesant! / Look at this interesting project!";
 
   // Get property-specific sections
-  const propertySections = property?.sections
-    .filter((section) => section.isVisible)
-    .sort((a, b) => a.order - b.order);
+  const propertySections = property?.sections;
 
   useEffect(() => {
     // Auto-open story mode if URL contains story=true parameter
@@ -550,7 +548,7 @@ export default function PropertyPageClient({
             <div className="space-y-16 mt-16">
               {propertySections.map((section, index) => (
                 <LazySection
-                  key={section.name}
+                  key={`section-${index}`}
                   section={section}
                   index={index}
                   totalSections={propertySections.length}
