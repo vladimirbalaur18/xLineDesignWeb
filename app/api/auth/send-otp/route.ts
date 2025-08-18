@@ -1,8 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTelegramService } from "@/lib/telegram";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    const key = `rl:otp:send:ip:${ip}`;
+    const limit = 3;
+    const windowSeconds = 60 * 5;
+    const rl = await rateLimit(key, limit, windowSeconds);
+    if (!rl.allowed) {
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          message: "Too many OTP requests. Please try again later.",
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(rl.retryAfter),
+          },
+        }
+      );
+    }
+
     const telegramService = getTelegramService();
     const { sessionId, expires } = await telegramService.sendOTP();
 

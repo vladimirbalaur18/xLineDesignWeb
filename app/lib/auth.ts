@@ -1,9 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production"
-);
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 const JWT_EXPIRY = "24h"; // Token expires in 24 hours
 

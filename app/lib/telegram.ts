@@ -24,7 +24,8 @@ class TelegramOTPService {
    * Generate a 6-digit OTP code
    */
   private generateOTP(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    const crypto = require("crypto");
+    return crypto.randomInt(100000, 1000000).toString();
   }
 
   /**
@@ -93,7 +94,8 @@ Session ID: \`${sessionId}\`
    * Generate a unique session ID
    */
   private generateSessionId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    const crypto = require("crypto");
+    return crypto.randomBytes(16).toString("hex");
   }
 }
 

@@ -5,8 +5,6 @@ export async function GET(request: NextRequest) {
   try {
     const user = await authenticateRequest(request);
 
-    console.log("User", user);
-
     if (!user) {
       return NextResponse.json(
         {

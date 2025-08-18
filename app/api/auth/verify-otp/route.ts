@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTelegramService } from "@/lib/telegram";
 import { generateToken, createAdminUser } from "@/lib/auth";
+import { getClientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +15,34 @@ export async function POST(request: NextRequest) {
           message: "Session ID and OTP code are required",
         },
         { status: 400 }
+      );
+    }
+
+    // Rate limit by IP and by session
+    const ip = getClientIp(request);
+    const ipKey = `rl:otp:verify:ip:${ip}`;
+    const sessionKey = `rl:otp:verify:session:${sessionId}`;
+    const windowSeconds = 60 * 5;
+    const ipLimit = 10; // attempts per 5 minutes per IP
+    const sessionLimit = 5; // attempts per 5 minutes per session
+    const [ipRl, sessionRl] = await Promise.all([
+      rateLimit(ipKey, ipLimit, windowSeconds),
+      rateLimit(sessionKey, sessionLimit, windowSeconds),
+    ]);
+    if (!ipRl.allowed || !sessionRl.allowed) {
+      const retryAfter = Math.max(ipRl.retryAfter, sessionRl.retryAfter);
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          message: "Too many verification attempts. Please try again later.",
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(retryAfter),
+          },
+        }
       );
     }
 
@@ -51,7 +80,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60, // 24 hours
       path: "/",
     });
 
