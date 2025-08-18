@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,7 +18,8 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const router = useRouter();
-  const isAdminRoute = pathname.includes("/admin");
+  const { user, logout } = useAuth();
+  const isAdmin = user?.role === "admin";
   // Track scroll position to change header style
   useEffect(() => {
     const handleScroll = () => {
@@ -109,12 +111,10 @@ export default function Header() {
               ))}
             </motion.nav>
           )}
-          {isAdminRoute ? (
-            <Link href="/logout">
-              <Button variant="outline">
-                <LogOut />
-              </Button>
-            </Link>
+          {isAdmin ? (
+            <Button variant="outline" onClick={() => logout()}>
+              <LogOut />
+            </Button>
           ) : (
             <Button
               variant="outline"
