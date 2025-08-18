@@ -1,14 +1,10 @@
 import TelegramBot from "node-telegram-bot-api";
+import { getRedis } from "@/lib/redis";
 
-// In-memory storage for OTP codes (in production, use Redis or database)
-const otpStore = new Map<
-  string,
-  { code: string; expires: number; used: boolean }
->();
-
-export class TelegramOTPService {
+class TelegramOTPService {
   private bot: TelegramBot;
   private chatId: string;
+  private redisKeyPrefix = "otp:session:";
 
   constructor() {
     const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -20,7 +16,7 @@ export class TelegramOTPService {
       );
     }
 
-    this.bot = new TelegramBot(token);
+    this.bot = new TelegramBot(token, { polling: false });
     this.chatId = chatId;
   }
 
@@ -37,14 +33,13 @@ export class TelegramOTPService {
   async sendOTP(): Promise<{ sessionId: string; expires: number }> {
     const code = this.generateOTP();
     const sessionId = this.generateSessionId();
-    const expires = Date.now() + 5 * 60 * 1000; // 5 minutes
+    const ttlMs = 5 * 60 * 1000; // 5 minutes
+    const expires = Date.now() + ttlMs;
 
-    // Store OTP
-    otpStore.set(sessionId, {
-      code,
-      expires,
-      used: false,
-    });
+    // Store OTP in Redis with TTL
+    const redis = getRedis();
+    const key = `${this.redisKeyPrefix}${sessionId}`;
+    await redis.set(key, { code }, { ex: Math.ceil(ttlMs / 1000) });
 
     // Send to Telegram
     const message = `
@@ -67,7 +62,8 @@ Session ID: \`${sessionId}\`
     } catch (error) {
       console.error("Failed to send Telegram message:", error);
       // Clean up stored OTP on send failure
-      otpStore.delete(sessionId);
+      const redis = getRedis();
+      await redis.del(key);
       throw new Error("Failed to send OTP code");
     }
   }
@@ -75,33 +71,21 @@ Session ID: \`${sessionId}\`
   /**
    * Verify OTP code
    */
-  verifyOTP(sessionId: string, code: string): boolean {
-    const otpData = otpStore.get(sessionId);
+  async verifyOTP(sessionId: string, code: string): Promise<boolean> {
+    const redis = getRedis();
+    const key = `${this.redisKeyPrefix}${sessionId}`;
+    const otpData = await redis.get<{ code: string }>(key);
 
     if (!otpData) {
       return false;
     }
 
-    // Check if expired
-    if (Date.now() > otpData.expires) {
-      otpStore.delete(sessionId);
-      return false;
-    }
-
-    // Check if already used
-    if (otpData.used) {
-      return false;
-    }
-
-    // Check if code matches
     if (otpData.code !== code) {
       return false;
     }
 
-    // Mark as used
-    otpData.used = true;
-    otpStore.set(sessionId, otpData);
-
+    // Invalidate OTP to prevent reuse
+    await redis.del(key);
     return true;
   }
 
@@ -111,30 +95,16 @@ Session ID: \`${sessionId}\`
   private generateSessionId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
   }
-
-  /**
-   * Clean expired OTPs (call this periodically)
-   */
-  cleanExpiredOTPs(): void {
-    const now = Date.now();
-    const keysToDelete: string[] = [];
-
-    otpStore.forEach((otpData, sessionId) => {
-      if (now > otpData.expires) {
-        keysToDelete.push(sessionId);
-      }
-    });
-
-    keysToDelete.forEach((key) => otpStore.delete(key));
-  }
 }
 
-// Singleton instance
-let telegramService: TelegramOTPService | null = null;
+// Ensure true singleton across module reloads (dev) and within the same Node.js process
+const globalForTelegram = globalThis as unknown as {
+  telegramService?: TelegramOTPService;
+};
 
 export function getTelegramService(): TelegramOTPService {
-  if (!telegramService) {
-    telegramService = new TelegramOTPService();
+  if (!globalForTelegram.telegramService) {
+    globalForTelegram.telegramService = new TelegramOTPService();
   }
-  return telegramService;
+  return globalForTelegram.telegramService;
 }

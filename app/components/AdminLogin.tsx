@@ -44,7 +44,9 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
       if (data.success) {
         setSessionId(data.sessionId);
         setStep("verify");
-        setSuccess("Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul.");
+        setSuccess(
+          "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
+        );
       } else {
         setError(data.message || "Trimiterea codului OTP a eșuat");
       }
@@ -132,8 +134,8 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
 
           {success && (
             <Alert className="border-green-200 bg-green-50">
-              <MessageCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-700">
+              <MessageCircle className="h-4 w-4 text-green-800" />
+              <AlertDescription className="text-green-800">
                 {success}
               </AlertDescription>
             </Alert>
@@ -142,9 +144,13 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
           {step === "request" ? (
             <div className="space-y-4">
               <div className="text-sm space-y-2">
-                <p>• Un cod OTP de 6 cifre va fi trimis în chatul dvs. Telegram</p>
+                <p>
+                  • Un cod OTP de 6 cifre va fi trimis în chatul dvs. Telegram
+                </p>
                 <p>• Codul expiră în 5 minute</p>
-                <p>• Asigurați-vă că botul dvs. Telegram este configurat corect</p>
+                <p>
+                  • Asigurați-vă că botul dvs. Telegram este configurat corect
+                </p>
               </div>
 
               <Button

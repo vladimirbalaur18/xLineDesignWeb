@@ -27,32 +27,6 @@ export default function AdminAuthWrapper() {
 
   return (
     <div className="min-h-screen">
-      {/* Admin Header */}
-      <header className=" border-b border-gray-200 px-4 py-3">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <User className="w-5 h-5 text-blue-600" />
-            <div>
-              <h1 className="text-lg font-semibold">Admin Panel</h1>
-              <p className="text-sm text-gray-500">
-                Logged in as {user.role} • Session started{" "}
-                {new Date(user.loginTime).toLocaleTimeString()}
-              </p>
-            </div>
-          </div>
-
-          <Button
-            onClick={logout}
-            variant="outline"
-            size="sm"
-            className="flex items-center space-x-2"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>Logout</span>
-          </Button>
-        </div>
-      </header>
-
       {/* Admin Content */}
       <AdminPageClient initialProperties={properties} />
     </div>

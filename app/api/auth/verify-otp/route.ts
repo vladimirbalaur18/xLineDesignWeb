@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Verify OTP
     const telegramService = getTelegramService();
-    const isValid = telegramService.verifyOTP(sessionId, code);
+    const isValid = await telegramService.verifyOTP(sessionId, code);
 
     if (!isValid) {
       return NextResponse.json(
