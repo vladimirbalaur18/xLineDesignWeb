@@ -139,7 +139,7 @@ export function PropertyTable({
 
       <CardContent>
         <div className="rounded-md border overflow-hidden">
-          <div className="max-h-[600px] overflow-y-auto">
+          <div className="max-h-[calc(100vh-350px)] overflow-y-auto">
             <Table>
               <TableHeader>
                 <TableRow>

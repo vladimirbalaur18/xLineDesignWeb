@@ -479,6 +479,10 @@ export function PropertyForm({
           </div>
         </div>
 
+        <div className="text-sm text-muted-foreground mb-4">
+          <span className="text-red-500">*</span> Câmpuri obligatorii
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Basic Information */}
           <Card>
@@ -491,7 +495,9 @@ export function PropertyForm({
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Titlu</FormLabel>
+                    <FormLabel>
+                      Titlu <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Titlul proprietății" {...field} />
                     </FormControl>
@@ -505,7 +511,9 @@ export function PropertyForm({
                 name="slug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Slug</FormLabel>
+                    <FormLabel>
+                      Slug <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="slug-proprietate" {...field} />
                     </FormControl>
@@ -555,7 +563,9 @@ export function PropertyForm({
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Categorie</FormLabel>
+                    <FormLabel>
+                      Categorie <span className="text-red-500">*</span>
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -732,7 +742,9 @@ export function PropertyForm({
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>URL Imagine</FormLabel>
+                    <FormLabel>
+                      URL Imagine <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="https://example.com/image.jpg sau folosește blob storage"
@@ -859,7 +871,7 @@ export function PropertyForm({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Imagini Hero
+              Imagini Hero <span className="text-red-500">*</span>
               <Button
                 type="button"
                 onClick={() =>
