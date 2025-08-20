@@ -92,8 +92,8 @@ export default function AdminPageClient() {
       console.log("Saving property:", property);
       if (editingProperty) {
         console.log("Updating existing property:", editingProperty.slug);
-        // Update existing property
-        const response = await fetch(`/api/property/${editingProperty.slug}`, {
+        // Update existing property using ID-based endpoint
+        const response = await fetch("/api/properties", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

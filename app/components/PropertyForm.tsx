@@ -6,6 +6,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
+import { useProperty, useSaveProperty } from "../hooks/use-property";
 import type {
   Property,
   PropertyImage,
@@ -42,8 +43,8 @@ const propertyImageSchema = z.object({
   description: z.string().optional(),
   focusPoint: z
     .object({
-      x: z.number().min(0).max(1),
-      y: z.number().min(0).max(1),
+      x: z.number().min(0).max(100),
+      y: z.number().min(0).max(100),
     })
     .optional(),
 });
@@ -54,8 +55,8 @@ const propertyStoryChapterSchema = z.object({
   image: z.string().url("Must be a valid URL"),
   focusPoint: z
     .object({
-      x: z.number().min(0).max(1),
-      y: z.number().min(0).max(1),
+      x: z.number().min(0).max(100),
+      y: z.number().min(0).max(100),
     })
     .optional(),
   duration: z.number().min(1).max(60),
@@ -119,45 +120,29 @@ export function PropertyForm({
   } | null>(null);
   const [newFeature, setNewFeature] = useState("");
   const [newTag, setNewTag] = useState("");
-  const [isLoadingProperty, setIsLoadingProperty] = useState(false);
-  const [fetchedProperty, setFetchedProperty] = useState<Property | null>(null);
   const { toast } = useToast();
 
-  // Fetch complete property data when editing
-  useEffect(() => {
-    const fetchPropertyData = async () => {
-      if (property?.slug && !fetchedProperty) {
-        setIsLoadingProperty(true);
-        try {
-          const response = await fetch(`/api/property/${property.slug}`);
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Fetched property data:", data);
-            setFetchedProperty(data);
-          } else {
-            console.error("Failed to fetch property data");
-            toast({
-              title: "Eroare",
-              description:
-                "Nu s-a putut încărca proprietatea. Vă rugăm să încercați din nou.",
-              variant: "destructive",
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching property data:", error);
-          toast({
-            title: "Eroare",
-            description: "A apărut o eroare la încărcarea proprietății.",
-            variant: "destructive",
-          });
-        } finally {
-          setIsLoadingProperty(false);
-        }
-      }
-    };
+  // Use React Query to fetch property data
+  const {
+    data: fetchedProperty,
+    isLoading: isLoadingProperty,
+    error,
+  } = useProperty(property?.slug || undefined);
 
-    fetchPropertyData();
-  }, [property?.slug, fetchedProperty, toast]);
+  // Use React Query mutation for saving
+  const savePropertyMutation = useSaveProperty();
+
+  // Handle React Query error
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching property data:", error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la încărcarea proprietății.",
+        variant: "destructive",
+      });
+    }
+  }, [error, toast]);
 
   // Initialize form with default values or existing property data
   const defaultValues: PropertyFormData = property
@@ -300,8 +285,10 @@ export function PropertyForm({
     keyName: "fieldId",
   });
 
-  const onSubmit = (data: PropertyFormData) => {
+  const onSubmit = async (data: PropertyFormData) => {
     console.log("Form data:", data);
+    console.log("Form errors:", form.formState.errors);
+    console.log("Form is valid:", form.formState.isValid);
     // Transform the form data to match the Property interface
     const transformedProperty: Property = {
       ...data,
@@ -309,7 +296,24 @@ export function PropertyForm({
       createdAt: fetchedProperty?.createdAt || property?.createdAt,
       updatedAt: fetchedProperty?.updatedAt || property?.updatedAt,
     };
-    onSave(transformedProperty);
+
+    try {
+      const savedProperty = await savePropertyMutation.mutateAsync(
+        transformedProperty
+      );
+      onSave(savedProperty);
+      toast({
+        title: "Succes",
+        description: "Proprietatea a fost salvată cu succes!",
+      });
+    } catch (error) {
+      console.error("Error saving property:", error);
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la salvarea proprietății.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAddFeature = () => {
@@ -358,7 +362,7 @@ export function PropertyForm({
   };
 
   // Show loading state while fetching property data
-  if (isLoadingProperty && (property?.slug || fetchedProperty?.slug)) {
+  if (isLoadingProperty && property?.slug) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -382,8 +386,8 @@ export function PropertyForm({
             <Button type="button" variant="outline" onClick={onCancel}>
               Anulează
             </Button>
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting
+            <Button type="submit">
+              {form.formState.isSubmitting || savePropertyMutation.isPending
                 ? "Salvând..."
                 : fetchedProperty || property
                 ? "Actualizează"

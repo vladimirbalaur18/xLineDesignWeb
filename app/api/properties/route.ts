@@ -192,3 +192,168 @@ export async function POST(request: Request) {
     await prisma.$disconnect();
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    console.log("PUT request body:", JSON.stringify(body, null, 2));
+
+    const {
+      id,
+      slug,
+      title,
+      description,
+      fullDescription,
+      address,
+      price,
+      bedrooms,
+      bathrooms,
+      area,
+      yearBuilt,
+      features,
+      category,
+      location,
+      year,
+      image,
+      tags,
+      heroImages,
+      galleryImages,
+      storyChapters,
+      sections,
+    } = body;
+
+    console.log("Story chapters from request:", storyChapters);
+    console.log("Sections from request:", sections);
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Property ID is required for updates" },
+        { status: 400 }
+      );
+    }
+
+    // First, delete all related data to recreate it
+    await prisma.propertyImage.deleteMany({
+      where: {
+        OR: [{ heroPropertyId: id }, { galleryPropertyId: id }],
+      },
+    });
+    await prisma.propertyStoryChapter.deleteMany({
+      where: { propertyId: id },
+    });
+    await prisma.propertySection.deleteMany({
+      where: { propertyId: id },
+    });
+
+    // Update the property with all related data
+    const property = await prisma.property.update({
+      where: { id },
+      data: {
+        slug,
+        title,
+        description,
+        fullDescription,
+        address,
+        price,
+        bedrooms: bedrooms ? parseInt(bedrooms) : null,
+        bathrooms: bathrooms ? parseInt(bathrooms) : null,
+        area: area ? parseFloat(area) : null,
+        yearBuilt: yearBuilt ? parseInt(yearBuilt) : null,
+        features: features || [],
+        category,
+        location,
+        year,
+        image,
+        tags: tags || [],
+        // Create hero images
+        heroImages: {
+          create:
+            heroImages?.map((img: any) => ({
+              url: img.url,
+              description: img.description,
+              focusPoint: img.focusPoint
+                ? JSON.stringify(img.focusPoint)
+                : null,
+            })) || [],
+        },
+        // Create gallery images
+        galleryImages: {
+          create:
+            galleryImages?.map((img: any) => ({
+              url: img.url,
+              description: img.description,
+              focusPoint: img.focusPoint
+                ? JSON.stringify(img.focusPoint)
+                : null,
+            })) || [],
+        },
+        // Create story chapters
+        storyChapters: {
+          create:
+            storyChapters?.map((chapter: any) => ({
+              title: chapter.title,
+              narrative: chapter.narrative,
+              image: chapter.image,
+              focusPoint: chapter.focusPoint
+                ? JSON.stringify(chapter.focusPoint)
+                : null,
+              duration: chapter.duration,
+            })) || [],
+        },
+        // Create sections
+        sections: {
+          create:
+            sections?.map((section: any) => ({
+              title: section.title || "",
+              content: section.content || "",
+              images: section.images || [],
+            })) || [],
+        },
+      },
+      include: {
+        heroImages: true,
+        galleryImages: true,
+        storyChapters: true,
+        sections: true,
+      },
+    });
+
+    console.log("Property after update:", {
+      storyChapters: property.storyChapters,
+      sections: property.sections,
+    });
+
+    // Transform the response to match the expected format
+    const transformedProperty = {
+      ...property,
+      heroImages: property.heroImages.map((img) => ({
+        ...img,
+        focusPoint: img.focusPoint
+          ? JSON.parse(img.focusPoint as string)
+          : undefined,
+      })),
+      galleryImages: property.galleryImages.map((img) => ({
+        ...img,
+        focusPoint: img.focusPoint
+          ? JSON.parse(img.focusPoint as string)
+          : undefined,
+      })),
+      storyChapters: property.storyChapters.map((chapter) => ({
+        ...chapter,
+        focusPoint: chapter.focusPoint
+          ? JSON.parse(chapter.focusPoint as string)
+          : undefined,
+      })),
+    };
+
+    return NextResponse.json(transformedProperty);
+  } catch (error) {
+    console.error("Error updating property:", error);
+    return NextResponse.json(
+      { error: "Failed to update property" },
+      { status: 500 }
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
