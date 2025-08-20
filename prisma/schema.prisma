@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum PropertyCategory {
+  interiorDesign
+  architecture
+  landscapeDesign
+}
+
+// Models
+model Property {
+  id              String            @id @default(cuid())
+  slug            String            @unique
+  title           String
+  description     String?
+  fullDescription String?
+  address         String?
+  price           String?
+  bedrooms        Int?
+  bathrooms       Int?
+  area            Float?
+  yearBuilt       Int?
+  features        String[]          // Array of features as strings
+  category        PropertyCategory
+  location        String?
+  year            String
+  image           String            // Main image URL
+  tags            String[]          // Array of tags as strings
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relationships
+  heroImages      PropertyImage[]   @relation("PropertyHeroImages")
+  galleryImages   PropertyImage[]   @relation("PropertyGalleryImages")
+  storyChapters   PropertyStoryChapter[]
+  sections        PropertySection[]
+
+  @@map("properties")
+}
+
+model PropertyImage {
+  id          String  @id @default(cuid())
+  url         String
+  description String?
+  focusPoint  Json?   // Store {x: number, y: number} as JSON
+  
+  // Foreign keys and relationships
+  heroPropertyId    String?
+  heroProperty      Property? @relation("PropertyHeroImages", fields: [heroPropertyId], references: [id], onDelete: Cascade)
+  
+  galleryPropertyId String?
+  galleryProperty   Property? @relation("PropertyGalleryImages", fields: [galleryPropertyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("property_images")
+}
+
+model PropertyStoryChapter {
+  id          String  @id @default(cuid())
+  title       String
+  narrative   String
+  image       String
+  focusPoint  Json?   // Store {x: number, y: number} as JSON
+  duration    Int     // Duration in seconds or other unit
+  
+  // Foreign key and relationship
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("property_story_chapters")
+}
+
+model PropertySection {
+  id      String   @id @default(cuid())
+  title   String?
+  content String?
+  images  String[] // Array of image URLs
+  
+  // Foreign key and relationship
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("property_sections")
+}

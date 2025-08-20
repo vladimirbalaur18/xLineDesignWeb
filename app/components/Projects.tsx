@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "motion/react";
 import { Badge } from "./ui/badge";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
-import { properties } from "../lib/properties";
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
+import type { Property } from "../lib/properties";
 import {
   Carousel,
   CarouselContent,
@@ -29,6 +29,9 @@ const containerVariants = {
 };
 
 export default function Projects() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
@@ -43,6 +46,33 @@ export default function Projects() {
   };
 
   const filters = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
+
+  // Fetch properties from API
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/projects");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+
+        const data = await response.json();
+        setProperties(data);
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load projects"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, []);
 
   const filteredProjects =
     activeFilter === "all"
@@ -177,34 +207,60 @@ export default function Projects() {
           animate={isInView ? "visible" : "hidden"}
           viewport={{ once: true }}
         >
-          <Carousel
-            className="relative"
-            opts={{ align: "start", containScroll: "trimSnaps", loop: true }}
-            setApi={setCarouselApi}
-            onMouseEnter={() => setIsAutoplayPaused(true)}
-            onMouseLeave={() => setIsAutoplayPaused(false)}
-          >
-            <CarouselContent>
-              {filteredProjects.map((project) => (
-                <CarouselItem
-                  key={project.slug}
-                  className="basis-full md:basis-1/2 lg:basis-1/3"
-                >
-                  <Link href={`/property/${project.slug}`}>
-                    <ProjectCard
-                      project={project}
-                      projectCategory={
-                        filtersMap[project.category as keyof typeof filtersMap]
-                      }
-                      showTags={false}
-                    />
-                  </Link>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
-            <CarouselNext className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
-          </Carousel>
+          {loading && (
+            <div className="flex justify-center items-center py-16">
+              <Loader2 className="h-8 w-8 animate-spin text-white/70" />
+              <span className="ml-3 text-white/70">
+                Se încarcă proiectele...
+              </span>
+            </div>
+          )}
+
+          {error && !loading && (
+            <div className="text-center py-16">
+              <p className="text-red-400 mb-4">{error}</p>
+              <Button
+                onClick={() => window.location.reload()}
+                variant="outline"
+                className="border-white/30 text-white hover:border-white/60"
+              >
+                Reîncarcă
+              </Button>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <Carousel
+              className="relative"
+              opts={{ align: "start", containScroll: "trimSnaps", loop: true }}
+              setApi={setCarouselApi}
+              onMouseEnter={() => setIsAutoplayPaused(true)}
+              onMouseLeave={() => setIsAutoplayPaused(false)}
+            >
+              <CarouselContent>
+                {filteredProjects.map((project) => (
+                  <CarouselItem
+                    key={project.slug}
+                    className="basis-full md:basis-1/2 lg:basis-1/3"
+                  >
+                    <Link href={`/property/${project.slug}`}>
+                      <ProjectCard
+                        project={project}
+                        projectCategory={
+                          filtersMap[
+                            project.category as keyof typeof filtersMap
+                          ]
+                        }
+                        showTags={false}
+                      />
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
+              <CarouselNext className="border-white/30 text-white hover:border-white/60 bg-black/40 hover:bg-black/60" />
+            </Carousel>
+          )}
         </motion.div>
         {/* View All Projects Button */}
         <motion.div

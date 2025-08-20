@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import AdminPageClient from "./AdminPageClient";
-import { properties } from "@/lib/properties";
+import AdminHeader from "./AdminHeader";
 
 export default function AdminAuthWrapper() {
   const { user, token, isLoading } = useAuth();
@@ -40,8 +40,9 @@ export default function AdminAuthWrapper() {
 
   return (
     <div className="min-h-screen">
+      <AdminHeader />
       {/* Admin Content */}
-      <AdminPageClient initialProperties={properties} />
+      <AdminPageClient />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import AdminAuthWrapper from "./AdminAuthWrapper";
+import AdminPageWrapper from "./AdminPageWrapper";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
 
@@ -17,5 +17,5 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  return <AdminAuthWrapper />;
+  return <AdminPageWrapper />;
 }

@@ -1,23 +1,27 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { motion } from "motion/react";
 import { Badge } from "../components/ui/badge";
-import { Search, ChevronLeft } from "lucide-react";
+import { Search, ChevronLeft, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { DebouncedInput } from "../components/ui/debounced-input";
-import { properties } from "../lib/properties";
 import Link from "next/link";
 import Footer from "../components/Footer";
 import NotFoundIllustration from "../components/NotFoundIllustration";
 import * as _ from "lodash";
 import ProjectCard from "../components/ProjectCard";
 import { filtersMap } from "../../shared/filtersMap";
+import type { Property } from "../lib/properties";
 
 import { useUrlStates } from "../hooks/use-url-state";
 // Animation variants
 
 export default function ProjectsPage() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [filters, updateFilters, resetFilter] = useUrlStates({
     filter: "all",
     search: "",
@@ -26,6 +30,33 @@ export default function ProjectsPage() {
   });
 
   const filtersList = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
+
+  // Fetch properties from API
+  useEffect(() => {
+    async function fetchProperties() {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/projects");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch properties");
+        }
+
+        const data = await response.json();
+        setProperties(data);
+      } catch (err) {
+        console.error("Error fetching properties:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load properties"
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProperties();
+  }, []);
 
   // Filter and search projects
   const filteredProjects = useMemo(() => {
@@ -44,7 +75,8 @@ export default function ProjectsPage() {
       filtered = filtered.filter(
         (project) =>
           project.title.toLowerCase().includes(query) ||
-          project.description.toLowerCase().includes(query) ||
+          (project.description &&
+            project.description.toLowerCase().includes(query)) ||
           project?.location?.toLowerCase().includes(query) ||
           project?.tags?.some((tag) => tag.toLowerCase().includes(query))
       );
@@ -69,7 +101,7 @@ export default function ProjectsPage() {
     }
 
     return filtered;
-  }, [filters.filter, filters.search, filters.sort]);
+  }, [filters.filter, filters.search, filters.sort, properties]);
 
   // Group projects by year
   const projectsByYear = useMemo(() => {
@@ -229,9 +261,12 @@ export default function ProjectsPage() {
             {/* Results Count */}
             <div className="text-center">
               <p className="text-white/70 text-sm">
-                {filteredProjects.length} proiecte găsite
-                {filters.search && ` pentru "${filters.search}"`}
-                {filters.filter !== "all" &&
+                {loading
+                  ? "Se încarcă..."
+                  : `${filteredProjects.length} proiecte găsite`}
+                {!loading && filters.search && ` pentru "${filters.search}"`}
+                {!loading &&
+                  filters.filter !== "all" &&
                   ` în categoria "${
                     filtersMap[filters.filter as keyof typeof filtersMap]
                   }"`}
@@ -244,94 +279,151 @@ export default function ProjectsPage() {
       {/* Projects Grid/List */}
       <section className="pb-24 relative">
         <div className="container mx-auto px-4 flex flex-col gap-12 relative">
-          {/* Desktop timeline line (only render for lg and up) */}
-          {filteredProjects?.length > 0 && (
-            <div className="hidden lg:block absolute top-0 bottom-0 w-[2px] left-[47px] bg-white rounded-full" />
-          )}
-          {/* Not Found Illustration */}
-          {filteredProjects.length === 0 && (
-            <div className="flex flex-col items-center justify-center">
-              <NotFoundIllustration />
+          {/* Loading State */}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-24">
+              <Loader2 className="h-12 w-12 animate-spin text-white mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2">
-                Niciun proiect găsit
+                Se încarcă proiectele...
               </h3>
-              <p className="text-white/70 mb-6 text-center max-w-md">
-                Nu am găsit proiecte care să corespundă criteriilor tale de
-                căutare sau filtrare. Încearcă să resetezi filtrele sau să cauți
-                altceva.
+              <p className="text-white/70 text-center max-w-md">
+                Vă rugăm să așteptați în timp ce încărcăm portofoliul nostru.
               </p>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="flex flex-col items-center justify-center py-24">
+              <div className="text-red-500 mb-4">
+                <svg
+                  className="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.502 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                Eroare la încărcare
+              </h3>
+              <p className="text-white/70 mb-6 text-center max-w-md">{error}</p>
               <Button
                 variant="outline"
                 className="border-white/30 text-white hover:border-white hover:bg-white/10"
-                onClick={resetFilters}
+                onClick={() => window.location.reload()}
               >
-                Resetează filtrele
+                Reîncarcă pagina
               </Button>
             </div>
           )}
 
-          {years.map((year) => (
-            <div key={year} className="relative z-10">
-              {/* Mobile: year heading and cards in column */}
-              <div className="block lg:hidden w-full mb-4">
-                <h2 className="text-xl font-bold text-white/90 mb-2">{year}</h2>
-                <div className="grid grid-cols-1 gap-6">
-                  {projectsByYear[year].map((project) => (
-                    <Link key={project.slug} href={`/property/${project.slug}`}>
-                      <ProjectCard
-                        key={project.slug}
-                        project={project}
-                        projectCategory={
-                          filtersMap[
-                            project.category as keyof typeof filtersMap
-                          ]
-                        }
-                        showTags={true}
-                        className=""
-                      />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              {/* Desktop: timeline and cards in flex row */}
-              <div className="hidden lg:flex flex-row gap-8 items-start">
-                {/* Timeline marker */}
-                <div className="flex flex-col items-end w-32 relative">
-                  <div
-                    className="flex items-center min-h-[2.5rem]"
-                    style={{ minHeight: "2.5rem" }}
+          {/* Success State */}
+          {!loading && !error && (
+            <>
+              {/* Desktop timeline line (only render for lg and up) */}
+              {filteredProjects?.length > 0 && (
+                <div className="hidden lg:block absolute top-0 bottom-0 w-[2px] left-[47px] bg-white rounded-full" />
+              )}
+
+              {/* Not Found Illustration */}
+              {filteredProjects.length === 0 && (
+                <div className="flex flex-col items-center justify-center">
+                  <NotFoundIllustration />
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Niciun proiect găsit
+                  </h3>
+                  <p className="text-white/70 mb-6 text-center max-w-md">
+                    Nu am găsit proiecte care să corespundă criteriilor tale de
+                    căutare sau filtrare. Încearcă să resetezi filtrele sau să
+                    cauți altceva.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="border-white/30 text-white hover:border-white hover:bg-white/10"
+                    onClick={resetFilters}
                   >
-                    {/* Year label: normal flow, to the right of the line */}
-                    <span className="text-white text-lg font-bold ml-8">
+                    Resetează filtrele
+                  </Button>
+                </div>
+              )}
+
+              {/* Projects by Year */}
+              {years.map((year) => (
+                <div key={year} className="relative z-10">
+                  {/* Mobile: year heading and cards in column */}
+                  <div className="block lg:hidden w-full mb-4">
+                    <h2 className="text-xl font-bold text-white/90 mb-2">
                       {year}
-                    </span>
+                    </h2>
+                    <div className="grid grid-cols-1 gap-6">
+                      {projectsByYear[year].map((project) => (
+                        <Link
+                          key={project.slug}
+                          href={`/property/${project.slug}`}
+                        >
+                          <ProjectCard
+                            key={project.slug}
+                            project={project}
+                            projectCategory={
+                              filtersMap[
+                                project.category as keyof typeof filtersMap
+                              ]
+                            }
+                            showTags={true}
+                            className=""
+                          />
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                {/* Cards */}
-                <div className="flex-1">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 xl:gap-2">
-                    {projectsByYear[year].map((project) => (
-                      <Link
-                        key={project.slug}
-                        href={`/property/${project.slug}`}
+                  {/* Desktop: timeline and cards in flex row */}
+                  <div className="hidden lg:flex flex-row gap-8 items-start">
+                    {/* Timeline marker */}
+                    <div className="flex flex-col items-end w-32 relative">
+                      <div
+                        className="flex items-center min-h-[2.5rem]"
+                        style={{ minHeight: "2.5rem" }}
                       >
-                        <ProjectCard
-                          project={project}
-                          projectCategory={
-                            filtersMap[
-                              project.category as keyof typeof filtersMap
-                            ]
-                          }
-                          showTags={true}
-                          className=""
-                        />
-                      </Link>
-                    ))}
+                        {/* Year label: normal flow, to the right of the line */}
+                        <span className="text-white text-lg font-bold ml-8">
+                          {year}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Cards */}
+                    <div className="flex-1">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 xl:gap-2">
+                        {projectsByYear[year].map((project) => (
+                          <Link
+                            key={project.slug}
+                            href={`/property/${project.slug}`}
+                          >
+                            <ProjectCard
+                              project={project}
+                              projectCategory={
+                                filtersMap[
+                                  project.category as keyof typeof filtersMap
+                                ]
+                              }
+                              showTags={true}
+                              className=""
+                            />
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))}
+            </>
+          )}
         </div>
       </section>
 
