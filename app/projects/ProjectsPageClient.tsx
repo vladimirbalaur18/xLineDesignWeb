@@ -85,10 +85,10 @@ export default function ProjectsPage() {
     // Apply sorting
     switch (filters.sort) {
       case "newest":
-        filtered.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+        filtered.sort((a, b) => (b.yearBuilt || 0) - (a.yearBuilt || 0));
         break;
       case "oldest":
-        filtered.sort((a, b) => parseInt(a.year) - parseInt(b.year));
+        filtered.sort((a, b) => (a.yearBuilt || 0) - (b.yearBuilt || 0));
         break;
       case "name":
         filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -107,8 +107,9 @@ export default function ProjectsPage() {
   const projectsByYear = useMemo(() => {
     const grouped: { [year: string]: typeof filteredProjects } = {};
     filteredProjects.forEach((project) => {
-      if (!grouped[project.year]) grouped[project.year] = [];
-      grouped[project.year].push(project);
+      if (!grouped[project.yearBuilt?.toString() || "0"])
+        grouped[project.yearBuilt?.toString() || "0"] = [];
+      grouped[project.yearBuilt?.toString() || "0"].push(project);
     });
     // Sort years descending
     return Object.entries(grouped)

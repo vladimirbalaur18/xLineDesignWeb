@@ -13,7 +13,7 @@ export async function GET() {
         description: true,
         category: true,
         location: true,
-        year: true,
+        yearBuilt: true,
         image: true,
         tags: true,
       },

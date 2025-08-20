@@ -29,21 +29,12 @@ export async function GET(
       );
     }
 
-    // Transform focusPoint from JSON back to the expected format
+    // Transform property to match the expected format
     const transformedProperty = {
       ...property,
-      heroImages: property.heroImages.map((img) => ({
-        ...img,
-        focusPoint: img.focusPoint as { x: number; y: number } | undefined,
-      })),
-      galleryImages: property.galleryImages.map((img) => ({
-        ...img,
-        focusPoint: img.focusPoint as { x: number; y: number } | undefined,
-      })),
-      storyChapters: property.storyChapters.map((chapter) => ({
-        ...chapter,
-        focusPoint: chapter.focusPoint as { x: number; y: number } | undefined,
-      })),
+      heroImages: property.heroImages,
+      galleryImages: property.galleryImages,
+      storyChapters: property.storyChapters,
     };
 
     return NextResponse.json(transformedProperty);
@@ -78,7 +69,6 @@ export async function PUT(
       features,
       category,
       location,
-      year,
       image,
       tags,
       heroImages,
@@ -122,7 +112,6 @@ export async function PUT(
         features: features || [],
         category,
         location,
-        year,
         image,
         tags: tags || [],
         // Create new hero images
@@ -131,9 +120,6 @@ export async function PUT(
             heroImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create new gallery images
@@ -142,9 +128,6 @@ export async function PUT(
             galleryImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create new story chapters
@@ -154,9 +137,6 @@ export async function PUT(
               title: chapter.title,
               narrative: chapter.narrative,
               image: chapter.image,
-              focusPoint: chapter.focusPoint
-                ? JSON.stringify(chapter.focusPoint)
-                : null,
               duration: chapter.duration,
             })) || [],
         },
@@ -181,24 +161,9 @@ export async function PUT(
     // Transform the response to match the expected format
     const transformedProperty = {
       ...property,
-      heroImages: property.heroImages.map((img) => ({
-        ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
-      })),
-      galleryImages: property.galleryImages.map((img) => ({
-        ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
-      })),
-      storyChapters: property.storyChapters.map((chapter) => ({
-        ...chapter,
-        focusPoint: chapter.focusPoint
-          ? JSON.parse(chapter.focusPoint as string)
-          : undefined,
-      })),
+      heroImages: property.heroImages,
+      galleryImages: property.galleryImages,
+      storyChapters: property.storyChapters,
       sections: property.sections,
     };
 

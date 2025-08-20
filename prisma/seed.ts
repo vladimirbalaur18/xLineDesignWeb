@@ -33,7 +33,7 @@ async function main() {
         features: property.features || [],
         category: property.category,
         location: property.location || null,
-        year: property.year,
+
         image: property.image,
         tags: property.tags || [],
 
@@ -42,7 +42,6 @@ async function main() {
           create: property.heroImages.map((image) => ({
             url: image.url,
             description: image.description || null,
-            focusPoint: image.focusPoint || null,
           })),
         },
 
@@ -51,7 +50,6 @@ async function main() {
           create: property.galleryImages.map((image) => ({
             url: image.url,
             description: image.description || null,
-            focusPoint: image.focusPoint || null,
           })),
         },
 
@@ -61,7 +59,6 @@ async function main() {
             title: chapter.title,
             narrative: chapter.narrative,
             image: chapter.image,
-            focusPoint: chapter.focusPoint || null,
             duration: chapter.duration,
           })),
         },

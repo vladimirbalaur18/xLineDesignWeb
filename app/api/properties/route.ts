@@ -22,30 +22,13 @@ export async function GET(request: Request) {
       },
     });
 
-    // Transform focusPoint from JSON back to the expected format
+    // Transform properties to match the expected format
     const transformedProperties = properties.map((property) => ({
       ...property,
-      heroImages: property.heroImages
-        ? property.heroImages.map((img) => ({
-            ...img,
-            focusPoint: img.focusPoint as { x: number; y: number } | undefined,
-          }))
-        : [],
-      galleryImages: property.galleryImages
-        ? property.galleryImages.map((img) => ({
-            ...img,
-            focusPoint: img.focusPoint as { x: number; y: number } | undefined,
-          }))
-        : [],
-      storyChapters: property.storyChapters
-        ? property.storyChapters.map((chapter) => ({
-            ...chapter,
-            focusPoint: chapter.focusPoint as
-              | { x: number; y: number }
-              | undefined,
-          }))
-        : [],
-      sections: property.sections ? property.sections : [],
+      heroImages: property.heroImages || [],
+      galleryImages: property.galleryImages || [],
+      storyChapters: property.storyChapters || [],
+      sections: property.sections || [],
     }));
 
     return NextResponse.json(transformedProperties);
@@ -102,7 +85,6 @@ export async function POST(request: Request) {
         features: features || [],
         category,
         location,
-        year,
         image,
         tags: tags || [],
         // Create hero images
@@ -111,9 +93,6 @@ export async function POST(request: Request) {
             heroImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create gallery images
@@ -122,9 +101,6 @@ export async function POST(request: Request) {
             galleryImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create story chapters
@@ -134,9 +110,6 @@ export async function POST(request: Request) {
               title: chapter.title,
               narrative: chapter.narrative,
               image: chapter.image,
-              focusPoint: chapter.focusPoint
-                ? JSON.stringify(chapter.focusPoint)
-                : null,
               duration: chapter.duration,
             })) || [],
         },
@@ -163,21 +136,12 @@ export async function POST(request: Request) {
       ...property,
       heroImages: property.heroImages.map((img) => ({
         ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
       })),
       galleryImages: property.galleryImages.map((img) => ({
         ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
       })),
       storyChapters: property.storyChapters.map((chapter) => ({
         ...chapter,
-        focusPoint: chapter.focusPoint
-          ? JSON.parse(chapter.focusPoint as string)
-          : undefined,
       })),
     };
 
@@ -262,7 +226,6 @@ export async function PUT(request: Request) {
         features: features || [],
         category,
         location,
-        year,
         image,
         tags: tags || [],
         // Create hero images
@@ -271,9 +234,6 @@ export async function PUT(request: Request) {
             heroImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create gallery images
@@ -282,9 +242,6 @@ export async function PUT(request: Request) {
             galleryImages?.map((img: any) => ({
               url: img.url,
               description: img.description,
-              focusPoint: img.focusPoint
-                ? JSON.stringify(img.focusPoint)
-                : null,
             })) || [],
         },
         // Create story chapters
@@ -294,9 +251,6 @@ export async function PUT(request: Request) {
               title: chapter.title,
               narrative: chapter.narrative,
               image: chapter.image,
-              focusPoint: chapter.focusPoint
-                ? JSON.stringify(chapter.focusPoint)
-                : null,
               duration: chapter.duration,
             })) || [],
         },
@@ -328,21 +282,12 @@ export async function PUT(request: Request) {
       ...property,
       heroImages: property.heroImages.map((img) => ({
         ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
       })),
       galleryImages: property.galleryImages.map((img) => ({
         ...img,
-        focusPoint: img.focusPoint
-          ? JSON.parse(img.focusPoint as string)
-          : undefined,
       })),
       storyChapters: property.storyChapters.map((chapter) => ({
         ...chapter,
-        focusPoint: chapter.focusPoint
-          ? JSON.parse(chapter.focusPoint as string)
-          : undefined,
       })),
     };
 

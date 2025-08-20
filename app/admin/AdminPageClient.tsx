@@ -88,75 +88,21 @@ export default function AdminPageClient() {
   };
 
   const handleSave = async (property: Property) => {
-    try {
-      console.log("Saving property:", property);
-      if (editingProperty) {
-        console.log("Updating existing property:", editingProperty.slug);
-        // Update existing property using ID-based endpoint
-        const response = await fetch("/api/properties", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(property),
-        });
+    console.log("Property saved successfully:", property);
 
-        if (response.ok) {
-          const updatedProperty = await response.json();
-          setPropertiesList((prev) =>
-            prev.map((p) =>
-              p.slug === editingProperty.slug ? updatedProperty : p
-            )
-          );
-          toast({
-            title: "Succes",
-            description: "Proprietatea a fost actualizată cu succes.",
-          });
-        } else {
-          console.error("Failed to update property");
-          toast({
-            title: "Eroare",
-            description: "Nu s-a putut actualiza proprietatea.",
-            variant: "destructive",
-          });
-          return;
-        }
-      } else {
-        // Create new property
-        const response = await fetch("/api/properties", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(property),
-        });
-
-        if (response.ok) {
-          const newProperty = await response.json();
-          setPropertiesList((prev) => [...prev, newProperty]);
-          toast({
-            title: "Succes",
-            description: "Proprietatea a fost creată cu succes.",
-          });
-        } else {
-          console.error("Failed to create property");
-          toast({
-            title: "Eroare",
-            description: "Nu s-a putut crea proprietatea.",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-      handleCancel();
-    } catch (error) {
-      console.error("Error saving property:", error);
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la salvarea proprietății.",
-        variant: "destructive",
-      });
+    // Update the local state based on whether we're editing or creating
+    if (editingProperty) {
+      // Update existing property
+      setPropertiesList((prev) =>
+        prev.map((p) => (p.slug === editingProperty.slug ? property : p))
+      );
+    } else {
+      // Add new property
+      setPropertiesList((prev) => [...prev, property]);
     }
+
+    // Close the form
+    handleCancel();
   };
 
   const handleCancel = () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -41,24 +41,12 @@ import {
 const propertyImageSchema = z.object({
   url: z.string().url("Must be a valid URL"),
   description: z.string().optional(),
-  focusPoint: z
-    .object({
-      x: z.number().min(0).max(100),
-      y: z.number().min(0).max(100),
-    })
-    .optional(),
 });
 
 const propertyStoryChapterSchema = z.object({
   title: z.string().min(1, "Title is required"),
   narrative: z.string().min(1, "Narrative is required"),
   image: z.string().url("Must be a valid URL"),
-  focusPoint: z
-    .object({
-      x: z.number().min(0).max(100),
-      y: z.number().min(0).max(100),
-    })
-    .optional(),
   duration: z.number().min(1).max(60),
 });
 
@@ -92,10 +80,12 @@ const propertyFormSchema = z.object({
   features: z.array(z.string()).default([]),
   category: z.enum(["interiorDesign", "architecture", "landscapeDesign"]),
   location: z.string().optional(),
-  year: z.string().min(1, "Year is required"),
+
   image: z.string().url("Must be a valid URL"),
   tags: z.array(z.string()).default([]),
-  heroImages: z.array(propertyImageSchema).default([]),
+  heroImages: z
+    .array(propertyImageSchema)
+    .min(1, "At least one hero image is required"),
   galleryImages: z.array(propertyImageSchema).default([]),
   storyChapters: z.array(propertyStoryChapterSchema).default([]),
   sections: z.array(propertySectionSchema).default([]),
@@ -121,6 +111,7 @@ export function PropertyForm({
   const [newFeature, setNewFeature] = useState("");
   const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
+  const isSubmittingRef = useRef(false);
 
   // Use React Query to fetch property data
   const {
@@ -160,7 +151,6 @@ export function PropertyForm({
         features: property.features || [],
         category: property.category,
         location: property.location || "",
-        year: property.year,
         image: property.image,
         tags: property.tags || [],
         heroImages:
@@ -173,7 +163,10 @@ export function PropertyForm({
             ...img,
             description: img.description || undefined,
           })) || [],
-        storyChapters: property.storyChapters || [],
+        storyChapters:
+          property.storyChapters?.map((chapter) => ({
+            ...chapter,
+          })) || [],
         sections:
           property.sections?.map((section) => ({
             title: section.title || "",
@@ -195,7 +188,6 @@ export function PropertyForm({
         features: [],
         category: "interiorDesign",
         location: "",
-        year: new Date().getFullYear().toString(),
         image: "",
         tags: [],
         heroImages: [],
@@ -228,7 +220,6 @@ export function PropertyForm({
         features: fetchedProperty.features || [],
         category: fetchedProperty.category,
         location: fetchedProperty.location || "",
-        year: fetchedProperty.year,
         image: fetchedProperty.image,
         tags: fetchedProperty.tags || [],
         heroImages:
@@ -289,9 +280,62 @@ export function PropertyForm({
     console.log("Form data:", data);
     console.log("Form errors:", form.formState.errors);
     console.log("Form is valid:", form.formState.isValid);
+
+    // Prevent double submission using ref
+    if (isSubmittingRef.current) {
+      console.log("Form submission already in progress, skipping...");
+      return;
+    }
+
+    // Prevent double submission using mutation state
+    if (savePropertyMutation.isPending) {
+      console.log("Form submission already in progress, skipping...");
+      return;
+    }
+
+    // Set submission flag
+    isSubmittingRef.current = true;
+
+    // Additional validation for hero images
+    if (!data.heroImages || data.heroImages.length === 0) {
+      toast({
+        title: "Eroare de validare",
+        description: "Cel puțin o imagine hero este obligatorie.",
+        variant: "destructive",
+      });
+      isSubmittingRef.current = false;
+      return;
+    }
+
     // Transform the form data to match the Property interface
     const transformedProperty: Property = {
-      ...data,
+      slug: data.slug,
+      title: data.title,
+      description: data.description,
+      fullDescription: data.fullDescription,
+      address: data.address,
+      price: data.price,
+      bedrooms: data.bedrooms,
+      bathrooms: data.bathrooms,
+      area: data.area,
+      yearBuilt: data.yearBuilt,
+      features: data.features,
+      category: data.category,
+      location: data.location,
+
+      image: data.image,
+      tags: data.tags,
+      heroImages: data.heroImages,
+      galleryImages: data.galleryImages,
+      storyChapters: data.storyChapters.map((chapter) => ({
+        ...chapter,
+      })),
+      sections: data.sections.map((section) => ({
+        ...section,
+        title: section.title || "",
+        content: section.content || "",
+        images: section.images || [],
+      })),
       id: fetchedProperty?.id || property?.id,
       createdAt: fetchedProperty?.createdAt || property?.createdAt,
       updatedAt: fetchedProperty?.updatedAt || property?.updatedAt,
@@ -313,7 +357,25 @@ export function PropertyForm({
         description: "A apărut o eroare la salvarea proprietății.",
         variant: "destructive",
       });
+    } finally {
+      // Reset submission flag
+      isSubmittingRef.current = false;
     }
+  };
+
+  const onError = (errors: any) => {
+    console.log("Form validation errors:", errors);
+
+    const errorMessages = Object.values(errors)
+      .map((error: any) => error?.message)
+      .filter(Boolean)
+      .join(", ");
+
+    toast({
+      title: "Eroare de validare",
+      description: errorMessages || "Formularul conține erori de validare.",
+      variant: "destructive",
+    });
   };
 
   const handleAddFeature = () => {
@@ -341,14 +403,16 @@ export function PropertyForm({
     alt: string;
     className?: string;
   }) => {
-    if (!url) return null;
+    // Check if URL is valid (not empty and is a valid URL)
+    if (!url || url.trim() === "" || !isValidUrl(url)) return null;
+
     return (
       <div
         className={`relative overflow-hidden rounded-lg bg-muted cursor-pointer ${className}`}
         onClick={() => setModalImage({ url, alt })}
       >
         <OptimizedImage
-          src={url || "/placeholder.svg"}
+          src={url}
           alt={alt}
           width={400}
           height={300}
@@ -359,6 +423,16 @@ export function PropertyForm({
         </div>
       </div>
     );
+  };
+
+  // Helper function to validate URLs
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   // Show loading state while fetching property data
@@ -375,7 +449,10 @@ export function PropertyForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onError)}
+        className="space-y-6"
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-playfair font-bold">
             {fetchedProperty || property
@@ -386,7 +463,12 @@ export function PropertyForm({
             <Button type="button" variant="outline" onClick={onCancel}>
               Anulează
             </Button>
-            <Button type="submit">
+            <Button
+              type="submit"
+              disabled={
+                form.formState.isSubmitting || savePropertyMutation.isPending
+              }
+            >
               {form.formState.isSubmitting || savePropertyMutation.isPending
                 ? "Salvând..."
                 : fetchedProperty || property
@@ -634,20 +716,6 @@ export function PropertyForm({
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="year"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>An</FormLabel>
-                    <FormControl>
-                      <Input placeholder="2024" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </CardContent>
           </Card>
         </div>
@@ -675,16 +743,18 @@ export function PropertyForm({
                   </FormItem>
                 )}
               />
-              {form.watch("image") && (
-                <div className="mt-4">
-                  <Label>Previzualizare</Label>
-                  <ImagePreview
-                    url={form.watch("image")}
-                    alt={form.watch("title")}
-                    className="w-128 h-128"
-                  />
-                </div>
-              )}
+              {form.watch("image") &&
+                form.watch("image").trim() !== "" &&
+                isValidUrl(form.watch("image")) && (
+                  <div className="mt-4">
+                    <Label>Previzualizare</Label>
+                    <ImagePreview
+                      url={form.watch("image")}
+                      alt={form.watch("title")}
+                      className="w-128 h-128"
+                    />
+                  </div>
+                )}
             </CardContent>
           </Card>
 
@@ -792,7 +862,12 @@ export function PropertyForm({
               Imagini Hero
               <Button
                 type="button"
-                onClick={() => appendHeroImage({ url: "", description: "" })}
+                onClick={() =>
+                  appendHeroImage({
+                    url: "",
+                    description: "",
+                  })
+                }
                 size="sm"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -832,16 +907,18 @@ export function PropertyForm({
                     )}
                   />
                 </div>
-                {form.watch(`heroImages.${index}.url`) && (
-                  <ImagePreview
-                    url={form.watch(`heroImages.${index}.url`)}
-                    alt={
-                      form.watch(`heroImages.${index}.description`) ||
-                      `Hero image ${index + 1}`
-                    }
-                    className="w-32 h-24 flex-shrink-0"
-                  />
-                )}
+                {form.watch(`heroImages.${index}.url`) &&
+                  form.watch(`heroImages.${index}.url`).trim() !== "" &&
+                  isValidUrl(form.watch(`heroImages.${index}.url`)) && (
+                    <ImagePreview
+                      url={form.watch(`heroImages.${index}.url`)}
+                      alt={
+                        form.watch(`heroImages.${index}.description`) ||
+                        `Hero image ${index + 1}`
+                      }
+                      className="w-32 h-24 flex-shrink-0"
+                    />
+                  )}
                 <Button
                   type="button"
                   variant="ghost"
@@ -967,117 +1044,47 @@ export function PropertyForm({
                   />
                 </div>
 
-                {/* Focus Point Section */}
-                <div>
-                  <Label>Punctul de Focus (opțional)</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      type="number"
-                      value={
-                        form.watch(
-                          `storyChapters.${chapterIndex}.focusPoint.x`
-                        ) || ""
-                      }
-                      onChange={(e) => {
-                        const currentFocus = form.watch(
-                          `storyChapters.${chapterIndex}.focusPoint`
-                        ) || { x: 0, y: 0 };
-                        form.setValue(
-                          `storyChapters.${chapterIndex}.focusPoint`,
-                          {
-                            x: Number(e.target.value),
-                            y: currentFocus.y,
-                          }
-                        );
-                      }}
-                      placeholder="Coordonata X (0-1)"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                    />
-                    <Input
-                      type="number"
-                      value={
-                        form.watch(
-                          `storyChapters.${chapterIndex}.focusPoint.y`
-                        ) || ""
-                      }
-                      onChange={(e) => {
-                        const currentFocus = form.watch(
-                          `storyChapters.${chapterIndex}.focusPoint`
-                        ) || { x: 0, y: 0 };
-                        form.setValue(
-                          `storyChapters.${chapterIndex}.focusPoint`,
-                          {
-                            x: currentFocus.x,
-                            y: Number(e.target.value),
-                          }
-                        );
-                      }}
-                      placeholder="Coordonata Y (0-1)"
-                      step="0.01"
-                      min="0"
-                      max="1"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Coordonatele punctului de focus (0,0 = stânga sus, 1,1 =
-                    dreapta jos)
-                  </p>
-                </div>
-
                 {/* Image Preview */}
-                {form.watch(`storyChapters.${chapterIndex}.image`) && (
-                  <div>
-                    <Label>Previzualizare</Label>
-                    <div
-                      className="relative w-full h-56 bg-muted rounded-md overflow-hidden cursor-pointer"
-                      onClick={() =>
-                        setModalImage({
-                          url: form.watch(
-                            `storyChapters.${chapterIndex}.image`
-                          ),
-                          alt:
-                            form.watch(`storyChapters.${chapterIndex}.title`) ||
-                            `Chapter ${chapterIndex + 1}`,
-                        })
-                      }
-                    >
-                      <OptimizedImage
-                        src={form.watch(`storyChapters.${chapterIndex}.image`)}
-                        alt={
-                          form.watch(`storyChapters.${chapterIndex}.title`) ||
-                          `Chapter ${chapterIndex + 1}`
+                {form.watch(`storyChapters.${chapterIndex}.image`) &&
+                  form.watch(`storyChapters.${chapterIndex}.image`).trim() !==
+                    "" &&
+                  isValidUrl(
+                    form.watch(`storyChapters.${chapterIndex}.image`)
+                  ) && (
+                    <div>
+                      <Label>Previzualizare</Label>
+                      <div
+                        className="relative w-full h-56 bg-muted rounded-md overflow-hidden cursor-pointer"
+                        onClick={() =>
+                          setModalImage({
+                            url: form.watch(
+                              `storyChapters.${chapterIndex}.image`
+                            ),
+                            alt:
+                              form.watch(
+                                `storyChapters.${chapterIndex}.title`
+                              ) || `Chapter ${chapterIndex + 1}`,
+                          })
                         }
-                        width={600}
-                        height={400}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
-                        <Eye className="h-6 w-6 text-white" />
-                      </div>
-                      {form.watch(
-                        `storyChapters.${chapterIndex}.focusPoint`
-                      ) && (
-                        <div
-                          className="absolute w-3 h-3 bg-red-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white"
-                          style={{
-                            left: `${
-                              form.watch(
-                                `storyChapters.${chapterIndex}.focusPoint.x`
-                              ) * 100
-                            }%`,
-                            top: `${
-                              form.watch(
-                                `storyChapters.${chapterIndex}.focusPoint.y`
-                              ) * 100
-                            }%`,
-                          }}
+                      >
+                        <OptimizedImage
+                          src={form.watch(
+                            `storyChapters.${chapterIndex}.image`
+                          )}
+                          alt={
+                            form.watch(`storyChapters.${chapterIndex}.title`) ||
+                            `Chapter ${chapterIndex + 1}`
+                          }
+                          width={600}
+                          height={400}
+                          className="w-full h-full object-cover"
                         />
-                      )}
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 hover:opacity-100">
+                          <Eye className="h-6 w-6 text-white" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
             ))}
 
@@ -1210,15 +1217,17 @@ export function PropertyForm({
                             placeholder="URL Imagine"
                           />
                         </div>
-                        {imageUrl && (
-                          <ImagePreview
-                            url={imageUrl}
-                            alt={`Section ${sectionIndex + 1} image ${
-                              imageIndex + 1
-                            }`}
-                            className="w-28 h-20 flex-shrink-0"
-                          />
-                        )}
+                        {imageUrl &&
+                          imageUrl.trim() !== "" &&
+                          isValidUrl(imageUrl) && (
+                            <ImagePreview
+                              url={imageUrl}
+                              alt={`Section ${sectionIndex + 1} image ${
+                                imageIndex + 1
+                              }`}
+                              className="w-28 h-20 flex-shrink-0"
+                            />
+                          )}
                         <Button
                           type="button"
                           variant="ghost"
