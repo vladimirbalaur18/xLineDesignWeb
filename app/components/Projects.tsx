@@ -30,7 +30,11 @@ const containerVariants = {
 };
 
 export default function Projects() {
-  const { data: properties, error, isLoading } = useProperties();
+  const {
+    data: properties,
+    error,
+    isLoading,
+  } = useProperties({ includeSections: true });
   const [activeFilter, setActiveFilter] = useState("all");
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
