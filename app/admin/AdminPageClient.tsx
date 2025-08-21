@@ -5,44 +5,28 @@ import { PropertyTable } from "@/components/PropertyTable";
 import { PropertyForm } from "@/components/PropertyForm";
 import type { Property } from "@/lib/properties";
 import { useToast } from "@/hooks/use-toast";
+import {
+  useDeletePropertyMutation,
+  useProperties,
+  useSavePropertyMutation,
+} from "@/hooks/use-property";
 
 export default function AdminPageClient() {
-  const [propertiesList, setPropertiesList] = useState<Property[]>([]);
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { data: propertiesList = [], isLoading, error } = useProperties();
+  const { mutate: deleteProperty } = useDeletePropertyMutation();
+  const { mutate: saveProperty } = useSavePropertyMutation();
 
-  // Fetch properties from API
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await fetch("/api/properties");
-        if (response.ok) {
-          const data = await response.json();
-          // The API returns the array directly, not wrapped in a properties object
-          setPropertiesList(Array.isArray(data) ? data : []);
-        } else {
-          toast({
-            title: "Eroare",
-            description: "Nu s-au putut încărca proprietățile.",
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch properties:", error);
-        toast({
-          title: "Eroare",
-          description: "A apărut o eroare la încărcarea proprietăților.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProperties();
-  }, [toast]);
+  if (error) {
+    toast({
+      title: "Eroare",
+      description: "A apărut o eroare la încărcarea proprietăților.",
+      variant: "destructive",
+    });
+    console.error("Failed to fetch properties:", error);
+  }
 
   const handleEdit = (property: Property) => {
     console.log("Editing property:", property);
@@ -57,51 +41,46 @@ export default function AdminPageClient() {
 
   const handleDelete = async (slug: string) => {
     if (confirm("Are you sure you want to delete this property?")) {
-      try {
-        const response = await fetch(`/api/property/${slug}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          setPropertiesList((prev) => prev.filter((p) => p.slug !== slug));
+      deleteProperty(slug, {
+        onSuccess: () => {
           toast({
             title: "Succes",
             description: "Proprietatea a fost ștearsă cu succes.",
           });
-        } else {
-          console.error("Failed to delete property");
+        },
+        onError: () => {
           toast({
             title: "Eroare",
             description: "Nu s-a putut șterge proprietatea.",
             variant: "destructive",
           });
-        }
-      } catch (error) {
-        console.error("Error deleting property:", error);
-        toast({
-          title: "Eroare",
-          description: "A apărut o eroare la ștergerea proprietății.",
-          variant: "destructive",
-        });
-      }
+        },
+      });
     }
   };
 
   const handleSave = async (property: Property) => {
-    console.log("Property saved successfully:", property);
+    const isEditing = !!editingProperty;
 
-    // Update the local state based on whether we're editing or creating
-    if (editingProperty) {
-      // Update existing property
-      setPropertiesList((prev) =>
-        prev.map((p) => (p.slug === editingProperty.slug ? property : p))
-      );
-    } else {
-      // Add new property
-      setPropertiesList((prev) => [...prev, property]);
-    }
-
-    // Close the form
+    saveProperty(property, {
+      onSuccess: () => {
+        toast({
+          title: "Succes",
+          description: `Proprietatea a fost ${
+            isEditing ? "actualizată" : "adăugată"
+          } cu succes.`,
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Eroare",
+          description: `Nu s-a putut ${
+            isEditing ? "actualiza" : "adăuga"
+          } proprietatea.`,
+          variant: "destructive",
+        });
+      },
+    });
     handleCancel();
   };
 

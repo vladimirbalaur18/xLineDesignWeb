@@ -1,12 +1,12 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { useProperty, useSaveProperty } from "../hooks/use-property";
+import { useProperty, useSavePropertyMutation } from "../hooks/use-property";
 import type {
   Property,
   PropertyImage,
@@ -111,7 +111,6 @@ export function PropertyForm({
   const [newFeature, setNewFeature] = useState("");
   const [newTag, setNewTag] = useState("");
   const { toast } = useToast();
-  const isSubmittingRef = useRef(false);
 
   // Use React Query to fetch property data
   const {
@@ -121,7 +120,7 @@ export function PropertyForm({
   } = useProperty(property?.slug || undefined);
 
   // Use React Query mutation for saving
-  const savePropertyMutation = useSaveProperty();
+  const savePropertyMutation = useSavePropertyMutation();
 
   // Handle React Query error
   useEffect(() => {
@@ -167,12 +166,7 @@ export function PropertyForm({
           property.storyChapters?.map((chapter) => ({
             ...chapter,
           })) || [],
-        sections:
-          property.sections?.map((section) => ({
-            title: section.title || "",
-            content: section.content || "",
-            images: section.images || [],
-          })) || [],
+        sections: property.sections || [],
       }
     : {
         slug: "",
@@ -281,20 +275,11 @@ export function PropertyForm({
     console.log("Form errors:", form.formState.errors);
     console.log("Form is valid:", form.formState.isValid);
 
-    // Prevent double submission using ref
-    if (isSubmittingRef.current) {
-      console.log("Form submission already in progress, skipping...");
-      return;
-    }
-
-    // Prevent double submission using mutation state
+    // Prevent double submission
     if (savePropertyMutation.isPending) {
       console.log("Form submission already in progress, skipping...");
       return;
     }
-
-    // Set submission flag
-    isSubmittingRef.current = true;
 
     // Additional validation for hero images
     if (!data.heroImages || data.heroImages.length === 0) {
@@ -303,7 +288,6 @@ export function PropertyForm({
         description: "Cel puțin o imagine hero este obligatorie.",
         variant: "destructive",
       });
-      isSubmittingRef.current = false;
       return;
     }
 
@@ -341,26 +325,7 @@ export function PropertyForm({
       updatedAt: fetchedProperty?.updatedAt || property?.updatedAt,
     };
 
-    try {
-      const savedProperty = await savePropertyMutation.mutateAsync(
-        transformedProperty
-      );
-      onSave(savedProperty);
-      toast({
-        title: "Succes",
-        description: "Proprietatea a fost salvată cu succes!",
-      });
-    } catch (error) {
-      console.error("Error saving property:", error);
-      toast({
-        title: "Eroare",
-        description: "A apărut o eroare la salvarea proprietății.",
-        variant: "destructive",
-      });
-    } finally {
-      // Reset submission flag
-      isSubmittingRef.current = false;
-    }
+    onSave(transformedProperty);
   };
 
   const onError = (errors: any) => {
@@ -498,6 +463,7 @@ export function PropertyForm({
                     <FormLabel>
                       Titlu <span className="text-red-500">*</span>
                     </FormLabel>
+                    op
                     <FormControl>
                       <Input placeholder="Titlul proprietății" {...field} />
                     </FormControl>

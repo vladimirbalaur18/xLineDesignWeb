@@ -35,7 +35,7 @@ export function useProperties() {
   });
 }
 
-export function useSaveProperty() {
+export function useSavePropertyMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -65,12 +65,12 @@ export function useSaveProperty() {
   });
 }
 
-export function useDeleteProperty() {
+export function useDeletePropertyMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (propertyId: string): Promise<void> => {
-      const response = await fetch(`/api/properties/${propertyId}`, {
+    mutationFn: async (slug: string): Promise<void> => {
+      const response = await fetch(`/api/properties/${slug}`, {
         method: "DELETE",
       });
 
