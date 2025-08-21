@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Property } from "../lib/properties";
 import { useSwipe } from "@/hooks/use-swipe";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 
 interface PropertyStoryModeProps {
   property: Property;
@@ -24,7 +25,6 @@ export default function PropertyStoryMode({
     () => nextChapter(),
     () => prevChapter()
   );
-
   // Reset state when story mode is re-opened
   useEffect(() => {
     if (isOpen) {
@@ -41,17 +41,23 @@ export default function PropertyStoryMode({
 
   const intervalMs = 10;
   const progressIncrement =
-    100 / (storyChapters[currentChapter].duration / intervalMs);
+    100 / ((storyChapters[currentChapter].duration * 1000) / intervalMs);
 
   // Auto-play functionality
   useEffect(() => {
-    if (isPlaying && currentChapter < storyChapters.length - 1) {
+    if (isPlaying && currentChapter < storyChapters.length) {
       const interval = setInterval(() => {
         setProgress((prev) => {
           const newProgress = prev + progressIncrement;
           if (newProgress >= 100) {
-            setCurrentChapter(currentChapter + 1);
-            return 0;
+            if (currentChapter < storyChapters.length - 1) {
+              setCurrentChapter(currentChapter + 1);
+              return 0;
+            } else {
+              // Stop auto-play when last chapter is completed
+              setIsPlaying(false);
+              return 100;
+            }
           }
           return newProgress;
         });
@@ -62,7 +68,7 @@ export default function PropertyStoryMode({
       };
     }
     return () => {};
-  }, [isPlaying, currentChapter, progressIncrement]);
+  }, [isPlaying, currentChapter, progressIncrement, storyChapters.length]);
 
   // Reset progress when chapter changes
   useEffect(() => {
@@ -97,13 +103,23 @@ export default function PropertyStoryMode({
 
   const currentStory = storyChapters[currentChapter];
 
-  return (
+  // Use portal to render at document root for proper fullscreen
+  const storyModeContent = (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black z-50 flex flex-col"
+        className="fixed inset-0 bg-black z-[9999] flex flex-col"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: "100vw",
+          height: "100vh",
+        }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -188,7 +204,7 @@ export default function PropertyStoryMode({
               <motion.div
                 className="absolute inset-0"
                 animate={{
-                  scale: isPlaying ? [1, 1.05] : 1,
+                  scale: isPlaying ? [1, 1.02] : 1,
                 }}
                 transition={{
                   duration: currentStory.duration / 1000,
@@ -207,9 +223,7 @@ export default function PropertyStoryMode({
                     priority
                     style={{
                       objectFit: "cover",
-                      objectPosition: currentStory.focusPoint
-                        ? `${currentStory.focusPoint.x}% ${currentStory.focusPoint.y}%`
-                        : "center",
+                      objectPosition: "center",
                     }}
                     className="pointer-events-none select-none"
                   />
@@ -289,4 +303,11 @@ export default function PropertyStoryMode({
       </motion.div>
     </AnimatePresence>
   );
+
+  // Render using portal to ensure fullscreen
+  if (typeof window !== "undefined") {
+    return createPortal(storyModeContent, document.body);
+  }
+
+  return storyModeContent;
 }

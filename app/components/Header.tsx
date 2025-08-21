@@ -8,6 +8,7 @@ import { navItems } from "@shared/navitems";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,6 +17,13 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const router = useRouter();
+  const isAdmin = pathname.startsWith("/admin");
+
+  // Don't render header for admin routes
+  if (isAdmin) {
+    return null;
+  }
+
   // Track scroll position to change header style
   useEffect(() => {
     const handleScroll = () => {
