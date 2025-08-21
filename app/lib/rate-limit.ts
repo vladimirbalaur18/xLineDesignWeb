@@ -9,6 +9,22 @@ export interface RateLimitResult {
   current: number;
 }
 
+export interface GradualRateLimitConfig {
+  baseLimit: number;
+  baseWindowSeconds: number;
+  escalateOnOverage: number; // number of extra attempts while limited to trigger penalty 1
+  penalty1Seconds: number; // e.g., 1 hour
+  penalty2Threshold: number; // number of subsequent requests after penalty 1 to trigger penalty 2
+  penalty2Seconds: number; // e.g., 1 day
+  postPenaltyCountTtlSeconds: number; // monitoring window for penalty2Threshold
+}
+
+export interface GradualRateLimitResult extends RateLimitResult {
+  state: "allowed" | "limited" | "penalized";
+  penaltyLevel?: 0 | 1 | 2;
+  penaltySeconds?: number;
+}
+
 const limiterCache = new Map<string, Ratelimit>();
 
 function getFixedWindowLimiter(
@@ -77,6 +93,188 @@ export async function rateLimit(
   }
 
   return rateLimitResult;
+}
+
+/**
+ * Gradual rate limit with escalating penalties.
+ * Default policy: 5 req / 5 min; if during the limited window there are +3 attempts → block 1h;
+ * after that hour, if there are 10 more requests → block 1 day.
+ */
+export async function gradualRateLimit(
+  key: string,
+  config: Partial<GradualRateLimitConfig> = {},
+  context?: { ip?: string; userAgent?: string; path?: string }
+): Promise<GradualRateLimitResult> {
+  const cfg: GradualRateLimitConfig = {
+    baseLimit: config.baseLimit ?? 5,
+    baseWindowSeconds: config.baseWindowSeconds ?? 60 * 5,
+    escalateOnOverage: config.escalateOnOverage ?? 3,
+    penalty1Seconds: config.penalty1Seconds ?? 60 * 60,
+    penalty2Threshold: config.penalty2Threshold ?? 10,
+    penalty2Seconds: config.penalty2Seconds ?? 60 * 60 * 24,
+    postPenaltyCountTtlSeconds:
+      config.postPenaltyCountTtlSeconds ?? 60 * 60 * 24,
+  };
+
+  const redis = getRedis();
+  const penaltyKey = `rl:gradual:${key}:penalty`;
+  const overageKey = `rl:gradual:${key}:overage`;
+  const postPenaltyKey = `rl:gradual:${key}:post1-count`;
+
+  // Check active penalty first
+  const activePenaltyLevel = await redis.get<string>(penaltyKey);
+  if (activePenaltyLevel) {
+    const ttl = await redis.ttl(penaltyKey);
+    const retryAfter = Math.max(0, ttl ?? cfg.penalty1Seconds);
+    logger.rateLimitExceeded({
+      key,
+      limit: cfg.baseLimit,
+      windowSeconds: cfg.baseWindowSeconds,
+      remaining: 0,
+      retryAfter,
+      ip: context?.ip,
+      userAgent: context?.userAgent,
+      path: context?.path,
+      metadata: {
+        state: "penalized",
+        penaltyLevel: Number(activePenaltyLevel),
+      },
+    });
+    return {
+      allowed: false,
+      remaining: 0,
+      retryAfter,
+      current: cfg.baseLimit,
+      state: "penalized",
+      penaltyLevel: Number(activePenaltyLevel) as 1 | 2,
+      penaltySeconds: retryAfter,
+    };
+  }
+
+  // Apply base limiter
+  const limiter = getFixedWindowLimiter(cfg.baseLimit, cfg.baseWindowSeconds);
+  const result = await limiter.limit(key);
+  const now = Date.now();
+  const baseRetryAfter = result.success
+    ? 0
+    : Math.max(0, Math.ceil((result.reset - now) / 1000));
+  const remaining = Math.max(0, result.remaining);
+  const current = Math.max(0, cfg.baseLimit - remaining);
+
+  if (result.success) {
+    // If monitoring after a level 1 penalty, count requests and escalate if necessary
+    const postExists = await redis.exists(postPenaltyKey);
+    if (postExists) {
+      const postCount = await redis.incr(postPenaltyKey);
+      await redis.expire(postPenaltyKey, cfg.postPenaltyCountTtlSeconds);
+      if (postCount >= cfg.penalty2Threshold) {
+        await redis.set(penaltyKey, "2", { ex: cfg.penalty2Seconds });
+        await redis.del(postPenaltyKey);
+        logger.rateLimitExceeded({
+          key,
+          limit: cfg.baseLimit,
+          windowSeconds: cfg.baseWindowSeconds,
+          remaining,
+          retryAfter: cfg.penalty2Seconds,
+          ip: context?.ip,
+          userAgent: context?.userAgent,
+          path: context?.path,
+          metadata: {
+            state: "penalized",
+            penaltyLevel: 2,
+            triggeredBy: "post_penalty_threshold",
+          },
+        });
+        return {
+          allowed: false,
+          remaining,
+          retryAfter: cfg.penalty2Seconds,
+          current,
+          state: "penalized",
+          penaltyLevel: 2,
+          penaltySeconds: cfg.penalty2Seconds,
+        };
+      }
+    }
+
+    logger.rateLimitAllowed({
+      key,
+      limit: cfg.baseLimit,
+      windowSeconds: cfg.baseWindowSeconds,
+      remaining,
+      ip: context?.ip,
+      userAgent: context?.userAgent,
+      path: context?.path,
+      metadata: { state: "allowed", current },
+    });
+    return {
+      allowed: true,
+      remaining,
+      retryAfter: 0,
+      current,
+      state: "allowed",
+      penaltyLevel: 0,
+    };
+  }
+
+  // Limited by base rate limiter; track overage attempts within the window
+  if (cfg.escalateOnOverage > 0) {
+    const over = await redis.incr(overageKey);
+    await redis.expire(overageKey, baseRetryAfter || cfg.baseWindowSeconds);
+    if (over >= cfg.escalateOnOverage) {
+      // Set penalty level 1 and start post-penalty monitoring window
+      await redis.set(penaltyKey, "1", { ex: cfg.penalty1Seconds });
+      // Start or reset post-penalty counter window (will effectively start counting after penalty ends)
+      await redis.set(postPenaltyKey, "0", {
+        ex: cfg.postPenaltyCountTtlSeconds,
+      });
+      logger.rateLimitExceeded({
+        key,
+        limit: cfg.baseLimit,
+        windowSeconds: cfg.baseWindowSeconds,
+        remaining,
+        retryAfter: cfg.penalty1Seconds,
+        ip: context?.ip,
+        userAgent: context?.userAgent,
+        path: context?.path,
+        metadata: {
+          state: "penalized",
+          penaltyLevel: 1,
+          triggeredBy: "overage_attempts",
+          overage: over,
+        },
+      });
+      return {
+        allowed: false,
+        remaining,
+        retryAfter: cfg.penalty1Seconds,
+        current,
+        state: "penalized",
+        penaltyLevel: 1,
+        penaltySeconds: cfg.penalty1Seconds,
+      };
+    }
+  }
+
+  logger.rateLimitExceeded({
+    key,
+    limit: cfg.baseLimit,
+    windowSeconds: cfg.baseWindowSeconds,
+    remaining,
+    retryAfter: baseRetryAfter,
+    ip: context?.ip,
+    userAgent: context?.userAgent,
+    path: context?.path,
+    metadata: { state: "limited", current },
+  });
+  return {
+    allowed: false,
+    remaining,
+    retryAfter: baseRetryAfter,
+    current,
+    state: "limited",
+    penaltyLevel: 0,
+  };
 }
 
 /**

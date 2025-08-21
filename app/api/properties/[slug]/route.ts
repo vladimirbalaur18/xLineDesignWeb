@@ -1,12 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "../../../generated/prisma";
+import { requireAdminAuth } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // Require admin authentication for deleting properties
+  try {
+    await requireAdminAuth(request);
+  } catch (error) {
+    if (error instanceof Response) {
+      return error;
+    }
+    return NextResponse.json(
+      { error: "Authentication failed" },
+      { status: 401 }
+    );
+  }
+
   try {
     const { slug } = await params;
 

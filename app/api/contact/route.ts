@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
 
 // Schema for contact form data
 const contactFormSchema = z.object({
@@ -81,6 +82,43 @@ async function sendToTelegram(data: ContactFormData) {
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
+
+  // gradual rate limit based on IP
+  const ip = getClientIp(request);
+  const ipKey = `contact:ip:${ip}`;
+  const rl = await gradualRateLimit(
+    ipKey,
+    {
+      baseLimit: 5,
+      baseWindowSeconds: 60 * 5,
+      escalateOnOverage: 3,
+      penalty1Seconds: 60 * 60,
+      penalty2Threshold: 10,
+      penalty2Seconds: 60 * 60 * 24,
+      postPenaltyCountTtlSeconds: 60 * 60 * 24,
+    },
+    { ip }
+  );
+
+  if (!rl.allowed) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          rl.state === "penalized"
+            ? rl.penaltyLevel === 2
+              ? "Prea multe încercări. Acces blocat 24h."
+              : "Prea multe încercări. Acces blocat 1h."
+            : "Prea multe încercări. Te rugăm să încerci mai târziu.",
+      },
+      {
+        status: 429,
+        headers: rl.retryAfter
+          ? { "Retry-After": String(rl.retryAfter) }
+          : undefined,
+      }
+    );
+  }
 
   try {
     // Check if Telegram is configured

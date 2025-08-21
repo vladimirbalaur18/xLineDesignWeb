@@ -95,3 +95,22 @@ export function createAdminUser(): AdminUser {
     loginTime: Date.now(),
   };
 }
+
+/**
+ * Middleware to protect API endpoints that require admin authentication
+ * Returns the authenticated user if valid, or throws an error response
+ */
+export async function requireAdminAuth(
+  request: NextRequest
+): Promise<AdminUser> {
+  const user = await authenticateRequest(request);
+
+  if (!user) {
+    throw new Response(JSON.stringify({ error: "Authentication required" }), {
+      status: 401,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  return user;
+}

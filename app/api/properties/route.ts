@@ -1,12 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "../../generated/prisma";
 import { logger } from "@/lib/logger";
+import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
+import { requireAdminAuth } from "@/lib/auth";
 
 const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
+
+  const ip = getClientIp(request);
+  const ipKey = `rl:properties:ip:${ip}`;
+  const ipLimit = 50; // attempts per 5 minutes per IP
+  const windowSeconds = 60 * 5;
+  const rl = await gradualRateLimit(
+    ipKey,
+    {
+      baseLimit: ipLimit,
+      baseWindowSeconds: windowSeconds,
+      escalateOnOverage: 10,
+      penalty1Seconds: 60 * 60,
+      penalty2Threshold: 10,
+      penalty2Seconds: 60 * 60 * 24,
+      postPenaltyCountTtlSeconds: 60 * 60 * 24,
+    },
+    { ip }
+  );
+  if (!rl.allowed) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          rl.state === "penalized"
+            ? rl.penaltyLevel === 2
+              ? "Prea multe încercări. Acces blocat 24h."
+              : "Prea multe încercări. Acces blocat 1h."
+            : "Prea multe încercări. Te rugăm să încerci mai târziu.",
+      },
+      {
+        status: 429,
+        headers: rl.retryAfter
+          ? { "Retry-After": String(rl.retryAfter) }
+          : undefined,
+      }
+    );
+  }
 
   try {
     const { searchParams } = new URL(request.url);
@@ -88,6 +127,20 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
+
+  // Require admin authentication for creating properties
+  try {
+    await requireAdminAuth(request);
+  } catch (error) {
+    if (error instanceof Response) {
+      return error;
+    }
+    return NextResponse.json(
+      { error: "Authentication failed" },
+      { status: 401 }
+    );
+  }
+
   let body: any;
 
   try {
@@ -259,6 +312,20 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
+
+  // Require admin authentication for updating properties
+  try {
+    await requireAdminAuth(request);
+  } catch (error) {
+    if (error instanceof Response) {
+      return error;
+    }
+    return NextResponse.json(
+      { error: "Authentication failed" },
+      { status: 401 }
+    );
+  }
+
   let body: any;
 
   try {
