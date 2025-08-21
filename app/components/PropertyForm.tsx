@@ -37,6 +37,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+// Manual mapping of required fields based on the schema
+const REQUIRED_FIELDS = new Set([
+  "slug",
+  "title",
+  "category",
+  "image",
+  "heroImages",
+]);
+
+// Helper function to check if a field is required
+const isFieldRequired = (
+  schema: z.ZodObject<any>,
+  fieldName: string
+): boolean => {
+  return REQUIRED_FIELDS.has(fieldName);
+};
+
+// Manual mapping of required nested fields
+const REQUIRED_NESTED_FIELDS = new Map([
+  ["storyChapters", new Set(["title", "narrative", "image", "duration"])],
+  ["sections", new Set([])], // sections fields are optional
+  ["heroImages", new Set(["url"])], // only url is required for hero images
+]);
+
+// Helper function to check if a nested field is required
+const isNestedFieldRequired = (
+  parentSchema: z.ZodObject<any>,
+  parentFieldName: string,
+  nestedFieldName: string
+): boolean => {
+  const requiredFields = REQUIRED_NESTED_FIELDS.get(parentFieldName);
+  return requiredFields ? requiredFields.has(nestedFieldName) : false;
+};
+
 // Zod schema for validation
 const propertyImageSchema = z.object({
   url: z.string().url("Must be a valid URL"),
@@ -79,7 +113,7 @@ const propertyFormSchema = z.object({
     .optional(),
   features: z.array(z.string()).default([]),
   category: z.enum(["interiorDesign", "architecture", "landscapeDesign"]),
-  location: z.string().optional(),
+  location: z.string().min(1, "Locație este obligatorie"),
 
   image: z.string().url("Must be a valid URL"),
   tags: z.array(z.string()).default([]),
@@ -90,6 +124,40 @@ const propertyFormSchema = z.object({
   storyChapters: z.array(propertyStoryChapterSchema).default([]),
   sections: z.array(propertySectionSchema).default([]),
 });
+
+// Required field label component
+const RequiredFieldLabel = ({
+  children,
+  fieldName,
+  parentFieldName,
+  nestedFieldName,
+}: {
+  children: React.ReactNode;
+  fieldName?: string;
+  parentFieldName?: string;
+  nestedFieldName?: string;
+}) => {
+  let isRequired = false;
+
+  if (parentFieldName && nestedFieldName) {
+    isRequired = isNestedFieldRequired(
+      propertyFormSchema as z.ZodObject<any>,
+      parentFieldName,
+      nestedFieldName
+    );
+  } else if (fieldName) {
+    isRequired = isFieldRequired(
+      propertyFormSchema as z.ZodObject<any>,
+      fieldName
+    );
+  }
+
+  return (
+    <FormLabel>
+      {children} {isRequired && <span className="text-red-500">*</span>}
+    </FormLabel>
+  );
+};
 
 type PropertyFormData = z.infer<typeof propertyFormSchema>;
 
@@ -110,6 +178,7 @@ export function PropertyForm({
   } | null>(null);
   const [newFeature, setNewFeature] = useState("");
   const [newTag, setNewTag] = useState("");
+  const [showErrors, setShowErrors] = useState(false);
   const { toast } = useToast();
 
   // Use React Query to fetch property data
@@ -193,7 +262,7 @@ export function PropertyForm({
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertyFormSchema),
     defaultValues,
-    mode: "onBlur",
+    mode: "all", // Show errors immediately for all fields
   });
 
   // Reset form when property data changes
@@ -237,6 +306,22 @@ export function PropertyForm({
       form.reset(formData);
     }
   }, [fetchedProperty, form]);
+
+  // Function to show all validation errors immediately
+  const showAllErrors = async () => {
+    try {
+      await form.trigger();
+      setShowErrors(true);
+    } catch (error) {
+      console.error("Validation error:", error);
+    }
+  };
+
+  // Show errors immediately when form loads
+  useEffect(() => {
+    const timer = setTimeout(showAllErrors, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Field arrays for dynamic content
 
@@ -403,10 +488,10 @@ export function PropertyForm({
   // Show loading state while fetching property data
   if (isLoadingProperty && property?.slug) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="text-gray-600">Se încarcă datele proprietății...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto"></div>
+          <p className="text-gray-300">Se încarcă datele proprietății...</p>
         </div>
       </div>
     );
@@ -444,8 +529,18 @@ export function PropertyForm({
           </div>
         </div>
 
-        <div className="text-sm text-muted-foreground mb-4">
-          <span className="text-red-500">*</span> Câmpuri obligatorii
+        <div className="text-sm text-muted-foreground mb-4 flex items-center justify-between">
+          <span>
+            <span className="text-red-500">*</span> Câmpuri obligatorii
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={showAllErrors}
+          >
+            Arată toate erorile
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -460,10 +555,9 @@ export function PropertyForm({
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Titlu <span className="text-red-500">*</span>
-                    </FormLabel>
-                    op
+                    <RequiredFieldLabel fieldName="title">
+                      Titlu
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input placeholder="Titlul proprietății" {...field} />
                     </FormControl>
@@ -477,9 +571,9 @@ export function PropertyForm({
                 name="slug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Slug <span className="text-red-500">*</span>
-                    </FormLabel>
+                    <RequiredFieldLabel fieldName="slug">
+                      Slug
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input placeholder="slug-proprietate" {...field} />
                     </FormControl>
@@ -493,7 +587,9 @@ export function PropertyForm({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descriere</FormLabel>
+                    <RequiredFieldLabel fieldName="description">
+                      Descriere
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Descriere scurtă"
@@ -511,7 +607,9 @@ export function PropertyForm({
                 name="fullDescription"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Descriere Completă</FormLabel>
+                    <RequiredFieldLabel fieldName="fullDescription">
+                      Descriere Completă
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Descriere detaliată"
@@ -529,9 +627,9 @@ export function PropertyForm({
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      Categorie <span className="text-red-500">*</span>
-                    </FormLabel>
+                    <RequiredFieldLabel fieldName="category">
+                      Categorie
+                    </RequiredFieldLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -571,7 +669,9 @@ export function PropertyForm({
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Adresă</FormLabel>
+                    <RequiredFieldLabel fieldName="address">
+                      Adresă
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input placeholder="Adresa proprietății" {...field} />
                     </FormControl>
@@ -585,7 +685,9 @@ export function PropertyForm({
                 name="location"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Locație</FormLabel>
+                    <RequiredFieldLabel fieldName="location">
+                      Locație
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input placeholder="Oraș, Județ" {...field} />
                     </FormControl>
@@ -599,7 +701,9 @@ export function PropertyForm({
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preț</FormLabel>
+                    <RequiredFieldLabel fieldName="price">
+                      Preț
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input placeholder="€500,000" {...field} />
                     </FormControl>
@@ -614,7 +718,9 @@ export function PropertyForm({
                   name="bedrooms"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Dormitoare</FormLabel>
+                      <RequiredFieldLabel fieldName="bedrooms">
+                        Dormitoare
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -633,7 +739,9 @@ export function PropertyForm({
                   name="bathrooms"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Băi</FormLabel>
+                      <RequiredFieldLabel fieldName="bathrooms">
+                        Băi
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -655,7 +763,9 @@ export function PropertyForm({
                   name="area"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Suprafață (mp)</FormLabel>
+                      <RequiredFieldLabel fieldName="area">
+                        Suprafață (mp)
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -674,7 +784,9 @@ export function PropertyForm({
                   name="yearBuilt"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Anul Construcției</FormLabel>
+                      <RequiredFieldLabel fieldName="yearBuilt">
+                        Anul Construcției
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -708,9 +820,9 @@ export function PropertyForm({
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      URL Imagine <span className="text-red-500">*</span>
-                    </FormLabel>
+                    <RequiredFieldLabel fieldName="image">
+                      URL Imagine
+                    </RequiredFieldLabel>
                     <FormControl>
                       <Input
                         placeholder="https://example.com/image.jpg sau folosește blob storage"
@@ -837,7 +949,11 @@ export function PropertyForm({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Imagini Hero <span className="text-red-500">*</span>
+              Imagini Hero{" "}
+              {isFieldRequired(
+                propertyFormSchema as z.ZodObject<any>,
+                "heroImages"
+              ) && <span className="text-red-500">*</span>}
               <Button
                 type="button"
                 onClick={() =>
@@ -865,6 +981,12 @@ export function PropertyForm({
                     name={`heroImages.${index}.url`}
                     render={({ field }) => (
                       <FormItem>
+                        <RequiredFieldLabel
+                          parentFieldName="heroImages"
+                          nestedFieldName="url"
+                        >
+                          URL Imagine
+                        </RequiredFieldLabel>
                         <FormControl>
                           <Input placeholder="URL Imagine" {...field} />
                         </FormControl>
@@ -956,7 +1078,12 @@ export function PropertyForm({
                     name={`storyChapters.${chapterIndex}.title`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Titlul Capitolului</FormLabel>
+                        <RequiredFieldLabel
+                          parentFieldName="storyChapters"
+                          nestedFieldName="title"
+                        >
+                          Titlul Capitolului
+                        </RequiredFieldLabel>
                         <FormControl>
                           <Input placeholder="Titlul capitolului" {...field} />
                         </FormControl>
@@ -969,7 +1096,12 @@ export function PropertyForm({
                     name={`storyChapters.${chapterIndex}.image`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Imaginea Capitolului</FormLabel>
+                        <RequiredFieldLabel
+                          parentFieldName="storyChapters"
+                          nestedFieldName="image"
+                        >
+                          Imaginea Capitolului
+                        </RequiredFieldLabel>
                         <FormControl>
                           <Input placeholder="URL Imagine" {...field} />
                         </FormControl>
@@ -984,7 +1116,12 @@ export function PropertyForm({
                   name={`storyChapters.${chapterIndex}.narrative`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Narațiune</FormLabel>
+                      <RequiredFieldLabel
+                        parentFieldName="storyChapters"
+                        nestedFieldName="narrative"
+                      >
+                        Narațiune
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Textul narațiunii capitolului"
@@ -1003,7 +1140,12 @@ export function PropertyForm({
                     name={`storyChapters.${chapterIndex}.duration`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Durata (secunde)</FormLabel>
+                        <RequiredFieldLabel
+                          parentFieldName="storyChapters"
+                          nestedFieldName="duration"
+                        >
+                          Durata (secunde)
+                        </RequiredFieldLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -1120,7 +1262,12 @@ export function PropertyForm({
                     name={`sections.${sectionIndex}.title`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Titlul Secțiunii (opțional)</FormLabel>
+                        <RequiredFieldLabel
+                          parentFieldName="sections"
+                          nestedFieldName="title"
+                        >
+                          Titlul Secțiunii (opțional)
+                        </RequiredFieldLabel>
                         <FormControl>
                           <Input
                             placeholder="Titlul secțiunii (opțional)"
@@ -1138,7 +1285,12 @@ export function PropertyForm({
                   name={`sections.${sectionIndex}.content`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Conținutul Secțiunii (opțional)</FormLabel>
+                      <RequiredFieldLabel
+                        parentFieldName="sections"
+                        nestedFieldName="content"
+                      >
+                        Conținutul Secțiunii (opțional)
+                      </RequiredFieldLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Conținutul detaliat al secțiunii (opțional)"

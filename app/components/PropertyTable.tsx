@@ -235,19 +235,9 @@ export function PropertyTable({
                           )}
                           {property.yearBuilt && (
                             <div className="text-muted-foreground">
-                              Construită în {property.yearBuilt}
+                              Anul {property.yearBuilt}
                             </div>
                           )}
-                          {property.heroImages &&
-                            property.heroImages.length > 0 && (
-                              <div className="text-xs text-emerald-400">
-                                {property.heroImages.length} imagin
-                                {property.heroImages.length !== 1
-                                  ? "i"
-                                  : "e"}{" "}
-                                erou
-                              </div>
-                            )}
                         </div>
                       </TableCell>
                       <TableCell className="text-right">

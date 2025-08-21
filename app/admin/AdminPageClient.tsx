@@ -15,7 +15,13 @@ export default function AdminPageClient() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
-  const { data: propertiesList = [], isLoading, error } = useProperties();
+  const {
+    data: propertiesList = [],
+    isLoading,
+    error,
+  } = useProperties({
+    includeSections: true,
+  });
   const { mutate: deleteProperty } = useDeletePropertyMutation();
   const { mutate: saveProperty } = useSavePropertyMutation();
 

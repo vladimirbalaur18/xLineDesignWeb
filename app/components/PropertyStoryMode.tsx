@@ -25,7 +25,6 @@ export default function PropertyStoryMode({
     () => nextChapter(),
     () => prevChapter()
   );
-
   // Reset state when story mode is re-opened
   useEffect(() => {
     if (isOpen) {
@@ -42,17 +41,23 @@ export default function PropertyStoryMode({
 
   const intervalMs = 10;
   const progressIncrement =
-    100 / (storyChapters[currentChapter].duration / intervalMs);
+    100 / ((storyChapters[currentChapter].duration * 1000) / intervalMs);
 
   // Auto-play functionality
   useEffect(() => {
-    if (isPlaying && currentChapter < storyChapters.length - 1) {
+    if (isPlaying && currentChapter < storyChapters.length) {
       const interval = setInterval(() => {
         setProgress((prev) => {
           const newProgress = prev + progressIncrement;
           if (newProgress >= 100) {
-            setCurrentChapter(currentChapter + 1);
-            return 0;
+            if (currentChapter < storyChapters.length - 1) {
+              setCurrentChapter(currentChapter + 1);
+              return 0;
+            } else {
+              // Stop auto-play when last chapter is completed
+              setIsPlaying(false);
+              return 100;
+            }
           }
           return newProgress;
         });
@@ -63,7 +68,7 @@ export default function PropertyStoryMode({
       };
     }
     return () => {};
-  }, [isPlaying, currentChapter, progressIncrement]);
+  }, [isPlaying, currentChapter, progressIncrement, storyChapters.length]);
 
   // Reset progress when chapter changes
   useEffect(() => {

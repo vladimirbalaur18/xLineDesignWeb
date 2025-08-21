@@ -15,25 +15,30 @@ export function useProperty(slug?: string) {
       return response.json();
     },
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 20 * 60 * 1000, // 20 minutes
   });
 }
 
-export function useProperties() {
-  return useQuery({
+export const useProperties = ({
+  includeSections = false,
+}: {
+  includeSections?: boolean;
+}) =>
+  useQuery({
     queryKey: ["properties"],
     queryFn: async (): Promise<Property[]> => {
-      const response = await fetch("/api/properties");
+      const response = await fetch(
+        `/api/properties?includeSections=${includeSections}`
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch properties: ${response.statusText}`);
       }
       return response.json();
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 20 * 60 * 1000, // 20 minutes
   });
-}
 
 export function useSavePropertyMutation() {
   const queryClient = useQueryClient();
