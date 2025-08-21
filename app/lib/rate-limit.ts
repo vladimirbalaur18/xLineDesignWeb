@@ -106,12 +106,19 @@ export async function gradualRateLimit(
   context?: { ip?: string; userAgent?: string; path?: string }
 ): Promise<GradualRateLimitResult> {
   const cfg: GradualRateLimitConfig = {
-    baseLimit: config.baseLimit ?? 5,
+    // The maximum number of requests allowed in the base time window
+    baseLimit: config.baseLimit ?? 50,
+    // The duration of the base time window in seconds
     baseWindowSeconds: config.baseWindowSeconds ?? 60 * 5,
-    escalateOnOverage: config.escalateOnOverage ?? 3,
+    // The number of requests over the base limit that triggers the first penalty
+    escalateOnOverage: config.escalateOnOverage ?? 10,
+    // The duration of the first penalty in seconds
     penalty1Seconds: config.penalty1Seconds ?? 60 * 60,
+    // The number of requests during the first penalty that triggers the second penalty
     penalty2Threshold: config.penalty2Threshold ?? 10,
+    // The duration of the second penalty in seconds
     penalty2Seconds: config.penalty2Seconds ?? 60 * 60 * 24,
+    // The time-to-live for counting requests after a penalty, in seconds
     postPenaltyCountTtlSeconds:
       config.postPenaltyCountTtlSeconds ?? 60 * 60 * 24,
   };
