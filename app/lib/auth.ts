@@ -12,7 +12,14 @@ export interface AdminUser {
 }
 
 /**
- * Generate JWT token for authenticated admin user
+ * Create a time-limited JWT containing the admin user's data.
+ *
+ * The token payload includes the AdminUser fields (`id`, `role`, `loginTime`) and is signed
+ * using the module's configured secret and HS256 algorithm. The token expires according to
+ * the module's JWT_EXPIRY (24h).
+ *
+ * @param user - Admin user object to embed in the token; `role` is expected to be `"admin"`.
+ * @returns A signed JWT as a string.
  */
 export async function generateToken(user: AdminUser): Promise<string> {
   const jwt = await new SignJWT({ ...user })
@@ -25,7 +32,16 @@ export async function generateToken(user: AdminUser): Promise<string> {
 }
 
 /**
- * Verify JWT token and return user data
+ * Verify a JWT and return the contained admin user if valid.
+ *
+ * Verifies `token` using the module's signing key and returns an AdminUser when:
+ * - the token is a valid JWT signed by the expected secret, and
+ * - the payload contains `id` (string), `role` equal to `"admin"`, and `loginTime` (number).
+ *
+ * Returns `null` if verification fails or the payload is missing/invalid.
+ *
+ * @param token - A JWT string expected to be signed with the application's secret.
+ * @returns The decoded AdminUser when valid, otherwise `null`.
  */
 export async function verifyToken(token: string): Promise<AdminUser | null> {
   try {
@@ -52,7 +68,13 @@ export async function verifyToken(token: string): Promise<AdminUser | null> {
 }
 
 /**
- * Extract token from Authorization header or cookies
+ * Retrieve a JWT from an incoming request.
+ *
+ * Prefers an Authorization header with the `Bearer <token>` scheme; if absent,
+ * falls back to the `admin-token` cookie. Returns the raw token string or `null`
+ * if no token is present.
+ *
+ * @returns The token string when found, otherwise `null`.
  */
 export function extractToken(request: NextRequest): string | null {
   // Check Authorization header first
@@ -71,7 +93,13 @@ export function extractToken(request: NextRequest): string | null {
 }
 
 /**
- * Middleware helper to authenticate requests
+ * Authenticate an incoming Next.js request and return the corresponding admin user.
+ *
+ * Returns the decoded AdminUser when a valid JWT is present (read from the
+ * Authorization Bearer header or the `admin-token` cookie). Returns `null` if
+ * no token is found or token verification fails.
+ *
+ * @returns The authenticated AdminUser, or `null` if authentication is unsuccessful.
  */
 export async function authenticateRequest(
   request: NextRequest
@@ -86,7 +114,12 @@ export async function authenticateRequest(
 }
 
 /**
- * Create admin user object
+ * Create a default admin user representing the current session.
+ *
+ * Returns an AdminUser with `id` set to `"admin"`, `role` set to `"admin"`,
+ * and `loginTime` set to the current timestamp (milliseconds since epoch).
+ *
+ * @returns A new AdminUser for the current session.
  */
 export function createAdminUser(): AdminUser {
   return {

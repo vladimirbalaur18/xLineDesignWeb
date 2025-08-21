@@ -10,6 +10,21 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 
+/**
+ * Top-level header component for the public site.
+ *
+ * Renders a fixed, animated header with logo, desktop navigation (only on the home page),
+ * and a mobile navigation sheet. Tracks scroll position to update visual styling and to
+ * highlight the currently active page section. Provides a contact button that either
+ * smooth-scrolls to the contact section when on the home page or navigates to "/#contact".
+ *
+ * Important behavior:
+ * - Returns `null` immediately for routes whose pathname starts with `/admin` (header is not rendered on admin routes).
+ * - Attaches a window scroll listener to update `isScrolled` and the `activeSection` based on elements' positions.
+ * - Implements a `smoothScroll` helper to perform smooth in-page scrolling when navigation links are clicked.
+ *
+ * @returns The header React element, or `null` when on an admin route.
+ */
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");

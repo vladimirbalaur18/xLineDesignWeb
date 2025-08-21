@@ -1,6 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 
+/**
+ * Renders a centered 404 "Page Not Found" card.
+ *
+ * Displays a red alert icon, a prominent "404 Page Not Found" heading, and a muted descriptive message
+ * inside a responsive card centered both vertically and horizontally.
+ *
+ * @returns A React element containing the 404 UI.
+ */
 export default function NotFoundPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center ">

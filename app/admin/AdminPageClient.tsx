@@ -11,6 +11,19 @@ import {
   useSavePropertyMutation,
 } from "@/hooks/use-property";
 
+/**
+ * Admin page client component for listing and managing properties.
+ *
+ * Renders a properties table, a property form for create/edit, and a loading state.
+ * - Fetches properties (including sections) and shows a destructive toast on fetch error.
+ * - Provides create, edit, delete, save, and cancel handlers:
+ *   - handleCreate / handleEdit toggle the form and set the editing property.
+ *   - handleDelete shows a confirmation prompt and calls the delete mutation; on success/error it displays a toast.
+ *   - handleSave calls the save mutation (creates or updates based on current editing state) and displays a success or error toast, then closes the form.
+ * - Maintains local UI state: `editingProperty` and `showForm`.
+ *
+ * @returns The admin UI JSX for managing properties.
+ */
 export default function AdminPageClient() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [showForm, setShowForm] = useState(false);

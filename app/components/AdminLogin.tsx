@@ -18,6 +18,15 @@ interface AdminLoginProps {
   onLoginSuccess: (token: string) => void;
 }
 
+/**
+ * Admin login React component that implements a two-step OTP flow (request + verify) using Telegram.
+ *
+ * Renders a centered card UI that lets an admin request a 6-digit OTP sent via Telegram and then verify it.
+ * On successful verification the component invokes the provided callback with an authentication token.
+ *
+ * @param onLoginSuccess - Callback invoked with the authentication token after successful OTP verification.
+ * @returns A React element rendering the OTP request / verification UI.
+ */
 export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   const [step, setStep] = useState<"request" | "verify">("request");
   const [sessionId, setSessionId] = useState<string>("");

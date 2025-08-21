@@ -1,6 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Property } from "@/lib/properties";
 
+/**
+ * Fetches a single Property by its slug using React Query.
+ *
+ * The query is enabled only when `slug` is provided. When executed, it requests
+ * GET /api/property/{slug} and returns the parsed Property JSON.
+ *
+ * @param slug - The unique slug of the property to fetch. If omitted the query will be disabled.
+ * @returns The React Query result for the requested `Property`.
+ *
+ * @remarks
+ * If the query function runs with a missing `slug` it will throw an Error("Property slug is required").
+ * The hook sets a staleTime of 10 minutes and a gcTime of 20 minutes for the cached result.
+ */
 export function useProperty(slug?: string) {
   return useQuery({
     queryKey: ["property", slug],
@@ -40,6 +53,19 @@ export const useProperties = ({
     gcTime: 20 * 60 * 1000, // 20 minutes
   });
 
+/**
+ * Returns a React Query mutation for creating or updating a Property.
+ *
+ * The mutation sends the Property to /api/properties using POST for creates
+ * (no `id`) or PUT for updates (has `id`). On success it invalidates the
+ * cached ["property", savedProperty.slug] and ["properties"] queries so
+ * callers see fresh data.
+ *
+ * The mutation function resolves to the saved Property parsed from the JSON
+ * response. It throws an Error if the HTTP response is not ok.
+ *
+ * @returns A React Query mutation object whose `mutate` / `mutateAsync` accept a `Property` and resolve to the saved `Property`.
+ */
 export function useSavePropertyMutation() {
   const queryClient = useQueryClient();
 
@@ -70,6 +96,17 @@ export function useSavePropertyMutation() {
   });
 }
 
+/**
+ * Returns a React Query mutation for deleting a Property by slug.
+ *
+ * The mutation sends a DELETE request to `/api/properties/{slug}` and,
+ * on success, invalidates the cached ["properties"] query so lists are refreshed.
+ *
+ * The mutation's `mutate`/`mutateAsync` should be called with the property's slug.
+ *
+ * @returns A React Query mutation object for performing the delete operation.
+ * @throws Error if the DELETE request responds with a non-OK status.
+ */
 export function useDeletePropertyMutation() {
   const queryClient = useQueryClient();
 

@@ -16,7 +16,15 @@ import type { Property } from "../lib/properties";
 
 import { useUrlStates } from "../hooks/use-url-state";
 import { useProperties } from "@/hooks/use-property";
-// Animation variants
+/**
+ * Renders the projects portfolio page with search, category filtering, sorting and year-grouped results.
+ *
+ * This client React component fetches project data, exposes controls for text search, category selection and sorting,
+ * and displays projects grouped by their build year. It handles loading, error and empty-result states and links each
+ * project to its detail page (/property/{slug}).
+ *
+ * @returns The page's JSX element.
+ */
 
 export default function ProjectsPage() {
   const { data: properties, error, isLoading } = useProperties({});

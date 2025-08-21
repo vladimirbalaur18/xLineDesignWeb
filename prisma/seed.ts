@@ -3,6 +3,15 @@ import { properties } from "../app/lib/properties";
 
 const prisma = new PrismaClient();
 
+/**
+ * Seed the database with property data from the imported dataset.
+ *
+ * Clears existing property-related records (propertySection, propertyStoryChapter, propertyImage, and property)
+ * and then creates Property records for each entry in the `properties` array, including nested relations:
+ * heroImages, galleryImages, storyChapters, and sections.
+ *
+ * Uses the Prisma client to perform the deletions and nested create operations.
+ */
 async function main() {
   console.log("🌱 Starting to seed the database...");
 

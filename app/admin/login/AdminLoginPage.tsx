@@ -5,6 +5,15 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+/**
+ * Client-side admin login page that renders the login UI or a loading state and redirects authenticated users.
+ *
+ * When authentication is complete (not loading and both `user` and `token` are present) the component redirects to `/admin`
+ * using `router.replace` (replaces the current history entry). While `isLoading` is true it shows a centered loading spinner;
+ * otherwise it renders `AdminLogin` and forwards the auth `login` callback via `onLoginSuccess`.
+ *
+ * @returns The component's JSX element.
+ */
 export default function AdminLoginPage() {
   const { user, token, login, isLoading } = useAuth();
   const router = useRouter();

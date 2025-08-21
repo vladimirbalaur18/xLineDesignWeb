@@ -31,6 +31,20 @@ interface PropertyTableProps {
   onCreate: () => void;
 }
 
+/**
+ * Renders a searchable, category-filterable, paginated table of properties with create, edit and delete actions.
+ *
+ * Displays each property's image (or placeholder), title and slug, category badge, location/address, price, and details
+ * (bedrooms, bathrooms, area, year built). Supports case-insensitive search (matches title, location, or address),
+ * category filtering, items-per-page selection, and pagination. The current page resets to the first page when filters
+ * or items-per-page change.
+ *
+ * @param properties - Array of property objects to display.
+ * @param onEdit - Called with a property when the Edit button is clicked.
+ * @param onDelete - Called with a property's slug when the Delete button is clicked.
+ * @param onCreate - Called when the Add Property button is clicked.
+ * @returns A JSX element containing the complete property table UI.
+ */
 export function PropertyTable({
   properties,
   onEdit,

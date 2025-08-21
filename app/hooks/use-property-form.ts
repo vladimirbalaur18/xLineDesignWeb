@@ -1,6 +1,27 @@
 import { useState } from "react";
 import type { Property } from "@/lib/properties";
 
+/**
+ * React hook that manages creating and updating Property records via the app API.
+ *
+ * Provides helper functions to save a new property and update an existing one while
+ * exposing simple loading and error state for use in forms.
+ *
+ * - saveProperty(property): POSTs `property` to `/api/properties`, returns the saved Property on success or `null` on failure.
+ * - updateProperty(property): PUTs `property` to `/api/property/{slug}`, returns the updated Property on success or `null` on failure.
+ *
+ * Both operations:
+ * - set `isLoading` to `true` while the request is in progress and reset it when finished,
+ * - clear `error` before the request,
+ * - if the response is not OK, attempt to parse a JSON `{ error }` message and store it in `error`,
+ * - on any error store a fallback message in `error` and return `null`.
+ *
+ * @returns An object with:
+ *  - `saveProperty`: (property: Property) => Promise<Property | null>
+ *  - `updateProperty`: (property: Property) => Promise<Property | null>
+ *  - `isLoading`: boolean
+ *  - `error`: string | null
+ */
 export function usePropertyForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -6,6 +6,13 @@ import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+/**
+ * Fixed top header for the admin area with logo navigation and logout control.
+ *
+ * Renders a translucent, fixed header containing a clickable logo (navigates to "/admin")
+ * and a Logout button. Clicking Logout calls the current auth `logout` function and then
+ * redirects the browser to "/admin/login".
+ */
 export default function AdminHeader() {
   const { logout } = useAuth();
   const router = useRouter();
