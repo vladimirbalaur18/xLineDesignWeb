@@ -15,12 +15,11 @@ import { filtersMap } from "../../shared/filtersMap";
 import type { Property } from "../lib/properties";
 
 import { useUrlStates } from "../hooks/use-url-state";
+import { useProperties } from "@/hooks/use-property";
 // Animation variants
 
 export default function ProjectsPage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: properties, error, isLoading } = useProperties();
 
   const [filters, updateFilters, resetFilter] = useUrlStates({
     filter: "all",
@@ -31,40 +30,13 @@ export default function ProjectsPage() {
 
   const filtersList = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
 
-  // Fetch properties from API
-  useEffect(() => {
-    async function fetchProperties() {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("/api/projects");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch properties");
-        }
-
-        const data = await response.json();
-        setProperties(data);
-      } catch (err) {
-        console.error("Error fetching properties:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to load properties"
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProperties();
-  }, []);
-
   // Filter and search projects
   const filteredProjects = useMemo(() => {
     let filtered = properties;
 
     // Apply category filter
     if (filters.filter !== "all") {
-      filtered = filtered.filter(
+      filtered = filtered?.filter(
         (project) => project.category === filters.filter
       );
     }
@@ -72,7 +44,7 @@ export default function ProjectsPage() {
     // Apply search filter
     if (filters.search) {
       const query = filters.search.toLowerCase();
-      filtered = filtered.filter(
+      filtered = filtered?.filter(
         (project) =>
           project.title.toLowerCase().includes(query) ||
           (project.description &&
@@ -85,16 +57,16 @@ export default function ProjectsPage() {
     // Apply sorting
     switch (filters.sort) {
       case "newest":
-        filtered.sort((a, b) => (b.yearBuilt || 0) - (a.yearBuilt || 0));
+        filtered?.sort((a, b) => (b.yearBuilt || 0) - (a.yearBuilt || 0));
         break;
       case "oldest":
-        filtered.sort((a, b) => (a.yearBuilt || 0) - (b.yearBuilt || 0));
+        filtered?.sort((a, b) => (a.yearBuilt || 0) - (b.yearBuilt || 0));
         break;
       case "name":
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
+        filtered?.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case "location":
-        filtered.sort(
+        filtered?.sort(
           (a, b) => a?.location?.localeCompare(b?.location || "") || 0
         );
         break;
@@ -106,10 +78,11 @@ export default function ProjectsPage() {
   // Group projects by year
   const projectsByYear = useMemo(() => {
     const grouped: { [year: string]: typeof filteredProjects } = {};
-    filteredProjects.forEach((project) => {
-      if (!grouped[project.yearBuilt?.toString() || "0"])
-        grouped[project.yearBuilt?.toString() || "0"] = [];
-      grouped[project.yearBuilt?.toString() || "0"].push(project);
+    filteredProjects?.forEach((project) => {
+      if (!grouped[project?.yearBuilt?.toString() || "0"]) {
+        grouped[project?.yearBuilt?.toString() || "0"] = [];
+      }
+      grouped[project?.yearBuilt?.toString() || "0"]?.push(project);
     });
     // Sort years descending
     return Object.entries(grouped)
@@ -262,11 +235,11 @@ export default function ProjectsPage() {
             {/* Results Count */}
             <div className="text-center">
               <p className="text-white/70 text-sm">
-                {loading
+                {isLoading
                   ? "Se încarcă..."
-                  : `${filteredProjects.length} proiecte găsite`}
-                {!loading && filters.search && ` pentru "${filters.search}"`}
-                {!loading &&
+                  : `${filteredProjects?.length} proiecte găsite`}
+                {!isLoading && filters.search && ` pentru "${filters.search}"`}
+                {!isLoading &&
                   filters.filter !== "all" &&
                   ` în categoria "${
                     filtersMap[filters.filter as keyof typeof filtersMap]
@@ -281,7 +254,7 @@ export default function ProjectsPage() {
       <section className="pb-24 relative">
         <div className="container mx-auto px-4 flex flex-col gap-12 relative">
           {/* Loading State */}
-          {loading && (
+          {isLoading && (
             <div className="flex flex-col items-center justify-center py-24">
               <Loader2 className="h-12 w-12 animate-spin text-white mb-4" />
               <h3 className="text-2xl font-bold text-white mb-2">
@@ -294,7 +267,7 @@ export default function ProjectsPage() {
           )}
 
           {/* Error State */}
-          {error && !loading && (
+          {error && !isLoading && (
             <div className="flex flex-col items-center justify-center py-24">
               <div className="text-red-500 mb-4">
                 <svg
@@ -314,7 +287,9 @@ export default function ProjectsPage() {
               <h3 className="text-2xl font-bold text-white mb-2">
                 Eroare la încărcare
               </h3>
-              <p className="text-white/70 mb-6 text-center max-w-md">{error}</p>
+              <p className="text-white/70 mb-6 text-center max-w-md">
+                {error?.message}
+              </p>
               <Button
                 variant="outline"
                 className="border-white/30 text-white hover:border-white hover:bg-white/10"
@@ -326,15 +301,15 @@ export default function ProjectsPage() {
           )}
 
           {/* Success State */}
-          {!loading && !error && (
+          {!isLoading && !error && (
             <>
               {/* Desktop timeline line (only render for lg and up) */}
-              {filteredProjects?.length > 0 && (
+              {filteredProjects && filteredProjects?.length > 0 && (
                 <div className="hidden lg:block absolute top-0 bottom-0 w-[2px] left-[47px] bg-white rounded-full" />
               )}
 
               {/* Not Found Illustration */}
-              {filteredProjects.length === 0 && (
+              {filteredProjects?.length === 0 && (
                 <div className="flex flex-col items-center justify-center">
                   <NotFoundIllustration />
                   <h3 className="text-2xl font-bold text-white mb-2">
@@ -364,7 +339,7 @@ export default function ProjectsPage() {
                       {year}
                     </h2>
                     <div className="grid grid-cols-1 gap-6">
-                      {projectsByYear[year].map((project) => (
+                      {projectsByYear[year]?.map((project) => (
                         <Link
                           key={project.slug}
                           href={`/property/${project.slug}`}
@@ -401,7 +376,7 @@ export default function ProjectsPage() {
                     {/* Cards */}
                     <div className="flex-1">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 xl:gap-2">
-                        {projectsByYear[year].map((project) => (
+                        {projectsByYear[year]?.map((project) => (
                           <Link
                             key={project.slug}
                             href={`/property/${project.slug}`}

@@ -16,6 +16,7 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "./ui/carousel";
+import { useProperties } from "@/hooks/use-property";
 
 // Animation variants
 const containerVariants = {
@@ -29,9 +30,7 @@ const containerVariants = {
 };
 
 export default function Projects() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: properties, error, isLoading } = useProperties();
   const [activeFilter, setActiveFilter] = useState("all");
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
@@ -47,37 +46,10 @@ export default function Projects() {
 
   const filters = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
 
-  // Fetch properties from API
-  useEffect(() => {
-    async function fetchProjects() {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("/api/projects");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-
-        const data = await response.json();
-        setProperties(data);
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to load projects"
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProjects();
-  }, []);
-
   const filteredProjects =
     activeFilter === "all"
       ? properties
-      : properties.filter((project) => project.category === activeFilter);
+      : properties?.filter((project) => project.category === activeFilter);
 
   // Autoplay: advance slide every 3s, pause on hover
   useEffect(() => {
@@ -184,9 +156,9 @@ export default function Projects() {
               <Badge
                 variant={activeFilter === key ? "default" : "outline"}
                 className={`
-                  relative text-sm py-2.5 px-6 cursor-pointer uppercase tracking-wider backdrop-blur-sm
-                 
-                `}
+                    relative text-sm py-2.5 px-6 cursor-pointer uppercase tracking-wider backdrop-blur-sm
+                  
+                  `}
                 onClick={() => {
                   setActiveFilter(key);
                 }}
@@ -207,7 +179,7 @@ export default function Projects() {
           animate={isInView ? "visible" : "hidden"}
           viewport={{ once: true }}
         >
-          {loading && (
+          {isLoading && (
             <div className="flex justify-center items-center py-16">
               <Loader2 className="h-8 w-8 animate-spin text-white/70" />
               <span className="ml-3 text-white/70">
@@ -216,9 +188,9 @@ export default function Projects() {
             </div>
           )}
 
-          {error && !loading && (
+          {error && !isLoading && (
             <div className="text-center py-16">
-              <p className="text-red-400 mb-4">{error}</p>
+              <p className="text-red-400 mb-4">{error?.message}</p>
               <Button
                 onClick={() => window.location.reload()}
                 variant="outline"
@@ -229,7 +201,7 @@ export default function Projects() {
             </div>
           )}
 
-          {!loading && !error && (
+          {!isLoading && !error && (
             <Carousel
               className="relative"
               opts={{ align: "start", containScroll: "trimSnaps", loop: true }}
@@ -238,7 +210,7 @@ export default function Projects() {
               onMouseLeave={() => setIsAutoplayPaused(false)}
             >
               <CarouselContent>
-                {filteredProjects.map((project) => (
+                {filteredProjects?.map((project) => (
                   <CarouselItem
                     key={project.slug}
                     className="basis-full md:basis-1/2 lg:basis-1/3"

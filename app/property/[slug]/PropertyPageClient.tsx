@@ -44,6 +44,7 @@ import { PropertyGallerySmall } from "@/components/PropertyGallerySmall";
 import { PropertyStats } from "@/components/PropertyStats";
 import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
+import { useProperty } from "@/hooks/use-property";
 
 // Lazy Loading Section Component
 function LazySection({
@@ -213,9 +214,8 @@ export default function PropertyPageClient({
 }: {
   propertySlug: string;
 }) {
-  const [property, setProperty] = useState<Property | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: property, isLoading, error } = useProperty(propertySlug);
+
   const router = useRouter();
   const [currentHeroImageIndex, setCurrentHeroImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -226,45 +226,13 @@ export default function PropertyPageClient({
   const [copied, setCopied] = useState(false);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
 
-  // Fetch property data from API
-  useEffect(() => {
-    async function fetchProperty() {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch(`/api/property/${propertySlug}`);
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            setError("Property not found");
-          } else {
-            throw new Error("Failed to fetch property");
-          }
-          return;
-        }
-
-        const data = await response.json();
-        setProperty(data);
-      } catch (err) {
-        console.error("Error fetching property:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to load property"
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProperty();
-  }, [propertySlug]);
   // Compute the canonical property URL for sharing
   const propertyUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/property/${propertySlug}`
       : "";
 
-  const shareText =
-    "Privește acest proiect interesant! / Look at this interesting project!";
+  const shareText = "Privește acest proiect interesant!";
 
   // Get property-specific sections
   const propertySections = property?.sections;
@@ -283,7 +251,7 @@ export default function PropertyPageClient({
   }, [currentHeroImageIndex, property]);
 
   // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -330,14 +298,15 @@ export default function PropertyPageClient({
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-white mb-4">
-            {error === "Property not found"
+            {property?.id === undefined
               ? "Proiect negăsit"
               : "Eroare la încărcare"}
           </h1>
           <p className="text-white/70 mb-6">
-            {error === "Property not found"
+            {property?.id === undefined
               ? "Proiectul căutat nu există sau a fost șters."
-              : error || "A apărut o eroare la încărcarea proiectului."}
+              : error?.message ||
+                "A apărut o eroare la încărcarea proiectului."}
           </p>
           <div className="space-x-4">
             <Button onClick={() => router.push("/")} variant="outline">
