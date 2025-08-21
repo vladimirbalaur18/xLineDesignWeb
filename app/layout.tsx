@@ -10,6 +10,13 @@ import { Root } from "vaul";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#000000",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
@@ -17,12 +24,6 @@ export const metadata: Metadata = {
   title: "XLine Design | Arhitectură modernă și design interior în Moldova",
   description:
     "Servicii de design interior personalizate pentru proiecte particulare și comerciale",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: "#000000",
   openGraph: {
     title: "XLine Design | Arhitectură modernă și design interior în Moldova",
     description:
