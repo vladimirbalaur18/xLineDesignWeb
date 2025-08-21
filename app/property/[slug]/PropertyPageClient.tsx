@@ -46,7 +46,15 @@ import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
 import { useProperty } from "@/hooks/use-property";
 
-// Lazy Loading Section Component
+/**
+ * Renders a lazily-loaded content section that progressively loads images when the section scrolls into view.
+ *
+ * When the section enters the viewport it begins loading the first image, then starts each subsequent image only after the previous one finishes loading. Displays a title, decorative divider, optional one- or two-image layout with progressive loading and a centered loading spinner while images are loading, and the section text content. Animations and staggered delays are applied based on the section index.
+ *
+ * @param section - Section data object (expected shape: { title: string, images: string[], content: string }). Images are loaded progressively when the section is in view.
+ * @param index - Zero-based position of this section; used to stagger entry animations and image loading priority.
+ * @param totalSections - Total number of sections on the page (reserved for layout/animation decisions; not required).
+ */
 function LazySection({
   section,
   index,
@@ -209,6 +217,18 @@ function LazySection({
   );
 }
 
+/**
+ * Client-side React page component that fetches and renders a property's detail view.
+ *
+ * Fetches property data by `propertySlug` (via `useProperty`) and manages local UI state
+ * for hero image navigation, gallery modal, and story mode. Renders loading and error
+ * states while data is being fetched, a hero area with navigation and share controls,
+ * the main content (stats, description, features), a sidebar (gallery, contact),
+ * dynamic CMS sections rendered with LazySection, and related modals (gallery, story).
+ *
+ * @param propertySlug - The slug identifying which property to load and display.
+ * @returns A JSX element containing the full property details page.
+ */
 export default function PropertyPageClient({
   propertySlug,
 }: {

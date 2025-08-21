@@ -13,6 +13,21 @@ interface PropertyStoryModeProps {
   onClose: () => void;
 }
 
+/**
+ * Full-screen, multi-chapter "story" viewer for a Property with auto-play, manual navigation, swipe support, and a progress bar.
+ *
+ * Renders a portal-mounted fullscreen overlay (client-only) that cycles through `property.storyChapters` (image, title, narrative, duration). Supports:
+ * - auto-play with per-chapter durations and a progress bar,
+ * - manual next/previous and direct chapter selection,
+ * - play/pause toggle,
+ * - swipe left/right to navigate,
+ * - chapter indicators and a final "Vezi proiectul" action that calls `onClose`.
+ *
+ * @param property - Property data containing a `storyChapters` array (each chapter must include `image`, `title`, `narrative`, and `duration` in milliseconds).
+ * @param isOpen - When true, opens the story mode; when false, nothing is rendered.
+ * @param onClose - Callback invoked to close the story mode (also used by the final action button).
+ * @returns A React element mounted into document.body on the client, or null when there are no chapters or `isOpen` is false.
+ */
 export default function PropertyStoryMode({
   property,
   isOpen,

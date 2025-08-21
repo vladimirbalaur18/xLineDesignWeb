@@ -3,6 +3,16 @@ import { PrismaClient } from "../../../generated/prisma";
 
 const prisma = new PrismaClient();
 
+/**
+ * Retrieve a single property by slug, including related hero images, gallery images, story chapters, and sections.
+ *
+ * Fetches the property identified by the route `slug`. Returns a 404 JSON error if no property is found,
+ * or a 200 JSON response containing the property with its related entities. On internal failure returns
+ * a 500 JSON error. The Prisma client is disconnected after the operation.
+ *
+ * @param params - Promise resolving to an object with the route `slug` string used to look up the property
+ * @returns A NextResponse JSON containing the property (with related arrays) on success, or an error object with status 404 or 500
+ */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
@@ -49,6 +59,19 @@ export async function GET(
   }
 }
 
+/**
+ * Updates a property identified by slug, replacing its scalar fields and all related nested data.
+ *
+ * Deletes existing hero/gallery images, story chapters, and sections for the property, then updates
+ * the property record with provided scalar fields and recreates the nested relations from the
+ * payload arrays (`heroImages`, `galleryImages`, `storyChapters`, `sections`).
+ *
+ * Numeric fields (`bedrooms`, `bathrooms`, `area`, `yearBuilt`) are parsed from the incoming values;
+ * missing numeric fields become `null`. `features` and `tags` default to empty arrays when omitted.
+ *
+ * @param params - An object containing a Promise that resolves to `{ slug }`; `slug` is used to locate the property to update.
+ * @returns A NextResponse containing the updated property (including `heroImages`, `galleryImages`, `storyChapters`, and `sections`) on success, or a 500 JSON error on failure.
+ */
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
@@ -179,6 +202,14 @@ export async function PUT(
   }
 }
 
+/**
+ * Deletes a property identified by its slug.
+ *
+ * Receives route params, removes the property (and its related records via Prisma cascade), and returns a JSON response indicating success. On failure returns a 500 JSON error.
+ *
+ * @param params - A promise that resolves to route parameters; must include `slug`, the identifier of the property to delete.
+ * @returns A NextResponse JSON object with `{ message: "Property deleted successfully" }` on success or `{ error: "Failed to delete property" }` with status 500 on failure.
+ */
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }

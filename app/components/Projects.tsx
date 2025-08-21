@@ -29,6 +29,20 @@ const containerVariants = {
   },
 };
 
+/**
+ * Renders the "Projects" portfolio section: fetches properties, displays filter badges and a responsive carousel of project cards with autoplay and controls.
+ *
+ * The component:
+ * - Fetches project data via `useProperties({ includeSections: true })` and shows loading and error UIs.
+ * - Provides category filters (all / interiorDesign / architecture / landscapeDesign) and filters the displayed projects.
+ * - Renders a horizontally scrollable carousel that:
+ *   - Advances automatically every 3 seconds (paused while hovered).
+ *   - Resets to the first slide when the active filter changes.
+ *   - Exposes previous/next controls and links each card to `/property/{slug}`.
+ * - Includes a "View all projects" button linking to `/projects`.
+ *
+ * @returns A JSX element containing the projects section.
+ */
 export default function Projects() {
   const {
     data: properties,

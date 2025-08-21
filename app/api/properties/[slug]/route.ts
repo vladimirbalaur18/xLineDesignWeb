@@ -3,6 +3,19 @@ import { PrismaClient } from "../../../generated/prisma";
 
 const prisma = new PrismaClient();
 
+/**
+ * Deletes a property (and its dependent records) identified by the route `slug`.
+ *
+ * Looks up the property by slug, deletes related records that depend on the property
+ * (images where the property is referenced as a hero or gallery item, story chapters,
+ * and sections) to satisfy foreign-key constraints, then deletes the property itself.
+ *
+ * @param params - A promise resolving to an object with `slug` (the property identifier from the route)
+ * @returns A JSON HTTP response:
+ * - 200 with `{ message: "Property deleted successfully" }` on success
+ * - 404 with `{ error: "Property not found" }` if no property matches the slug
+ * - 500 with `{ error: "Failed to delete property" }` on unexpected errors
+ */
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }

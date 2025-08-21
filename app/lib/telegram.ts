@@ -104,6 +104,13 @@ const globalForTelegram = globalThis as unknown as {
   telegramService?: TelegramOTPService;
 };
 
+/**
+ * Returns the singleton TelegramOTPService instance, creating it on first use.
+ *
+ * The instance is cached on a module-global attached to `globalThis`, ensuring the same service is reused across imports and (where applicable) during hot reloads.
+ *
+ * @returns The shared TelegramOTPService instance
+ */
 export function getTelegramService(): TelegramOTPService {
   if (!globalForTelegram.telegramService) {
     globalForTelegram.telegramService = new TelegramOTPService();

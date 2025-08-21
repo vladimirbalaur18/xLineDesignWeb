@@ -167,6 +167,24 @@ interface PropertyFormProps {
   onCancel: () => void;
 }
 
+/**
+ * Form component for creating or editing a Property.
+ *
+ * Renders a validated, dynamic form (including hero images, story chapters, and image sections)
+ * and handles both create and edit flows. If a `property` or a `property.slug` is provided,
+ * the component will load existing data and populate the form; otherwise it initializes
+ * sensible defaults for creating a new property. On successful submit the form is transformed
+ * into a `Property` object and passed to `onSave`.
+ *
+ * Notes:
+ * - The form enforces validation via the Zod schema; additionally it requires at least one
+ *   hero image on submit and surfaces validation errors via toasts.
+ * - The component exposes an image preview modal for any valid image URL entered in the form.
+ *
+ * @param property - Optional existing Property to edit; when provided its values populate the form.
+ * @param onSave - Callback invoked with the transformed `Property` object when the form is submitted and valid.
+ * @param onCancel - Callback invoked when the user cancels/aborts the form.
+ */
 export function PropertyForm({
   property,
   onSave,

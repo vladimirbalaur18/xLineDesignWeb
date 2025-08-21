@@ -6,6 +6,14 @@ import { useAuth } from "@/hooks/use-auth";
 import AdminPageClient from "./AdminPageClient";
 import AdminHeader from "./AdminHeader";
 
+/**
+ * Client-side wrapper that enforces admin authentication before rendering admin UI.
+ *
+ * If authentication is still loading, displays a centered "Checking authentication..." loader.
+ * Once loading finishes, if either `user` or `token` is missing it navigates to `/admin/login`
+ * (using router.replace) and shows a "Redirecting to login..." message.
+ * When both `user` and `token` are present it renders the admin layout (AdminHeader and AdminPageClient).
+ */
 export default function AdminAuthWrapper() {
   const { user, token, isLoading } = useAuth();
   const router = useRouter();
