@@ -2,13 +2,29 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTelegramService } from "@/lib/telegram";
 import { generateToken, createAdminUser } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+
   try {
     const { sessionId, code } = await request.json();
+    // Add request body to context
+    const contextWithBody = logger.addRequestBody(requestContext, {
+      sessionId,
+      code,
+    });
 
     // Validate input
     if (!sessionId || !code) {
+      logger.otpFailed({
+        ...requestContext,
+        sessionId,
+        error: "Missing sessionId or code",
+        statusCode: 400,
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -26,8 +42,8 @@ export async function POST(request: NextRequest) {
     const ipLimit = 10; // attempts per 5 minutes per IP
     const sessionLimit = 5; // attempts per 5 minutes per session
     const [ipRl, sessionRl] = await Promise.all([
-      rateLimit(ipKey, ipLimit, windowSeconds),
-      rateLimit(sessionKey, sessionLimit, windowSeconds),
+      rateLimit(ipKey, ipLimit, windowSeconds, requestContext),
+      rateLimit(sessionKey, sessionLimit, windowSeconds, requestContext),
     ]);
     if (!ipRl.allowed || !sessionRl.allowed) {
       const retryAfter = Math.max(ipRl.retryAfter, sessionRl.retryAfter);
@@ -51,6 +67,14 @@ export async function POST(request: NextRequest) {
     const isValid = await telegramService.verifyOTP(sessionId, code);
 
     if (!isValid) {
+      logger.otpFailed({
+        ...requestContext,
+        sessionId,
+        code,
+        error: "Invalid or expired OTP code",
+        statusCode: 401,
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -63,6 +87,26 @@ export async function POST(request: NextRequest) {
     // Generate JWT token
     const user = createAdminUser();
     const token = await generateToken(user);
+
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify({
+      success: true,
+      message: "Authentication successful",
+      token,
+      user,
+    }).length;
+
+    // Log successful verification with detailed request information
+    logger.otpVerified({
+      ...logger.addResponseDetails(
+        contextWithBody,
+        responseSize,
+        processingTime
+      ),
+      sessionId,
+      statusCode: 200,
+      metadata: { userId: user.id },
+    });
 
     // Create response with token in both body and cookie
     const response = NextResponse.json(
@@ -86,7 +130,23 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("OTP verification error:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "otp_failed",
+          ...requestContext,
+          error: "OTP verification error",
+          statusCode: 500,
+        },
+        error
+      );
+    } else {
+      logger.otpFailed({
+        ...requestContext,
+        error: "OTP verification error",
+        statusCode: 500,
+      });
+    }
 
     return NextResponse.json(
       {

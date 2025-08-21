@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+
   try {
     // Create response
     const response = NextResponse.json(
@@ -20,9 +24,42 @@ export async function POST(request: NextRequest) {
       path: "/",
     });
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify({
+      success: true,
+      message: "Logged out successfully",
+    }).length;
+
+    // Log successful logout with detailed request information
+    logger.logout({
+      ...logger.addResponseDetails(
+        requestContext,
+        responseSize,
+        processingTime
+      ),
+      statusCode: 200,
+    });
+
     return response;
   } catch (error) {
-    console.error("Logout error:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "logout_error",
+          ...requestContext,
+          error: "Logout error",
+          statusCode: 500,
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "logout_error",
+        ...requestContext,
+        error: "Logout error",
+        statusCode: 500,
+      });
+    }
 
     return NextResponse.json(
       {
