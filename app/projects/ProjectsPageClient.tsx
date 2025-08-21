@@ -19,7 +19,7 @@ import { useProperties } from "@/hooks/use-property";
 // Animation variants
 
 export default function ProjectsPage() {
-  const { data: properties, error, isLoading } = useProperties();
+  const { data: properties, error, isLoading } = useProperties({});
 
   const [filters, updateFilters, resetFilter] = useUrlStates({
     filter: "all",
