@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "../../../generated/prisma";
+import { logger } from "@/lib/logger";
 
 const prisma = new PrismaClient();
 
@@ -14,11 +15,16 @@ const prisma = new PrismaClient();
  * @returns A NextResponse JSON containing the property (with related arrays) on success, or an error object with status 404 or 500
  */
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+  let slug = "";
+
   try {
-    const { slug } = await params;
+    const paramsResult = await params;
+    slug = paramsResult.slug;
 
     const property = await prisma.property.findUnique({
       where: {
@@ -33,6 +39,14 @@ export async function GET(
     });
 
     if (!property) {
+      logger.error({
+        action: "project_not_found",
+        ...requestContext,
+        error: "Property not found",
+        statusCode: 404,
+        metadata: { projectSlug: slug },
+      });
+
       return NextResponse.json(
         { error: "Property not found" },
         { status: 404 }
@@ -47,9 +61,50 @@ export async function GET(
       storyChapters: property.storyChapters,
     };
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify(transformedProperty).length;
+
+    // Log successful fetch with detailed request information
+    logger.projectAction({
+      ...logger.addResponseDetails(
+        requestContext,
+        responseSize,
+        processingTime,
+        1
+      ),
+      projectId: property.id,
+      statusCode: 200,
+      metadata: {
+        projectSlug: property.slug,
+        title: property.title,
+        category: property.category,
+        location: property.location,
+      },
+    });
+
     return NextResponse.json(transformedProperty);
   } catch (error) {
-    console.error("Error fetching property:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_fetch_error",
+          ...requestContext,
+          error: "Error fetching property",
+          statusCode: 500,
+          metadata: { projectSlug: slug },
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_fetch_error",
+        ...requestContext,
+        error: "Error fetching property",
+        statusCode: 500,
+        metadata: { projectSlug: slug },
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to fetch property" },
       { status: 500 }
@@ -73,12 +128,20 @@ export async function GET(
  * @returns A NextResponse containing the updated property (including `heroImages`, `galleryImages`, `storyChapters`, and `sections`) on success, or a 500 JSON error on failure.
  */
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+  let body: any;
+  let slug = "";
+
   try {
-    const { slug } = await params;
-    const body = await request.json();
+    const paramsResult = await params;
+    slug = paramsResult.slug;
+    body = await request.json();
+    // Add request body to context
+    const contextWithBody = logger.addRequestBody(requestContext, body);
     const {
       title,
       description,
@@ -190,9 +253,60 @@ export async function PUT(
       sections: property.sections,
     };
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify(transformedProperty).length;
+
+    // Log successful update with detailed request information
+    logger.projectUpdated({
+      ...logger.addResponseDetails(
+        contextWithBody,
+        responseSize,
+        processingTime,
+        4
+      ), // 4 DB operations: 3 deletes + 1 update
+      projectId: property.id,
+      statusCode: 200,
+      metadata: {
+        projectSlug: property.slug,
+        title: property.title,
+        category: property.category,
+        location: property.location,
+        heroImagesCount: property.heroImages.length,
+        galleryImagesCount: property.galleryImages.length,
+        storyChaptersCount: property.storyChapters.length,
+        sectionsCount: property.sections.length,
+      },
+    });
+
     return NextResponse.json(transformedProperty);
   } catch (error) {
-    console.error("Error updating property:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_update_error",
+          ...requestContext,
+          error: "Error updating property",
+          statusCode: 500,
+          metadata: {
+            projectSlug: slug,
+            title: body?.title || "unknown",
+          },
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_update_error",
+        ...requestContext,
+        error: "Error updating property",
+        statusCode: 500,
+        metadata: {
+          projectSlug: slug,
+          title: body?.title || "unknown",
+        },
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to update property" },
       { status: 500 }
@@ -211,20 +325,74 @@ export async function PUT(
  * @returns A NextResponse JSON object with `{ message: "Property deleted successfully" }` on success or `{ error: "Failed to delete property" }` with status 500 on failure.
  */
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+  let slug = "";
+
   try {
-    const { slug } = await params;
+    const paramsResult = await params;
+    slug = paramsResult.slug;
+
+    // Get property info before deletion for logging
+    const property = await prisma.property.findUnique({
+      where: { slug },
+      select: { id: true, title: true, category: true, location: true },
+    });
 
     // Delete the property and all related data
     await prisma.property.delete({
       where: { slug },
     });
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify({
+      message: "Property deleted successfully",
+    }).length;
+
+    // Log successful deletion with detailed request information
+    logger.projectDeleted({
+      ...logger.addResponseDetails(
+        requestContext,
+        responseSize,
+        processingTime,
+        2
+      ), // 2 DB operations: 1 select + 1 delete
+      projectId: property?.id,
+      statusCode: 200,
+      metadata: {
+        projectSlug: slug,
+        title: property?.title || "unknown",
+        category: property?.category || "unknown",
+        location: property?.location || "unknown",
+      },
+    });
+
     return NextResponse.json({ message: "Property deleted successfully" });
   } catch (error) {
-    console.error("Error deleting property:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_delete_error",
+          ...requestContext,
+          error: "Error deleting property",
+          statusCode: 500,
+          metadata: { projectSlug: slug },
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_delete_error",
+        ...requestContext,
+        error: "Error deleting property",
+        statusCode: 500,
+        metadata: { projectSlug: slug },
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to delete property" },
       { status: 500 }

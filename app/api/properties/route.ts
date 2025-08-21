@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "../../generated/prisma";
+import { logger } from "@/lib/logger";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,10 @@ const prisma = new PrismaClient();
  * @returns A NextResponse containing a JSON array of property objects (200 on success).
  *          On failure, returns a JSON error object with HTTP status 500.
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+
   try {
     const { searchParams } = new URL(request.url);
     const includeImages = searchParams.get("includeImages") === "true";
@@ -46,9 +50,47 @@ export async function GET(request: Request) {
       sections: property.sections || [],
     }));
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify(transformedProperties).length;
+
+    // Log successful fetch with detailed request information
+    logger.projectAction({
+      ...logger.addResponseDetails(
+        requestContext,
+        responseSize,
+        processingTime,
+        1
+      ),
+      statusCode: 200,
+      metadata: {
+        count: properties.length,
+        includeImages,
+        includeChapters,
+        includeSections,
+      },
+    });
+
     return NextResponse.json(transformedProperties);
   } catch (error) {
-    console.error("Error fetching properties:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_fetch_error",
+          ...requestContext,
+          error: "Error fetching properties",
+          statusCode: 500,
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_fetch_error",
+        ...requestContext,
+        error: "Error fetching properties",
+        statusCode: 500,
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to fetch properties" },
       { status: 500 }
@@ -68,9 +110,15 @@ export async function GET(request: Request) {
  * On success returns the created property including `heroImages`, `galleryImages`, `storyChapters`, and `sections` with HTTP 201.
  * On failure returns a JSON error with HTTP 500. The Prisma client is disconnected in a finally block.
  */
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+  let body: any;
+
   try {
-    const body = await request.json();
+    body = await request.json();
+    // Add request body to context
+    const contextWithBody = logger.addRequestBody(requestContext, body);
     const {
       slug,
       title,
@@ -170,9 +218,60 @@ export async function POST(request: Request) {
       })),
     };
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify(transformedProperty).length;
+
+    // Log successful creation with detailed request information
+    logger.projectCreated({
+      ...logger.addResponseDetails(
+        contextWithBody,
+        responseSize,
+        processingTime,
+        1
+      ),
+      projectId: property.id,
+      projectSlug: property.slug,
+      statusCode: 201,
+      metadata: {
+        title: property.title,
+        category: property.category,
+        location: property.location,
+        heroImagesCount: property.heroImages.length,
+        galleryImagesCount: property.galleryImages.length,
+        storyChaptersCount: property.storyChapters.length,
+        sectionsCount: property.sections.length,
+      },
+    });
+
     return NextResponse.json(transformedProperty, { status: 201 });
   } catch (error) {
-    console.error("Error creating property:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_creation_error",
+          ...requestContext,
+          error: "Error creating property",
+          statusCode: 500,
+          metadata: {
+            slug: body?.slug || "unknown",
+            title: body?.title || "unknown",
+          },
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_creation_error",
+        ...requestContext,
+        error: "Error creating property",
+        statusCode: 500,
+        metadata: {
+          slug: body?.slug || "unknown",
+          title: body?.title || "unknown",
+        },
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to create property" },
       { status: 500 }
@@ -190,10 +289,15 @@ export async function POST(request: Request) {
  * @param request - A Request whose JSON body contains the update payload (including `id`, scalar property fields, and optional `heroImages`, `galleryImages`, `storyChapters`, `sections`).
  * @returns A NextResponse with the updated property (including related records) on success. Returns 400 if `id` is missing and 500 on server/database errors.
  */
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+  let body: any;
+
   try {
-    const body = await request.json();
-    console.log("PUT request body:", JSON.stringify(body, null, 2));
+    body = await request.json();
+    // Add request body to context
+    const contextWithBody = logger.addRequestBody(requestContext, body);
 
     const {
       id,
@@ -219,10 +323,14 @@ export async function PUT(request: Request) {
       sections,
     } = body;
 
-    console.log("Story chapters from request:", storyChapters);
-    console.log("Sections from request:", sections);
-
     if (!id) {
+      logger.error({
+        action: "project_update_error",
+        ...requestContext,
+        error: "Property ID is required for updates",
+        statusCode: 400,
+      });
+
       return NextResponse.json(
         { error: "Property ID is required for updates" },
         { status: 400 }
@@ -305,11 +413,6 @@ export async function PUT(request: Request) {
       },
     });
 
-    console.log("Property after update:", {
-      storyChapters: property.storyChapters,
-      sections: property.sections,
-    });
-
     // Transform the response to match the expected format
     const transformedProperty = {
       ...property,
@@ -324,9 +427,62 @@ export async function PUT(request: Request) {
       })),
     };
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify(transformedProperty).length;
+
+    // Log successful update with detailed request information
+    logger.projectUpdated({
+      ...logger.addResponseDetails(
+        contextWithBody,
+        responseSize,
+        processingTime,
+        4
+      ), // 4 DB operations: 3 deletes + 1 update
+      projectId: property.id,
+      projectSlug: property.slug,
+      statusCode: 200,
+      metadata: {
+        title: property.title,
+        category: property.category,
+        location: property.location,
+        heroImagesCount: property.heroImages.length,
+        galleryImagesCount: property.galleryImages.length,
+        storyChaptersCount: property.storyChapters.length,
+        sectionsCount: property.sections.length,
+      },
+    });
+
     return NextResponse.json(transformedProperty);
   } catch (error) {
-    console.error("Error updating property:", error);
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "project_update_error",
+          ...requestContext,
+          error: "Error updating property",
+          statusCode: 500,
+          metadata: {
+            id: body?.id || "unknown",
+            slug: body?.slug || "unknown",
+            title: body?.title || "unknown",
+          },
+        },
+        error
+      );
+    } else {
+      logger.error({
+        action: "project_update_error",
+        ...requestContext,
+        error: "Error updating property",
+        statusCode: 500,
+        metadata: {
+          id: body?.id || "unknown",
+          slug: body?.slug || "unknown",
+          title: body?.title || "unknown",
+        },
+      });
+    }
+
     return NextResponse.json(
       { error: "Failed to update property" },
       { status: 500 }

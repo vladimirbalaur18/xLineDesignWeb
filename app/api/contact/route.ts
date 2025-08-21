@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 // Schema for contact form data
 const contactFormSchema = z.object({
@@ -78,12 +79,18 @@ async function sendToTelegram(data: ContactFormData) {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  const requestContext = logger.extractRequestContext(request);
+
   try {
-    console.log(process.env.TELEGRAM_BOT_TOKEN);
-    console.log(process.env.TELEGRAM_CHAT_ID);
     // Check if Telegram is configured
     if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
-      console.error("Telegram configuration missing");
+      logger.contactConfigError({
+        ...requestContext,
+        error: "Telegram configuration missing",
+        statusCode: 503,
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -95,12 +102,23 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    // Add request body to context
+    const contextWithBody = logger.addRequestBody(requestContext, body);
 
     // Validate the incoming data
     const validatedData = contactFormSchema.parse(body);
 
     // Basic spam protection - check message length
     if (validatedData.message.length > 2000) {
+      logger.contactSpam({
+        ...requestContext,
+        email: validatedData.email,
+        name: validatedData.name,
+        messageLength: validatedData.message.length,
+        statusCode: 400,
+        metadata: { reason: "message_too_long" },
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -114,14 +132,41 @@ export async function POST(request: NextRequest) {
     // Send to Telegram
     await sendToTelegram(validatedData);
 
+    const processingTime = Date.now() - startTime;
+    const responseSize = JSON.stringify({
+      success: true,
+      message: "Mesajul a fost trimis cu succes! Te vom contacta în curând.",
+    }).length;
+
+    // Log successful submission with detailed request information
+    logger.contactSubmitted({
+      ...logger.addResponseDetails(
+        contextWithBody,
+        responseSize,
+        processingTime
+      ),
+      email: validatedData.email,
+      name: validatedData.name,
+      messageLength: validatedData.message.length,
+      statusCode: 200,
+    });
+
     return NextResponse.json({
       success: true,
       message: "Mesajul a fost trimis cu succes! Te vom contacta în curând.",
     });
   } catch (error) {
-    console.error("Contact form error:", error);
-
     if (error instanceof z.ZodError) {
+      logger.contactValidationError({
+        ...requestContext,
+        error: "Validation error",
+        statusCode: 400,
+        metadata: {
+          validationErrors: error.errors,
+          errorType: "zod_validation",
+        },
+      });
+
       return NextResponse.json(
         {
           success: false,
@@ -130,6 +175,26 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    if (error instanceof Error) {
+      logger.errorWithStack(
+        {
+          action: "contact_form_error",
+          ...requestContext,
+          error: "Contact form error",
+          statusCode: 500,
+          metadata: { errorType: "internal_error" },
+        },
+        error
+      );
+    } else {
+      logger.contactError({
+        ...requestContext,
+        error: "Unknown error",
+        statusCode: 500,
+        metadata: { errorType: "internal_error" },
+      });
     }
 
     return NextResponse.json(
