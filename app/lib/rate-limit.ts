@@ -138,6 +138,8 @@ export async function gradualRateLimit(
       metadata: {
         state: "penalized",
         penaltyLevel: Number(activePenaltyLevel),
+        ttl,
+        penaltyKey,
       },
     });
     return {
@@ -167,6 +169,21 @@ export async function gradualRateLimit(
     if (postExists) {
       const postCount = await redis.incr(postPenaltyKey);
       await redis.expire(postPenaltyKey, cfg.postPenaltyCountTtlSeconds);
+      logger.rateLimitAllowed({
+        key,
+        limit: cfg.baseLimit,
+        windowSeconds: cfg.baseWindowSeconds,
+        remaining,
+        ip: context?.ip,
+        userAgent: context?.userAgent,
+        path: context?.path,
+        metadata: {
+          state: "allowed",
+          current,
+          postPenaltyCount: postCount,
+          penalty2Threshold: cfg.penalty2Threshold,
+        },
+      });
       if (postCount >= cfg.penalty2Threshold) {
         await redis.set(penaltyKey, "2", { ex: cfg.penalty2Seconds });
         await redis.del(postPenaltyKey);
@@ -183,6 +200,7 @@ export async function gradualRateLimit(
             state: "penalized",
             penaltyLevel: 2,
             triggeredBy: "post_penalty_threshold",
+            postCount,
           },
         });
         return {
@@ -197,16 +215,19 @@ export async function gradualRateLimit(
       }
     }
 
-    logger.rateLimitAllowed({
-      key,
-      limit: cfg.baseLimit,
-      windowSeconds: cfg.baseWindowSeconds,
-      remaining,
-      ip: context?.ip,
-      userAgent: context?.userAgent,
-      path: context?.path,
-      metadata: { state: "allowed", current },
-    });
+    // Only log if we didn't already log above (for post-penalty monitoring)
+    if (!postExists) {
+      logger.rateLimitAllowed({
+        key,
+        limit: cfg.baseLimit,
+        windowSeconds: cfg.baseWindowSeconds,
+        remaining,
+        ip: context?.ip,
+        userAgent: context?.userAgent,
+        path: context?.path,
+        metadata: { state: "allowed", current },
+      });
+    }
     return {
       allowed: true,
       remaining,
@@ -218,43 +239,8 @@ export async function gradualRateLimit(
   }
 
   // Limited by base rate limiter; track overage attempts within the window
-  if (cfg.escalateOnOverage > 0) {
-    const over = await redis.incr(overageKey);
-    await redis.expire(overageKey, baseRetryAfter || cfg.baseWindowSeconds);
-    if (over >= cfg.escalateOnOverage) {
-      // Set penalty level 1 and start post-penalty monitoring window
-      await redis.set(penaltyKey, "1", { ex: cfg.penalty1Seconds });
-      // Start or reset post-penalty counter window (will effectively start counting after penalty ends)
-      await redis.set(postPenaltyKey, "0", {
-        ex: cfg.postPenaltyCountTtlSeconds,
-      });
-      logger.rateLimitExceeded({
-        key,
-        limit: cfg.baseLimit,
-        windowSeconds: cfg.baseWindowSeconds,
-        remaining,
-        retryAfter: cfg.penalty1Seconds,
-        ip: context?.ip,
-        userAgent: context?.userAgent,
-        path: context?.path,
-        metadata: {
-          state: "penalized",
-          penaltyLevel: 1,
-          triggeredBy: "overage_attempts",
-          overage: over,
-        },
-      });
-      return {
-        allowed: false,
-        remaining,
-        retryAfter: cfg.penalty1Seconds,
-        current,
-        state: "penalized",
-        penaltyLevel: 1,
-        penaltySeconds: cfg.penalty1Seconds,
-      };
-    }
-  }
+  const over = await redis.incr(overageKey);
+  await redis.expire(overageKey, baseRetryAfter || cfg.baseWindowSeconds);
 
   logger.rateLimitExceeded({
     key,
@@ -265,8 +251,50 @@ export async function gradualRateLimit(
     ip: context?.ip,
     userAgent: context?.userAgent,
     path: context?.path,
-    metadata: { state: "limited", current },
+    metadata: {
+      state: "limited",
+      current,
+      overageCount: over,
+      overageThreshold: cfg.escalateOnOverage,
+      overageKey,
+    },
   });
+
+  if (cfg.escalateOnOverage > 0 && over >= cfg.escalateOnOverage) {
+    // Set penalty level 1 and start post-penalty monitoring window
+    await redis.set(penaltyKey, "1", { ex: cfg.penalty1Seconds });
+    // Start post-penalty counter window (will start counting after penalty ends)
+    await redis.set(postPenaltyKey, 0, {
+      ex: cfg.penalty1Seconds + cfg.postPenaltyCountTtlSeconds,
+    });
+    logger.rateLimitExceeded({
+      key,
+      limit: cfg.baseLimit,
+      windowSeconds: cfg.baseWindowSeconds,
+      remaining,
+      retryAfter: cfg.penalty1Seconds,
+      ip: context?.ip,
+      userAgent: context?.userAgent,
+      path: context?.path,
+      metadata: {
+        state: "penalized",
+        penaltyLevel: 1,
+        triggeredBy: "overage_attempts",
+        overage: over,
+      },
+    });
+    return {
+      allowed: false,
+      remaining,
+      retryAfter: cfg.penalty1Seconds,
+      current,
+      state: "penalized",
+      penaltyLevel: 1,
+      penaltySeconds: cfg.penalty1Seconds,
+    };
+  }
+
+  // If we reach here, we're limited but haven't triggered escalation yet
   return {
     allowed: false,
     remaining,
