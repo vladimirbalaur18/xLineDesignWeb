@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       baseWindowSeconds: 60 * 5,
       escalateOnOverage: 3,
       penalty1Seconds: 60 * 60,
-      penalty2Threshold: 10,
+      penalty2EscalateOverage: 10,
       penalty2Seconds: 60 * 60 * 24,
       postPenaltyCountTtlSeconds: 60 * 60 * 24,
     },

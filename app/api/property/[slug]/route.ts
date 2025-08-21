@@ -12,43 +12,6 @@ export async function GET(
 ) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
-  // add gradual rate limiting here
-  const ip = getClientIp(request);
-  const ipKey = `rl:property:ip:${ip}`;
-  const ipLimit = 50; // attempts per 5 minutes per IP
-  const windowSeconds = 60 * 5;
-  const rl = await gradualRateLimit(
-    ipKey,
-    {
-      baseLimit: ipLimit,
-      baseWindowSeconds: windowSeconds,
-      escalateOnOverage: 50,
-      penalty1Seconds: 60 * 60,
-      penalty2Threshold: 50,
-      penalty2Seconds: 60 * 60 * 24,
-      postPenaltyCountTtlSeconds: 60 * 60 * 24,
-    },
-    { ip }
-  );
-  if (!rl.allowed) {
-    return NextResponse.json(
-      {
-        success: false,
-        message:
-          rl.state === "penalized"
-            ? rl.penaltyLevel === 2
-              ? "Prea multe încercări. Acces blocat 24h."
-              : "Prea multe încercări. Acces blocat 1h."
-            : "Prea multe încercări. Te rugăm să încerci mai târziu.",
-      },
-      {
-        status: 429,
-        headers: rl.retryAfter
-          ? { "Retry-After": String(rl.retryAfter) }
-          : undefined,
-      }
-    );
-  }
 
   let slug = "";
 
