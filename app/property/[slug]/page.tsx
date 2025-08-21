@@ -1,7 +1,6 @@
 import { PrismaClient } from "../../generated/prisma";
 import type { Metadata, ResolvingMetadata } from "next";
 import PropertyPageClient from "./PropertyPageClient.tsx";
-import { headers } from "next/headers";
 
 const prisma = new PrismaClient();
 
@@ -56,25 +55,6 @@ export async function generateMetadata(
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {};
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-export async function generateStaticParams() {
-  try {
-    const properties = await prisma.property.findMany({
-      select: {
-        slug: true,
-      },
-    });
-
-    return properties.map(({ slug }) => ({
-      slug: slug,
-    }));
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return [];
   } finally {
     await prisma.$disconnect();
   }
