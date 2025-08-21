@@ -29,18 +29,13 @@ export async function generateMetadata(
 
     if (!property) return {};
 
-    const headersList = await headers();
-    const host = headersList.get("host");
-    const protocol = headersList.get("x-forwarded-proto") || "https";
-    const propertyUrl = `${protocol}://${host}/property/${property.slug}`;
-
     return {
       title: `${property.title} | xLineDesign`,
       description: property.description || undefined,
       openGraph: {
         title: property.title,
         description: property.description || undefined,
-        url: propertyUrl,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/property/${property.slug}`,
         type: "article",
         images: [
           {
