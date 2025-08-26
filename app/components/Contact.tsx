@@ -494,11 +494,18 @@ export default function Contact() {
           <div className="grid md:grid-cols-2">
             {/* Map section */}
             <div className="h-[250px] md:h-full relative overflow-hidden border-b md:border-b-0 md:border-r border-white/10">
-              <GoogleMap
+              {/* <GoogleMap
                 center={{ lat: 47.0105, lng: 28.8638 }}
                 zoom={15}
                 className="w-full h-full"
-              />
+              /> */}
+              <div style={{ width: "100%" }}>
+                <iframe
+                  width="100%"
+                  height="510"
+                  src="https://maps.google.com/maps?width=100%25&amp;height=510&amp;hl=en&amp;q=Habad%20Liubavici%2012+(XLine%20Design%20)&amp;t=h&amp;z=17&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
+                ></iframe>
+              </div>
               {/* Map coordinates overlay */}
               <div className="absolute bottom-4 right-4 text-xs text-white/70 font-mono bg-black/50 backdrop-blur-sm px-2 py-1 rounded">
                 {OVERLAY_LAT}, {OVERLAY_LNG}
