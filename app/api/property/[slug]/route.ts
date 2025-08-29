@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { requireAdminAuth } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
@@ -102,8 +100,6 @@ export async function GET(
       { error: "Failed to fetch property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -274,6 +270,7 @@ export async function PUT(
 
     // Revalidate property cache after updating
     revalidateTag("properties");
+    revalidateTag("projects");
 
     return NextResponse.json(transformedProperty);
   } catch (error) {
@@ -308,8 +305,6 @@ export async function PUT(
       { error: "Failed to update property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -403,7 +398,5 @@ export async function DELETE(
       { error: "Failed to delete property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

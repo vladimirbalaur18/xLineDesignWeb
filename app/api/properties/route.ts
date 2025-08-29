@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
 import { requireAdminAuth } from "@/lib/auth";
@@ -10,8 +9,7 @@ import {
   PropertySection,
   PropertyStoryChapter,
 } from "@/lib/properties";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const startTime = Date.now();
@@ -89,8 +87,6 @@ export async function GET(request: NextRequest) {
       { error: "Failed to fetch properties" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -264,8 +260,6 @@ export async function POST(request: NextRequest) {
       { error: "Failed to create property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -473,7 +467,5 @@ export async function PUT(request: NextRequest) {
       { error: "Failed to update property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

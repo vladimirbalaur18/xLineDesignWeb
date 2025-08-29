@@ -1,12 +1,10 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { PrismaClient } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import ProjectsPageClient from "../ProjectsPageClient";
 import { filtersMap } from "../../../shared/filtersMap";
 import type { Property } from "@/lib/properties";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // Generate static params for all filter options
 export async function generateStaticParams() {
@@ -84,8 +82,6 @@ const getAllProjects = unstable_cache(
     } catch (error) {
       console.error("Failed to fetch projects:", error);
       return [];
-    } finally {
-      await prisma.$disconnect();
     }
   },
   ["projects"],

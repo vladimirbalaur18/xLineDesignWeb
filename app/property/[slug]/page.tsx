@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import type { Metadata, ResolvingMetadata } from "next";
 import { unstable_cache } from "next/cache";
 import PropertyPageClient from "./PropertyPageClient.tsx";
 import type { Property } from "@/lib/properties";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -26,8 +24,6 @@ export async function generateStaticParams() {
   } catch (error) {
     console.error("Error generating static params for properties:", error);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -81,8 +77,6 @@ const getProperty = unstable_cache(
     } catch (error) {
       console.error("Error fetching property:", error);
       return null;
-    } finally {
-      await prisma.$disconnect();
     }
   },
   ["property"],
@@ -104,9 +98,10 @@ export async function generateMetadata(
       title: `${property.title} | xLineDesign`,
       description: property.description || undefined,
       openGraph: {
+        siteName: "xLineDesign Moldova",
         title: property.title,
         description: property.description || undefined,
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/property/${property.slug}`,
+        url: `/property/${property.slug}`,
         type: "article",
         images: [
           {

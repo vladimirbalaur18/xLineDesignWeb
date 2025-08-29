@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { requireAdminAuth } from "@/lib/auth";
 import { revalidateTag } from "next/cache";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
   request: NextRequest,
@@ -71,7 +69,5 @@ export async function DELETE(
       { error: "Failed to delete property" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
