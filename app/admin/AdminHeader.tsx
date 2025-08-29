@@ -18,7 +18,7 @@ export default function AdminHeader() {
   return (
     <header className="fixed h-16 top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md py-2 border-b border-white/10">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <div className="cursor-pointer" onClick={() => router.push("/admin")}>
+        <div className="cursor-pointer" onClick={() => router.push("/")}>
           <Image src="/logo.png" alt="Logo" width={150} height={55} />
         </div>
 

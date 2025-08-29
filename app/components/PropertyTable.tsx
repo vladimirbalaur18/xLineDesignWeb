@@ -147,7 +147,6 @@ export function PropertyTable({
                   <TableHead>Titlu</TableHead>
                   <TableHead>Categorie</TableHead>
                   <TableHead>Locație</TableHead>
-                  <TableHead>Preț</TableHead>
                   <TableHead>Detalii</TableHead>
                   <TableHead className="text-right">Acțiuni</TableHead>
                 </TableRow>
@@ -217,11 +216,7 @@ export function PropertyTable({
                           )}
                         </div>
                       </TableCell>
-                      <TableCell>
-                        {property.price && (
-                          <div className="font-medium">{property.price}</div>
-                        )}
-                      </TableCell>
+
                       <TableCell>
                         <div className="text-sm space-y-1">
                           {property.bedrooms && property.bathrooms && (

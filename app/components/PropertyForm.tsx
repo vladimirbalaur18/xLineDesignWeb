@@ -24,7 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus, Eye, Loader2, Check } from "lucide-react";
 import { OptimizedImage } from "./OptimizedImage";
@@ -229,7 +235,7 @@ export function PropertyForm({
         heroImages:
           property.heroImages?.map((img) => ({
             ...img,
-            description: img.description || undefined,
+            description: img.description || `Hero Image - ${property.title}`,
           })) || [],
         galleryImages:
           property.galleryImages?.map((img) => ({
@@ -1224,25 +1230,12 @@ export function PropertyForm({
         {/* Hero Images */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
+            <CardTitle className="flex items-center">
               Imagini Hero{" "}
               {isFieldRequired(
                 propertyFormSchema as z.ZodObject<any>,
                 "heroImages"
               ) && <span className="text-red-500">*</span>}
-              <Button
-                type="button"
-                onClick={() =>
-                  appendHeroImage({
-                    url: "",
-                    description: "",
-                  })
-                }
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Adaugă Imagine
-              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -1276,18 +1269,6 @@ export function PropertyForm({
                               setActiveUploads((c) => c + (u ? 1 : -1))
                             }
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`heroImages.${index}.description`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input placeholder="Descrierea imaginii" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -1327,6 +1308,23 @@ export function PropertyForm({
               </div>
             ))}
           </CardContent>
+          <CardFooter>
+            <Button
+              type="button"
+              className="w-full"
+              variant="outline"
+              onClick={() =>
+                appendHeroImage({
+                  url: "",
+                  description: "",
+                })
+              }
+              size="sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Adaugă Imagine
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Story Chapters Section */}
@@ -1334,21 +1332,6 @@ export function PropertyForm({
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               Slide-uri
-              <Button
-                type="button"
-                onClick={() =>
-                  appendStoryChapter({
-                    title: "",
-                    narrative: "",
-                    image: "",
-                    duration: 5,
-                  })
-                }
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Adaugă Capitol
-              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -1381,7 +1364,7 @@ export function PropertyForm({
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1  gap-4">
                   <FormField
                     control={form.control}
                     name={`storyChapters.${chapterIndex}.title`}
@@ -1535,6 +1518,25 @@ export function PropertyForm({
               </div>
             )}
           </CardContent>
+          <CardFooter>
+            <Button
+              type="button"
+              className="w-full"
+              variant="outline"
+              onClick={() =>
+                appendStoryChapter({
+                  title: "",
+                  narrative: "",
+                  image: "",
+                  duration: 5,
+                })
+              }
+              size="sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Adaugă Capitol
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Sections */}
@@ -1542,20 +1544,6 @@ export function PropertyForm({
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               Secțiuni de imagini
-              <Button
-                type="button"
-                onClick={() =>
-                  appendSection({
-                    title: "",
-                    content: "",
-                    images: [],
-                  })
-                }
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Adaugă Secțiune
-              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -1576,7 +1564,7 @@ export function PropertyForm({
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <FormField
                     control={form.control}
                     name={`sections.${sectionIndex}.title`}
@@ -1626,22 +1614,6 @@ export function PropertyForm({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label>Imaginile Secțiunii</Label>
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        const currentImages =
-                          form.watch(`sections.${sectionIndex}.images`) || [];
-                        form.setValue(`sections.${sectionIndex}.images`, [
-                          ...currentImages,
-                          "",
-                        ]);
-                      }}
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Adaugă Imagine
-                    </Button>
                   </div>
 
                   {(form.watch(`sections.${sectionIndex}.images`) || []).map(
@@ -1717,6 +1689,23 @@ export function PropertyForm({
                       </div>
                     )
                   )}
+                  <Button
+                    type="button"
+                    className="w-full"
+                    onClick={() => {
+                      const currentImages =
+                        form.watch(`sections.${sectionIndex}.images`) || [];
+                      form.setValue(`sections.${sectionIndex}.images`, [
+                        ...currentImages,
+                        "",
+                      ]);
+                    }}
+                    size="sm"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Adaugă Imagine
+                  </Button>
                 </div>
               </div>
             ))}
@@ -1728,6 +1717,24 @@ export function PropertyForm({
               </div>
             )}
           </CardContent>
+          <CardFooter>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() =>
+                appendSection({
+                  title: "",
+                  content: "",
+                  images: [],
+                })
+              }
+              size="sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Adaugă Secțiune
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Image Modal */}
