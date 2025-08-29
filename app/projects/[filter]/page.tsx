@@ -6,8 +6,6 @@ import { filtersMap } from "../../../shared/filtersMap";
 import type { Property } from "@/lib/properties";
 import { prisma } from "@/lib/prisma";
 
-export const dynamicParams = false;
-
 // Generate static params for all filter options
 export async function generateStaticParams() {
   const filterKeys = Object.keys(filtersMap);
