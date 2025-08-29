@@ -9,7 +9,7 @@ import { DebouncedInput } from "../components/ui/debounced-input";
 import Link from "next/link";
 import Footer from "../components/Footer";
 import NotFoundIllustration from "../components/NotFoundIllustration";
-import * as _ from "lodash";
+import orderBy from "lodash/orderBy";
 import ProjectCard from "../components/ProjectCard";
 import type { Property } from "../lib/properties";
 
@@ -68,7 +68,7 @@ export default function ProjectsPageClient({
       }, {} as { [year: string]: typeof filteredProjects });
   }, [filteredProjects]);
 
-  const years = _.orderBy(
+  const years = orderBy(
     Object.keys(projectsByYear),
     [(y) => parseInt(y)],
     ["desc"]
