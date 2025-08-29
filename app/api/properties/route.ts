@@ -3,6 +3,12 @@ import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
 import { requireAdminAuth } from "@/lib/auth";
+import {
+  Property,
+  PropertyImage,
+  PropertySection,
+  PropertyStoryChapter,
+} from "@/lib/properties";
 
 const prisma = new PrismaClient();
 
@@ -195,22 +201,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Transform the response to match the expected format
-    const transformedProperty = {
-      ...property,
-      heroImages: property.heroImages.map((img) => ({
-        ...img,
-      })),
-      galleryImages: property.galleryImages.map((img) => ({
-        ...img,
-      })),
-      storyChapters: property.storyChapters.map((chapter) => ({
-        ...chapter,
-      })),
-    };
-
     const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(transformedProperty).length;
+    const responseSize = JSON.stringify(property).length;
 
     // Log successful creation with detailed request information
     logger.projectCreated({
@@ -234,7 +226,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(transformedProperty, { status: 201 });
+    return NextResponse.json(property, { status: 201 });
   } catch (error) {
     if (error instanceof Error) {
       logger.errorWithStack(
@@ -411,21 +403,9 @@ export async function PUT(request: NextRequest) {
     });
 
     // Transform the response to match the expected format
-    const transformedProperty = {
-      ...property,
-      heroImages: property.heroImages.map((img) => ({
-        ...img,
-      })),
-      galleryImages: property.galleryImages.map((img) => ({
-        ...img,
-      })),
-      storyChapters: property.storyChapters.map((chapter) => ({
-        ...chapter,
-      })),
-    };
 
     const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(transformedProperty).length;
+    const responseSize = JSON.stringify(property).length;
 
     // Log successful update with detailed request information
     logger.projectUpdated({
@@ -449,7 +429,7 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(transformedProperty);
+    return NextResponse.json(property);
   } catch (error) {
     if (error instanceof Error) {
       logger.errorWithStack(
