@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTelegramService } from "@/lib/telegram";
+import { getTelegramService, TelegramOTPService } from "@/lib/telegram";
 import { generateToken, createAdminUser } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify OTP
-    const telegramService = getTelegramService();
+    const telegramService = new TelegramOTPService();
+
     const isValid = await telegramService.verifyOTP(sessionId, code);
 
     if (!isValid) {
@@ -113,7 +114,6 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: "Authentication successful",
-        token,
         user,
       },
       { status: 200 }

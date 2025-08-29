@@ -1,21 +1,21 @@
+import { AuthLoader } from "@/hooks/use-react-auth";
+import AdminPageClient from "./AdminPage";
+import AdminLoginPage from "./login/AdminLogin";
+import { useUser } from "@/hooks/use-react-auth";
 import { redirect } from "next/navigation";
-import AdminPageWrapper from "./AdminPageWrapper";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";
 
 export default async function AdminPage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("admin-token")?.value;
+  const token = cookieStore.get("admin-token");
 
-  if (!token) {
-    redirect("/admin/login");
+  if (!token || !(await verifyToken(token.value))) {
+    console.warn("No token or invalid token", token);
+    return redirect("/admin/login");
   }
 
-  const user = await verifyToken(token);
+  console.log("server token", token);
 
-  if (!user) {
-    redirect("/admin/login");
-  }
-
-  return <AdminPageWrapper />;
+  return <AdminPageClient />;
 }

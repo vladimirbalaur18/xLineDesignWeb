@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { getRedis } from "@/lib/redis";
 
-class TelegramOTPService {
+export class TelegramOTPService {
   private bot: TelegramBot;
   private chatId: string;
   private redisKeyPrefix = "otp:session:";

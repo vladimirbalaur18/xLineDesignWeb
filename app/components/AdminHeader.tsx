@@ -2,17 +2,22 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useLogout, useUser } from "@/hooks/use-react-auth";
 
 export default function AdminHeader() {
-  const { logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const user = useUser();
+  const logout = useLogout({
+    onSuccess: () => {
+      return router.push("/admin/login");
+    },
+  });
 
   const handleLogout = async () => {
-    await logout();
-    router.push("/admin/login");
+    logout.mutate({});
   };
 
   return (
@@ -22,10 +27,12 @@ export default function AdminHeader() {
           <Image src="/logo.png" alt="Logo" width={150} height={55} />
         </div>
 
-        <Button variant="outline" onClick={handleLogout}>
-          <LogOut className="mr-2 h-4 w-4" />
-          Logout
-        </Button>
+        {pathname === "/admin" && (
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+        )}
       </div>
     </header>
   );

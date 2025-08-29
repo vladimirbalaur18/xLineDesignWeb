@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -9,6 +9,7 @@ export interface AdminUser {
   id: string;
   role: "admin";
   loginTime: number;
+  sessionId?: string; // Optional for send-otp response
 }
 
 /**
@@ -77,12 +78,21 @@ export async function authenticateRequest(
   request: NextRequest
 ): Promise<AdminUser | null> {
   const token = extractToken(request);
-
   if (!token) {
     return null;
   }
 
-  return await verifyToken(token);
+  const user = await verifyToken(token);
+
+  if (!user) {
+    throw new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/admin/login",
+      },
+    });
+  }
+  return user;
 }
 
 /**
@@ -90,7 +100,7 @@ export async function authenticateRequest(
  */
 export function createAdminUser(): AdminUser {
   return {
-    id: "admin",
+    id: process.env.TELEGRAM_CHAT_ID!,
     role: "admin",
     loginTime: Date.now(),
   };
@@ -106,9 +116,12 @@ export async function requireAdminAuth(
   const user = await authenticateRequest(request);
 
   if (!user) {
-    throw new Response(JSON.stringify({ error: "Authentication required" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
+    // Redirect to login page if authentication fails
+    throw new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/admin/login",
+      },
     });
   }
 

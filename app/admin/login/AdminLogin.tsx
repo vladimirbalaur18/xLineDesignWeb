@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,49 +13,37 @@ import {
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Shield, MessageCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useRegister, useLogin } from "@/hooks/use-react-auth";
 
-interface AdminLoginProps {
-  onLoginSuccess: (token: string) => void;
-}
-
-export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
+export default function AdminLoginPage() {
   const [step, setStep] = useState<"request" | "verify">("request");
-  const [sessionId, setSessionId] = useState<string>("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [otpCode, setOtpCode] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
+  const router = useRouter();
+  const verifyOTP = useLogin();
+  const sendOTP = useRegister();
 
   const handleSendOTP = async () => {
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const response = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    sendOTP.mutate(
+      {},
+      {
+        onSuccess: (user, variables, context) => {
+          if (user && user.sessionId) {
+            setSessionId(user.sessionId);
+            setStep("verify");
+            setSuccess(
+              "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
+            );
+          } else {
+            setError("Failed to send OTP code");
+          }
         },
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSessionId(data.sessionId);
-        setStep("verify");
-        setSuccess(
-          "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
-        );
-      } else {
-        setError(data.message || "Trimiterea codului OTP a eșuat");
       }
-    } catch (error) {
-      console.error("Eroare la trimiterea OTP:", error);
-      setError("Eroare de rețea. Vă rugăm să încercați din nou.");
-    } finally {
-      setLoading(false);
-    }
+    );
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
@@ -71,35 +59,24 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
       return;
     }
 
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sessionId,
-          code: otpCode,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess("Autentificare reușită!");
-        onLoginSuccess(data.token);
-      } else {
-        setError(data.message || "Cod OTP invalid");
-      }
-    } catch (error) {
-      console.error("Eroare la verificarea OTP:", error);
-      setError("Eroare de rețea. Vă rugăm să încercați din nou.");
-    } finally {
-      setLoading(false);
+    if (!sessionId) {
+      setError("Nu a putut fi creată sesiunea");
+      return;
     }
+
+    verifyOTP.mutate(
+      { otpCode, sessionId },
+      {
+        onSuccess: (user, variables, context) => {
+          if (user) {
+            setSuccess("Authentication successful!");
+            router.refresh();
+          } else {
+            setError("Invalid OTP code");
+          }
+        },
+      }
+    );
   };
 
   const handleBack = () => {
@@ -107,7 +84,7 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
     setOtpCode("");
     setError("");
     setSuccess("");
-    setSessionId("");
+    setSessionId(null);
   };
 
   return (
@@ -159,12 +136,13 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                 className="w-full"
                 size="lg"
               >
-                {loading ? (
+                {step === "request" && sendOTP.isPending && (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Trimitere OTP...
                   </>
-                ) : (
+                )}
+                {step === "request" && !sendOTP.isPending && (
                   <>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Trimite Codul OTP
@@ -201,14 +179,15 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                   className="w-full"
                   size="lg"
                 >
-                  {loading ? (
+                  {verifyOTP.isPending && step === "verify" && (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Verificare...
                     </>
-                  ) : (
-                    "Verifică & Autentifică-te"
                   )}
+                  {step === "verify" &&
+                    !verifyOTP.isPending &&
+                    "Verifică & Autentifică-te"}
                 </Button>
 
                 <Button
