@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import PropertyPageClient from "./PropertyPageClient.tsx";
 import type { Property } from "@/lib/properties";
 import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -43,7 +44,7 @@ const getProperty = unstable_cache(
         },
       });
 
-      if (!property) return null;
+      if (!property) return notFound();
 
       // Transform property to match the expected format
       const transformedProperty: Property = {

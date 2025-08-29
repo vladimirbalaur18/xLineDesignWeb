@@ -48,15 +48,8 @@ const getAllProjects = unstable_cache(
   async (): Promise<Property[]> => {
     try {
       const properties = await prisma.property.findMany({
-        include: {
-          heroImages: true,
-          galleryImages: false, // Not needed for projects listing
-          storyChapters: false, // Not needed for projects listing
-          sections: false, // Not needed for projects listing
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+        include: { heroImages: true },
+        orderBy: { createdAt: "desc" },
       });
 
       // Transform properties to match the expected format
