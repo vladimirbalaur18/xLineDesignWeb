@@ -1,11 +1,11 @@
 "use client";
 
 // TODO: header cards to be same size as stats from about sectioj, increase text size
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useIsMobile } from "../hooks/use-mobile";
 import { motion } from "motion/react";
 import { Home, Landmark, Presentation } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+
 import ServiceCard from "./ServiceCard";
 
 const services = [
@@ -66,10 +66,8 @@ const services = [
 ];
 
 export default function Services() {
-  const [activeService, setActiveService] = useState(services[0]);
   const serviceRefs = useRef<{ [key: string]: HTMLHeadingElement | null }>({});
   const isMobile = useIsMobile();
-  const tabsListRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <section id="services" className="pt-24 bg-black relative overflow-hidden">
@@ -150,89 +148,18 @@ export default function Services() {
           </motion.p>
         </motion.div>
 
-        {/* Mobile view - Services as cards */}
-        {isMobile ? (
-          <div className="space-y-8">
-            {services.map((service, index) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                index={index}
-                isMobile={true}
-                serviceRefs={serviceRefs}
-              />
-            ))}
-          </div>
-        ) : (
-          /* Desktop view - Tabs */
-          <Tabs
-            defaultValue={activeService?.id}
-            onValueChange={(value) => {
-              const selected = services.find((s) => s.id === value);
-              if (selected) setActiveService(selected);
-              if (tabsListRef.current) {
-                // Scroll the tabs to the top of the viewport with a small offset
-                const offset = 64; // Adjust if you have a sticky header
-                const top =
-                  tabsListRef.current.getBoundingClientRect().top +
-                  window.scrollY -
-                  offset;
-                window.scrollTo({ top, behavior: "smooth" });
-              }
-            }}
-          >
-            <TabsList
-              ref={tabsListRef}
-              className="
-                h-fit flex flex-col sm:flex-row justify-around
-                bg-black border border-white/10 rounded-2xl p-1 mb-16 backdrop-blur-sm
-                gap-2
-              "
-            >
-              {services.map((service) => (
-                <TabsTrigger
-                  key={service.id}
-                  value={service.id}
-                  className="
-                    rounded-xl
-                    w-full sm:w-36
-                    py-2 sm:py-3
-                    px-2 sm:px-4
-                    text-xs sm:text-base
-                    data-[state=active]:bg-white data-[state=active]:text-black
-                    transition-all duration-300
-                    flex-shrink-0
-                  "
-                >
-                  <div className="flex flex-col items-center gap-3 py-1">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className="relative w-12 h-12 flex items-center justify-center bg-black/50 rounded-xl border border-white/10"
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <div className="text-white">{service.icon}</div>
-                      <div className="absolute -inset-0.5 bg-white/5 rounded-xl opacity-0 group-hover:opacity-100 blur-sm"></div>
-                    </motion.div>
-                    <span className="text-sm font-medium tracking-wider">
-                      {service.title}
-                    </span>
-                  </div>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {services.map((service) => (
-              <TabsContent key={service.id} value={service.id} className="mt-0">
-                <ServiceCard
-                  service={service}
-                  index={0}
-                  isMobile={false}
-                  serviceRefs={serviceRefs}
-                />
-              </TabsContent>
-            ))}
-          </Tabs>
-        )}
+        {/* Services as cards - both mobile and desktop */}
+        <div className="space-y-8">
+          {services.map((service, index) => (
+            <ServiceCard
+              key={service.id}
+              service={service}
+              index={index}
+              isMobile={isMobile}
+              serviceRefs={serviceRefs}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

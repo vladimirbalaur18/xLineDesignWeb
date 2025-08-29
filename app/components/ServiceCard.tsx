@@ -177,7 +177,7 @@ export default function ServiceCard({
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: index * 0.1 }}
         viewport={{ once: true }}
-        className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-8"
+        className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-6 lg:p-8"
       >
         <div className="space-y-8">
           <div className="backdrop-blur-sm">
@@ -195,29 +195,40 @@ export default function ServiceCard({
     );
   }
 
-  // Desktop version - content only (no card wrapper)
+  // Desktop version - full card layout like mobile but with desktop styling
   return (
-    <div className="grid md:grid-cols-2 gap-10 items-start">
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5 }}
-        className="backdrop-blur-sm"
-      >
-        <ServiceContent
-          service={service}
-          serviceRefs={serviceRefs}
-          isMobile={isMobile}
-        />
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="backdrop-blur-sm"
-      >
-        <ServiceImage service={service} isMobile={isMobile} />
-      </motion.div>
-    </div>
+    <motion.div
+      key={service.id}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      viewport={{ once: true }}
+      className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-6 lg:p-8"
+    >
+      <div className="grid lg:grid-cols-2 gap-10 items-start">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="backdrop-blur-sm"
+        >
+          <ServiceContent
+            service={service}
+            serviceRefs={serviceRefs}
+            isMobile={isMobile}
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="backdrop-blur-sm"
+        >
+          <ServiceImage service={service} isMobile={isMobile} />
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
