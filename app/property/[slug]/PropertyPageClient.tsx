@@ -1,44 +1,22 @@
 "use client";
-import React, { use, useRef } from "react";
+import { useRef } from "react";
 import { useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { OptimizedImage } from "@/components/OptimizedImage";
-import type { Property } from "@/lib/properties";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  MapPin,
   Bed,
   Bath,
   Grid,
   Play,
   Calendar,
   ArrowLeft,
-  Heart,
-  Share2,
-  Camera,
-  Eye,
-  Home,
-  Building2,
-  TreePine,
-  Car,
-  Wifi,
-  Shield,
-  Zap,
-  Link as LinkIcon,
   Loader2,
 } from "lucide-react";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
 import Footer from "@/components/Footer";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { SharePopover } from "@/components/SharePopover";
 import { PropertyGallerySmall } from "@/components/PropertyGallerySmall";
 import { PropertyStats } from "@/components/PropertyStats";
@@ -50,7 +28,6 @@ import { useProperty } from "@/hooks/use-property";
 function LazySection({
   section,
   index,
-  totalSections,
 }: {
   section: any;
   index: number;

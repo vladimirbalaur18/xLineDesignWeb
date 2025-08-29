@@ -34,7 +34,7 @@ export async function generateMetadata(
       openGraph: {
         title: property.title,
         description: property.description || undefined,
-        url: `${process.env.NEXT_PUBLIC_APP_URL}/property/${property.slug}`,
+        url: `/property/${property.slug}`,
         type: "article",
         images: [
           {
