@@ -96,7 +96,7 @@ const ServiceContent = ({
 
     {/* Button */}
     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-      <Link href={`/projects?filter=${service.id}`}>
+      <Link href={`/projects/${service.id}`}>
         <Button
           className={`relative overflow-hidden group bg-black hover:bg-white text-white hover:text-black border border-white/40 hover:border-white transition-all duration-300 py-6 px-8 rounded-lg ${
             isMobile ? "w-full" : ""
