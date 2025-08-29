@@ -61,6 +61,7 @@ export async function DELETE(
 
     // Revalidate all projects pages after deleting a property
     revalidateTag("projects");
+    revalidateTag("properties");
 
     return NextResponse.json({ message: "Property deleted successfully" });
   } catch (error) {
