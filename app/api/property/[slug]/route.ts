@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { requireAdminAuth } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 const prisma = new PrismaClient();
 
@@ -271,6 +272,9 @@ export async function PUT(
       },
     });
 
+    // Revalidate property cache after updating
+    revalidateTag("properties");
+
     return NextResponse.json(transformedProperty);
   } catch (error) {
     if (error instanceof Error) {
@@ -368,6 +372,9 @@ export async function DELETE(
         location: property?.location || "unknown",
       },
     });
+
+    // Revalidate property cache after deleting
+    revalidateTag("properties");
 
     return NextResponse.json({ message: "Property deleted successfully" });
   } catch (error) {

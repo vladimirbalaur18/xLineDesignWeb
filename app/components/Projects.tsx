@@ -246,7 +246,7 @@ export default function Projects() {
           viewport={{ once: true }}
           className="flex justify-center my-6"
         >
-          <Link href="/projects">
+          <Link href="/projects/all">
             <Button
               variant="outline"
               className="border-white/30 text-white hover:border-white gap-2 uppercase tracking-wider text-sm px-6 py-3 transition-all duration-300 backdrop-blur-sm hover:bg-black/50"

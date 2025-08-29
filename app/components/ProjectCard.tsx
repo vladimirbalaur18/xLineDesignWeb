@@ -98,6 +98,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="relative overflow-hidden aspect-[3/2]">
             <motion.div className="h-full w-full">
               <Image
+                loading="lazy"
                 src={`${project.image}`}
                 alt={project.title}
                 width={1200}

@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
 import { requireAdminAuth } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 import {
   Property,
   PropertyImage,
@@ -226,6 +227,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Revalidate all projects pages and individual property pages after creating a new property
+    revalidateTag("projects");
+    revalidateTag("properties");
+
     return NextResponse.json(property, { status: 201 });
   } catch (error) {
     if (error instanceof Error) {
@@ -428,6 +433,10 @@ export async function PUT(request: NextRequest) {
         sectionsCount: property.sections.length,
       },
     });
+
+    // Revalidate all projects pages and individual property pages after updating a property
+    revalidateTag("projects");
+    revalidateTag("properties");
 
     return NextResponse.json(property);
   } catch (error) {

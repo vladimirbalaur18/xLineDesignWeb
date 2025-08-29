@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { requireAdminAuth } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 const prisma = new PrismaClient();
 
@@ -59,6 +60,9 @@ export async function DELETE(
     await prisma.property.delete({
       where: { id: property.id },
     });
+
+    // Revalidate all projects pages after deleting a property
+    revalidateTag("projects");
 
     return NextResponse.json({ message: "Property deleted successfully" });
   } catch (error) {

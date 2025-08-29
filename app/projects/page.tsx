@@ -1,11 +1,6 @@
-import { Suspense } from "react";
-
-import ProjectsPageClient from "./ProjectsPageClient";
+import { redirect } from "next/navigation";
 
 export default function ProjectsPage() {
-  return (
-    <Suspense>
-      <ProjectsPageClient />
-    </Suspense>
-  );
+  // Redirect to the default filter (all projects)
+  redirect("/projects/all");
 }
