@@ -52,6 +52,7 @@
     "@types/node-telegram-bot-api": "^0.64.10",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
+    "@vercel/blob": "^1.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -26,8 +26,9 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus, Eye } from "lucide-react";
+import { X, Plus, Eye, Loader2, Check } from "lucide-react";
 import { OptimizedImage } from "./OptimizedImage";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Form,
   FormControl,
@@ -163,7 +164,7 @@ type PropertyFormData = z.infer<typeof propertyFormSchema>;
 
 interface PropertyFormProps {
   property?: Property;
-  onSave: (property: Property) => void;
+  onSave: (property: Property, deletions: string[]) => void;
   onCancel: () => void;
 }
 
@@ -179,6 +180,10 @@ export function PropertyForm({
   const [newFeature, setNewFeature] = useState("");
   const [newTag, setNewTag] = useState("");
   const [showErrors, setShowErrors] = useState(false);
+  const [activeUploads, setActiveUploads] = useState(0);
+  const [pendingDeleteUrls, setPendingDeleteUrls] = useState<Set<string>>(
+    new Set()
+  );
   const { toast } = useToast();
 
   // Use React Query to fetch property data
@@ -366,6 +371,47 @@ export function PropertyForm({
       return;
     }
 
+    // Block submission if any image is still a local blob URL or uploads in progress
+    const hasBlobUrls = () => {
+      if (typeof data.image === "string" && data.image.startsWith("blob:"))
+        return true;
+      if (
+        Array.isArray(data.heroImages) &&
+        data.heroImages.some((img) => img?.url?.startsWith?.("blob:"))
+      )
+        return true;
+      if (
+        Array.isArray(data.galleryImages) &&
+        data.galleryImages.some((img) => img?.url?.startsWith?.("blob:"))
+      )
+        return true;
+      if (
+        Array.isArray(data.storyChapters) &&
+        data.storyChapters.some((ch) => ch?.image?.startsWith?.("blob:"))
+      )
+        return true;
+      if (
+        Array.isArray(data.sections) &&
+        data.sections.some(
+          (sec) =>
+            Array.isArray(sec?.images) &&
+            sec.images.some((u) => u?.startsWith?.("blob:"))
+        )
+      )
+        return true;
+      return false;
+    };
+
+    if (activeUploads > 0 || hasBlobUrls()) {
+      toast({
+        title: "Încărcare în curs",
+        description:
+          "Așteaptă finalizarea încărcării tuturor imaginilor înainte de salvare.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Additional validation for hero images
     if (!data.heroImages || data.heroImages.length === 0) {
       toast({
@@ -410,7 +456,7 @@ export function PropertyForm({
       updatedAt: fetchedProperty?.updatedAt || property?.updatedAt,
     };
 
-    onSave(transformedProperty);
+    onSave(transformedProperty, Array.from(pendingDeleteUrls));
   };
 
   const onError = (errors: any) => {
@@ -485,6 +531,226 @@ export function PropertyForm({
     }
   };
 
+  const isVercelBlobUrl = (url: string): boolean => {
+    if (!isValidUrl(url)) return false;
+    try {
+      const { host } = new URL(url);
+      return host.includes(".public.blob.vercel-storage.com");
+    } catch {
+      return false;
+    }
+  };
+
+  // Reusable input that supports URL or file upload and writes a URL string
+  const ImageUrlOrUpload = ({
+    value,
+    onChange,
+    placeholder,
+    disabled,
+    inputId,
+    dir,
+    onUploadingChange,
+  }: {
+    value: string;
+    onChange: (val: string) => void;
+    placeholder?: string;
+    disabled?: boolean;
+    inputId?: string;
+    dir?: string;
+    onUploadingChange?: (uploading: boolean) => void;
+  }) => {
+    const objectUrlRef = useRef<string | null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [tab, setTab] = useState<"url" | "upload">("upload");
+    const uploadedToVercel = value ? isVercelBlobUrl(value) : false;
+    const isLocalBlob = typeof value === "string" && value.startsWith("blob:");
+    const showUrlTab = !uploadedToVercel && !isLocalBlob;
+    const isEmpty = !value || value.trim() === "";
+
+    useEffect(() => {
+      return () => {
+        if (objectUrlRef.current) {
+          URL.revokeObjectURL(objectUrlRef.current);
+          objectUrlRef.current = null;
+        }
+      };
+    }, []);
+
+    // no tab management
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      // queue deletion of previous remote image if replacing
+      if (value && isVercelBlobUrl(value)) {
+        setPendingDeleteUrls((prev) => {
+          const next = new Set(prev);
+          next.add(value);
+          return next;
+        });
+      }
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
+      const blobUrl = URL.createObjectURL(file);
+      objectUrlRef.current = blobUrl;
+      onChange(blobUrl);
+
+      // Toast: show loading state during upload
+      const progressToast = toast({
+        title: "Încărcare imagine",
+        description: "Se încarcă fișierul...",
+      });
+
+      try {
+        setIsUploading(true);
+        onUploadingChange?.(true);
+        const formData = new FormData();
+        formData.append("file", file);
+        if (dir) formData.append("dir", dir);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          throw new Error("Upload failed");
+        }
+        const json = (await res.json()) as { url?: string };
+        if (json?.url) {
+          onChange(json.url);
+          if (objectUrlRef.current) {
+            URL.revokeObjectURL(objectUrlRef.current);
+            objectUrlRef.current = null;
+          }
+        } else {
+          throw new Error("Invalid upload response");
+        }
+      } catch (err) {
+        toast({
+          title: "Eroare la încărcare",
+          description: "Nu s-a putut încărca imaginea. Încearcă din nou.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsUploading(false);
+        onUploadingChange?.(false);
+        progressToast.dismiss();
+      }
+    };
+
+    // When empty: show tabs to let user choose URL or Upload
+    if (isEmpty) {
+      return (
+        <div className="space-y-2">
+          <Tabs
+            value={tab}
+            onValueChange={(v) => setTab(v as "url" | "upload")}
+          >
+            <TabsList className="grid grid-cols-2 w-full">
+              <TabsTrigger value="url">URL</TabsTrigger>
+              <TabsTrigger value="upload">Încarcă</TabsTrigger>
+            </TabsList>
+            <TabsContent value="url" className="mt-2">
+              <Input
+                id={inputId}
+                placeholder={placeholder || "https://exemplu.ro/imagine.jpg"}
+                value={value || ""}
+                disabled={disabled}
+                onChange={(e) => onChange(e.target.value)}
+              />
+            </TabsContent>
+            <TabsContent value="upload" className="mt-2">
+              <div className="flex items-center gap-2">
+                <input
+                  id={inputId ? `${inputId}-file` : undefined}
+                  type="file"
+                  accept="image/*"
+                  disabled={disabled || isUploading}
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                />
+                {isUploading && (
+                  <span className="inline-flex items-center text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Încărcare...
+                  </span>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      );
+    }
+
+    // Otherwise: keep simplified UI (hide URL when uploaded blob; show URL input if non-blob URL)
+    return (
+      <div className="space-y-2">
+        {showUrlTab && (
+          <div className="mt-2">
+            <Input
+              id={inputId}
+              placeholder={placeholder || "https://exemplu.ro/imagine.jpg"}
+              value={value || ""}
+              disabled={disabled}
+              onChange={(e) => onChange(e.target.value)}
+            />
+          </div>
+        )}
+        <div className="mt-2 flex items-center gap-2">
+          <input
+            id={inputId ? `${inputId}-file` : undefined}
+            type="file"
+            accept="image/*"
+            disabled={disabled || isUploading}
+            onChange={handleFileChange}
+            className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+          />
+          {isUploading ? (
+            <span className="inline-flex items-center text-sm text-muted-foreground">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Încărcare...
+            </span>
+          ) : value && isVercelBlobUrl(value) ? (
+            <span className="inline-flex items-center text-sm text-emerald-600">
+              <Check className="mr-1 h-4 w-4" /> Încărcat
+            </span>
+          ) : null}
+          {value && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isUploading}
+              onClick={async () => {
+                try {
+                  if (value.startsWith("blob:")) {
+                    if (objectUrlRef.current) {
+                      URL.revokeObjectURL(objectUrlRef.current);
+                      objectUrlRef.current = null;
+                    }
+                  } else if (isVercelBlobUrl(value)) {
+                    setPendingDeleteUrls((prev) => {
+                      const next = new Set(prev);
+                      next.add(value);
+                      return next;
+                    });
+                  }
+                } catch (err) {
+                } finally {
+                  onChange("");
+                }
+              }}
+            >
+              Șterge
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   // Show loading state while fetching property data
   if (isLoadingProperty && property?.slug) {
     return (
@@ -516,10 +782,14 @@ export function PropertyForm({
             <Button
               type="submit"
               disabled={
-                form.formState.isSubmitting || savePropertyMutation.isPending
+                form.formState.isSubmitting ||
+                savePropertyMutation.isPending ||
+                activeUploads > 0
               }
             >
-              {form.formState.isSubmitting || savePropertyMutation.isPending
+              {form.formState.isSubmitting ||
+              savePropertyMutation.isPending ||
+              activeUploads > 0
                 ? "Salvând..."
                 : fetchedProperty || property
                 ? "Actualizează"
@@ -821,12 +1091,18 @@ export function PropertyForm({
                 render={({ field }) => (
                   <FormItem>
                     <RequiredFieldLabel fieldName="image">
-                      URL Imagine
+                      Imagine
                     </RequiredFieldLabel>
                     <FormControl>
-                      <Input
-                        placeholder="https://example.com/image.jpg sau folosește blob storage"
-                        {...field}
+                      <ImageUrlOrUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="https://example.com/image.jpg"
+                        inputId={field.name}
+                        dir={`properties/${form.watch("slug") || "new"}/main`}
+                        onUploadingChange={(u) =>
+                          setActiveUploads((c) => c + (u ? 1 : -1))
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -985,10 +1261,21 @@ export function PropertyForm({
                           parentFieldName="heroImages"
                           nestedFieldName="url"
                         >
-                          URL Imagine
+                          Imagine
                         </RequiredFieldLabel>
                         <FormControl>
-                          <Input placeholder="URL Imagine" {...field} />
+                          <ImageUrlOrUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="URL Imagine"
+                            inputId={field.name}
+                            dir={`properties/${
+                              form.watch("slug") || "new"
+                            }/hero`}
+                            onUploadingChange={(u) =>
+                              setActiveUploads((c) => c + (u ? 1 : -1))
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -1023,7 +1310,17 @@ export function PropertyForm({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  onClick={() => removeHeroImage(index)}
+                  onClick={async () => {
+                    const url = form.getValues(`heroImages.${index}.url`);
+                    if (url && isVercelBlobUrl(url)) {
+                      setPendingDeleteUrls((prev) => {
+                        const next = new Set(prev);
+                        next.add(url);
+                        return next;
+                      });
+                    }
+                    removeHeroImage(index);
+                  }}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -1066,7 +1363,19 @@ export function PropertyForm({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => removeStoryChapter(chapterIndex)}
+                    onClick={async () => {
+                      const url = form.getValues(
+                        `storyChapters.${chapterIndex}.image`
+                      );
+                      if (url && isVercelBlobUrl(url)) {
+                        setPendingDeleteUrls((prev) => {
+                          const next = new Set(prev);
+                          next.add(url);
+                          return next;
+                        });
+                      }
+                      removeStoryChapter(chapterIndex);
+                    }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -1103,7 +1412,18 @@ export function PropertyForm({
                           Imaginea Capitolului
                         </RequiredFieldLabel>
                         <FormControl>
-                          <Input placeholder="URL Imagine" {...field} />
+                          <ImageUrlOrUpload
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="URL Imagine"
+                            inputId={field.name}
+                            dir={`properties/${
+                              form.watch("slug") || "new"
+                            }/chapters`}
+                            onUploadingChange={(u) =>
+                              setActiveUploads((c) => c + (u ? 1 : -1))
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -1331,20 +1651,27 @@ export function PropertyForm({
                         className="flex gap-4 items-start p-3 bg-muted/50 rounded-lg"
                       >
                         <div className="flex-1 space-y-2">
-                          <Input
+                          <ImageUrlOrUpload
                             value={imageUrl}
-                            onChange={(e) => {
+                            onChange={(val) => {
                               const currentImages =
                                 form.watch(`sections.${sectionIndex}.images`) ||
                                 [];
                               const updatedImages = [...currentImages];
-                              updatedImages[imageIndex] = e.target.value;
+                              updatedImages[imageIndex] = val;
                               form.setValue(
                                 `sections.${sectionIndex}.images`,
                                 updatedImages
                               );
                             }}
                             placeholder="URL Imagine"
+                            inputId={`sections.${sectionIndex}.images.${imageIndex}`}
+                            dir={`properties/${
+                              form.watch("slug") || "new"
+                            }/sections/${sectionIndex}`}
+                            onUploadingChange={(u) =>
+                              setActiveUploads((c) => c + (u ? 1 : -1))
+                            }
                           />
                         </div>
                         {imageUrl &&
@@ -1362,7 +1689,17 @@ export function PropertyForm({
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
+                          onClick={async () => {
+                            const url = form.getValues(
+                              `sections.${sectionIndex}.images.${imageIndex}`
+                            );
+                            if (url && isVercelBlobUrl(url)) {
+                              setPendingDeleteUrls((prev) => {
+                                const next = new Set(prev);
+                                next.add(url);
+                                return next;
+                              });
+                            }
                             const currentImages =
                               form.watch(`sections.${sectionIndex}.images`) ||
                               [];

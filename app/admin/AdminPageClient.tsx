@@ -65,11 +65,23 @@ export default function AdminPageClient() {
     }
   };
 
-  const handleSave = async (property: Property) => {
+  const handleSave = async (property: Property, deletions: string[] = []) => {
     const isEditing = !!editingProperty;
 
     saveProperty(property, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        // After successful save, delete queued blobs (best-effort)
+        if (deletions.length > 0) {
+          try {
+            await fetch("/api/upload", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ urls: deletions }),
+            });
+          } catch (err) {
+            // swallow
+          }
+        }
         toast({
           title: "Succes",
           description: `Proprietatea a fost ${
