@@ -8,24 +8,19 @@ import {
 import { Share2, Link as LinkIcon } from "lucide-react";
 
 interface SharePopoverProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  propertyUrl: string;
-  shareText: string;
   className?: string;
 }
 
 export const SharePopover: React.FC<SharePopoverProps> = ({
-  open,
-  onOpenChange,
-  propertyUrl,
-  shareText,
   className = "",
 }) => {
   const [copied, setCopied] = useState(false);
+  const propertyUrl = window.location.href;
+  const shareText = "Privește acest proiect interesant!";
+  const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
+    <Popover open={sharePopoverOpen} onOpenChange={setSharePopoverOpen}>
       <PopoverTrigger asChild>
         <button
           type="button"

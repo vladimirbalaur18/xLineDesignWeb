@@ -198,18 +198,7 @@ export default function PropertyPageClient({
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
-  const [isLikeModalOpen, setIsLikeModalOpen] = useState(false);
-  const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
-
-  // Compute the canonical property URL for sharing
-  const propertyUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/property/${propertySlug}`
-      : "";
-
-  const shareText = "Privește acest proiect interesant!";
 
   // Get property-specific sections
   const propertySections = property?.sections;
@@ -378,12 +367,7 @@ export default function PropertyPageClient({
                     </Button>
                   )}
 
-                <SharePopover
-                  open={sharePopoverOpen}
-                  onOpenChange={setSharePopoverOpen}
-                  propertyUrl={propertyUrl}
-                  shareText={shareText}
-                />
+                <SharePopover />
               </motion.div>
             </>
           }
