@@ -110,9 +110,8 @@ export default function ProjectsPageClient({
         <div className="container mx-auto px-4 relative space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
             className="text-center relative"
           >
             <div className="relative inline-block">
@@ -120,7 +119,7 @@ export default function ProjectsPageClient({
                 <motion.span
                   className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80 relative z-10"
                   initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                   viewport={{ once: true }}
                 >
@@ -129,9 +128,8 @@ export default function ProjectsPageClient({
                 <motion.span
                   className="absolute -bottom-2 left-0 h-[2px] bg-gradient-to-r from-white via-white/80 to-transparent"
                   initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
+                  animate={{ width: "100%" }}
                   transition={{ duration: 0.8, delay: 0.4 }}
-                  viewport={{ once: true }}
                 />
                 <div className="absolute -left-4 top-0 h-full w-[1px] bg-white/30"></div>
                 <div className="absolute -right-4 top-0 h-full w-[1px] bg-white/30"></div>
@@ -141,9 +139,8 @@ export default function ProjectsPageClient({
             <motion.p
               className="text-gray-300 max-w-3xl mx-auto font-light tracking-wide backdrop-blur-sm py-2 px-4 border-l border-r border-white/10"
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
             >
               Explorează întregul nostru portofoliu de proiecte arhitecturale
               inovatoare. Filtrează și caută prin lucrările noastre pentru a
@@ -155,9 +152,8 @@ export default function ProjectsPageClient({
           <motion.div
             className="mb-12 space-y-6"
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
           >
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto">
