@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import type { Metadata, ResolvingMetadata } from "next";
 import PropertyPageClient from "./PropertyPageClient.tsx";
 
