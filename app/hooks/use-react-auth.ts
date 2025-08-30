@@ -45,16 +45,19 @@ export const {
       return null;
     }
   },
-  loginFn: async (variables: unknown): Promise<AdminUser | null> => {
-    const { otpCode, sessionId } = variables as {
-      otpCode: string;
-      sessionId: string;
-    };
+  loginFn: async ({
+    otpCode,
+    sessionId,
+  }: {
+    otpCode: string;
+    sessionId: string;
+  }): Promise<AdminUser | null> => {
     const response = await fetch("/api/auth/verify-otp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         code: otpCode,
         sessionId,
@@ -67,11 +70,10 @@ export const {
 
     const data: VerifyOtpResponse = await response.json();
 
-    if (data.success) {
-      return data.user;
+    if (!data.success) {
+      throw new Error((data as any).message ?? "OTP verification failed");
     }
-
-    return null;
+    return data.user;
   },
   registerFn: async (variables: unknown): Promise<AdminUser | null> => {
     const response = await fetch("/api/auth/send-otp", {
