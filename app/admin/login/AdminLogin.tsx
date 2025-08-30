@@ -67,13 +67,16 @@ export default function AdminLoginPage() {
     verifyOTP.mutate(
       { otpCode, sessionId },
       {
-        onSuccess: (user, variables, context) => {
+        onSuccess: (user) => {
           if (user) {
             setSuccess("Authentication successful!");
             router.refresh();
           } else {
             setError("Invalid OTP code");
           }
+        },
+        onError: (error) => {
+          setError("Invalid OTP code");
         },
       }
     );
@@ -132,7 +135,7 @@ export default function AdminLoginPage() {
 
               <Button
                 onClick={handleSendOTP}
-                disabled={loading}
+                disabled={sendOTP.isPending}
                 className="w-full"
                 size="lg"
               >
@@ -175,7 +178,7 @@ export default function AdminLoginPage() {
               <div className="space-y-2">
                 <Button
                   type="submit"
-                  disabled={loading || otpCode.length !== 6}
+                  disabled={verifyOTP.isPending || otpCode.length !== 6}
                   className="w-full"
                   size="lg"
                 >
@@ -195,7 +198,7 @@ export default function AdminLoginPage() {
                   variant="ghost"
                   onClick={handleBack}
                   className="w-full"
-                  disabled={loading}
+                  disabled={verifyOTP.isPending}
                 >
                   Înapoi
                 </Button>

@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify OTP
-    const telegramService = new TelegramOTPService();
+    const telegramService = getTelegramService();
 
     const isValid = await telegramService.verifyOTP(sessionId, code);
 

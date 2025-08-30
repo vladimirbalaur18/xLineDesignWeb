@@ -11,11 +11,8 @@ export default async function AdminPage() {
   const token = cookieStore.get("admin-token");
 
   if (!token || !(await verifyToken(token.value))) {
-    console.warn("No token or invalid token", token);
     return redirect("/admin/login");
   }
-
-  console.log("server token", token);
 
   return <AdminPageClient />;
 }

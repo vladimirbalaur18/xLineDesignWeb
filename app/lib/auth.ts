@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -84,14 +85,6 @@ export async function authenticateRequest(
 
   const user = await verifyToken(token);
 
-  if (!user) {
-    throw new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/admin/login",
-      },
-    });
-  }
   return user;
 }
 
@@ -117,12 +110,7 @@ export async function requireAdminAuth(
 
   if (!user) {
     // Redirect to login page if authentication fails
-    throw new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/admin/login",
-      },
-    });
+    return redirect("/admin/login");
   }
 
   return user;
