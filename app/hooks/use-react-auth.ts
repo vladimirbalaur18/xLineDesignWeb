@@ -81,11 +81,11 @@ export const {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`Registration failed: ${response.status}`);
-    }
-
     const data: SendOtpResponse = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
 
     if (data.success) {
       // Return a temporary AdminUser with sessionId.
