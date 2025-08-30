@@ -65,7 +65,9 @@ export default function AdminLoginPage() {
           }
         },
         onError: (error) => {
-          setError(error.message);
+          setError(
+            error instanceof Error ? error.message : "Unknown error on send OTP"
+          );
         },
       }
     );
