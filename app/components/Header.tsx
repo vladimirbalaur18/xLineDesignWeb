@@ -27,11 +27,6 @@ export default function Header() {
     behance: process.env.NEXT_PUBLIC_BEHANCE_URL,
   };
 
-  // Don't render header for admin routes
-  if (isAdmin) {
-    return null;
-  }
-
   // Track scroll position to change header style
   useEffect(() => {
     const handleScroll = () => {

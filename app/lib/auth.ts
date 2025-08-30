@@ -1,5 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
-import { NextRequest } from "next/server";
+import { redirect } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger"; // Import logger
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -9,6 +11,7 @@ export interface AdminUser {
   id: string;
   role: "admin";
   loginTime: number;
+  sessionId?: string; // Optional for send-otp response
 }
 
 /**
@@ -46,7 +49,13 @@ export async function verifyToken(token: string): Promise<AdminUser | null> {
 
     return null;
   } catch (error) {
-    console.error("Token verification failed:", error);
+    logger.errorWithStack(
+      {
+        action: "token_verification_failed",
+        error: "Token verification failed",
+      },
+      error instanceof Error ? error : new Error(String(error))
+    );
     return null;
   }
 }
@@ -77,20 +86,23 @@ export async function authenticateRequest(
   request: NextRequest
 ): Promise<AdminUser | null> {
   const token = extractToken(request);
-
   if (!token) {
     return null;
   }
 
-  return await verifyToken(token);
+  const user = await verifyToken(token);
+
+  return user;
 }
 
 /**
- * Create admin user object
+ * Create admin user object. Note: This assumes that the TelegramOTPService
+ * is configured to only send OTPs to the chat ID specified in TELEGRAM_CHAT_ID.
+ * The security of the admin user creation heavily relies on this assumption.
  */
 export function createAdminUser(): AdminUser {
   return {
-    id: "admin",
+    id: process.env.TELEGRAM_CHAT_ID!,
     role: "admin",
     loginTime: Date.now(),
   };
@@ -106,10 +118,8 @@ export async function requireAdminAuth(
   const user = await authenticateRequest(request);
 
   if (!user) {
-    throw new Response(JSON.stringify({ error: "Authentication required" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
+    // Redirect to login page if authentication fails
+    return redirect("/admin/login");
   }
 
   return user;
