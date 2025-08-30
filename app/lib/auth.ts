@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger"; // Import logger
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -48,7 +49,13 @@ export async function verifyToken(token: string): Promise<AdminUser | null> {
 
     return null;
   } catch (error) {
-    console.error("Token verification failed:", error);
+    logger.errorWithStack(
+      {
+        action: "token_verification_failed",
+        error: "Token verification failed",
+      },
+      error instanceof Error ? error : new Error(String(error))
+    );
     return null;
   }
 }
@@ -89,7 +96,9 @@ export async function authenticateRequest(
 }
 
 /**
- * Create admin user object
+ * Create admin user object. Note: This assumes that the TelegramOTPService
+ * is configured to only send OTPs to the chat ID specified in TELEGRAM_CHAT_ID.
+ * The security of the admin user creation heavily relies on this assumption.
  */
 export function createAdminUser(): AdminUser {
   return {

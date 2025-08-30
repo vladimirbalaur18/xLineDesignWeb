@@ -14,24 +14,46 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Shield, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRegister, useLogin } from "@/hooks/use-react-auth";
+import { useSendOtp, useLogin } from "@/hooks/use-react-auth";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const otpFormSchema = z.object({
+  otpCode: z
+    .string()
+    .min(6, "Codul OTP trebuie să aibă 6 cifre")
+    .max(6, "Codul OTP trebuie să aibă 6 cifre"),
+});
 
 export default function AdminLoginPage() {
   const [step, setStep] = useState<"request" | "verify">("request");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [otpCode, setOtpCode] = useState<string>("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const router = useRouter();
   const verifyOTP = useLogin();
-  const sendOTP = useRegister();
+  const sendOTP = useSendOtp();
+
+  const otpForm = useForm<z.infer<typeof otpFormSchema>>({
+    resolver: zodResolver(otpFormSchema),
+    defaultValues: {
+      otpCode: "",
+    },
+  });
 
   const handleSendOTP = async () => {
     sendOTP.mutate(
       {},
       {
-        onSuccess: (user, variables, context) => {
+        onSuccess: (user) => {
           if (user && user.sessionId) {
             setSessionId(user.sessionId);
             setStep("verify");
@@ -42,30 +64,21 @@ export default function AdminLoginPage() {
             setError("Failed to send OTP code");
           }
         },
+        onError: (error) => {
+          setError(error.message);
+        },
       }
     );
   };
 
-  const handleVerifyOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!otpCode.trim()) {
-      setError("Vă rugăm să introduceți codul OTP");
-      return;
-    }
-
-    if (otpCode.length !== 6) {
-      setError("Codul OTP trebuie să aibă 6 cifre");
-      return;
-    }
-
+  const onVerifyOtpSubmit = async (values: z.infer<typeof otpFormSchema>) => {
     if (!sessionId) {
       setError("Nu a putut fi creată sesiunea");
       return;
     }
 
     verifyOTP.mutate(
-      { otpCode, sessionId },
+      { otpCode: values.otpCode, sessionId },
       {
         onSuccess: (user) => {
           if (user) {
@@ -84,7 +97,7 @@ export default function AdminLoginPage() {
 
   const handleBack = () => {
     setStep("request");
-    setOtpCode("");
+    otpForm.reset();
     setError("");
     setSuccess("");
     setSessionId(null);
@@ -154,56 +167,73 @@ export default function AdminLoginPage() {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleVerifyOTP} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="otp">Introduceți Codul OTP</Label>
-                <Input
-                  id="otp"
-                  type="text"
-                  placeholder="123456"
-                  value={otpCode}
-                  onChange={(e) =>
-                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                  }
-                  className="text-center text-lg tracking-widest"
-                  maxLength={6}
-                  autoComplete="off"
-                  autoFocus
+            <Form {...otpForm}>
+              <form
+                onSubmit={otpForm.handleSubmit(onVerifyOtpSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={otpForm.control}
+                  name="otpCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label htmlFor="otp">Introduceți Codul OTP</Label>
+                      <FormControl>
+                        <Input
+                          id="otp"
+                          type="text"
+                          placeholder="123456"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(
+                              e.target.value.replace(/\D/g, "").slice(0, 6)
+                            );
+                          }}
+                          className="text-center text-lg tracking-widest"
+                          maxLength={6}
+                          autoComplete="off"
+                          autoFocus
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+
                 <p className="text-xs text-gray-500 text-center">
                   ID Sesiune: {sessionId}
                 </p>
-              </div>
 
-              <div className="space-y-2">
-                <Button
-                  type="submit"
-                  disabled={verifyOTP.isPending || otpCode.length !== 6}
-                  className="w-full"
-                  size="lg"
-                >
-                  {verifyOTP.isPending && step === "verify" && (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Verificare...
-                    </>
-                  )}
-                  {step === "verify" &&
-                    !verifyOTP.isPending &&
-                    "Verifică & Autentifică-te"}
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    type="submit"
+                    disabled={verifyOTP.isPending || !otpForm.formState.isValid}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {verifyOTP.isPending && step === "verify" && (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Verificare...
+                      </>
+                    )}
+                    {step === "verify" &&
+                      !verifyOTP.isPending &&
+                      "Verifică & Autentifică-te"}
+                  </Button>
 
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={handleBack}
-                  className="w-full"
-                  disabled={verifyOTP.isPending}
-                >
-                  Înapoi
-                </Button>
-              </div>
-            </form>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={handleBack}
+                    className="w-full"
+                    disabled={verifyOTP.isPending}
+                  >
+                    Înapoi
+                  </Button>
+                </div>
+              </form>
+            </Form>
           )}
         </CardContent>
       </Card>

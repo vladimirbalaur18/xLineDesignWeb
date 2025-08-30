@@ -63,41 +63,25 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    const commonLogDetails = {
+      action: "otp_failed",
+      ...requestContext,
+      error: "Failed to send OTP",
+      statusCode: 500,
+    };
+
     if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "otp_failed",
-          ...requestContext,
-          error: "Failed to send OTP",
-          statusCode: 500,
-        },
-        error
-      );
+      logger.errorWithStack(commonLogDetails, error);
     } else {
-      logger.otpFailed({
-        ...requestContext,
-        error: "Failed to send OTP",
-        statusCode: 500,
-      });
+      logger.otpFailed(commonLogDetails);
     }
 
     return NextResponse.json(
       {
         success: false,
-        message: error instanceof Error ? error.message : "Failed to send OTP",
+        message: "Failed to send OTP", // Generic error message for security
       },
       { status: 500 }
     );
   }
-}
-
-// Only POST method is allowed
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: false,
-      message: "Method not allowed",
-    },
-    { status: 405 }
-  );
 }
