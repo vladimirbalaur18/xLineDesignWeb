@@ -92,7 +92,7 @@ export const {
       // This is not a fully authenticated user but carries the sessionId
       // needed for the next step (OTP verification).
       return {
-        id: "temp-admin",
+        id: process.env.TELEGRAM_CHAT_ID!,
         role: "admin",
         loginTime: Date.now(),
         sessionId: data.sessionId,
