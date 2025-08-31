@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { parseApiError, ApiError } from "./api-errors";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    throw await parseApiError(res);
   }
 }
 
-export async function apiRequest(
+export async function apiRequest<ResponseType>(
   method: string,
   url: string,
-  data?: unknown | undefined,
-): Promise<Response> {
+  data?: unknown | undefined
+): Promise<ResponseType> {
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
@@ -22,7 +22,17 @@ export async function apiRequest(
   });
 
   await throwIfResNotOk(res);
-  return res;
+
+  try {
+    return (await res.json()) as Promise<ResponseType>;
+  } catch (error) {
+    // If JSON parsing fails, throw a more descriptive error
+    throw new ApiError(
+      "Invalid response format from server",
+      res.status,
+      false
+    );
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
@@ -40,7 +50,17 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+
+    try {
+      return await res.json();
+    } catch (error) {
+      // If JSON parsing fails, throw a more descriptive error
+      throw new ApiError(
+        "Invalid response format from server",
+        res.status,
+        false
+      );
+    }
   };
 
 export const queryClient = new QueryClient({

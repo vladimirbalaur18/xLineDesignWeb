@@ -1,6 +1,5 @@
 import { AuthLoader } from "@/hooks/use-react-auth";
-import AdminPageClient from "./AdminPage";
-import AdminLoginPage from "./login/AdminLogin";
+import AdminPageClient from "./AdminPageClient";
 import { useUser } from "@/hooks/use-react-auth";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";

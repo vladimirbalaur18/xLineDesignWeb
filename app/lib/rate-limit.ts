@@ -1,3 +1,4 @@
+import "server-only";
 import { getRedis } from "@/lib/redis";
 import { Ratelimit } from "@upstash/ratelimit";
 import { logger } from "@/lib/logger";

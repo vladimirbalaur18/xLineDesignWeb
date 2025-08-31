@@ -1,3 +1,4 @@
+import "server-only";
 import TelegramBot from "node-telegram-bot-api";
 import { getRedis } from "@/lib/redis";
 import { randomBytes, randomInt } from "crypto";

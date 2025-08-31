@@ -14,7 +14,6 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Shield, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useSendOtp, useLogin } from "@/hooks/use-react-auth";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +24,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { SendOtpResponse, VerifyOtpResponse } from "@shared/api/auth";
+import {
+  getErrorMessage,
+  isRateLimitError,
+  isAuthError,
+} from "@/lib/api-errors";
 
 const otpFormSchema = z.object({
   otpCode: z
@@ -39,8 +46,61 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const router = useRouter();
-  const verifyOTP = useLogin();
-  const sendOTP = useSendOtp();
+  const sendOTP = useMutation({
+    mutationFn: () => apiRequest<SendOtpResponse>("POST", "/api/auth/send-otp"),
+    onSuccess: (data) => {
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      setSessionId(data.sessionId);
+      setStep("verify");
+      setSuccess(
+        "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
+      );
+      setError("");
+    },
+    onError: (error) => {
+      const errorMessage = getErrorMessage(error);
+
+      if (isRateLimitError(error)) {
+        setError(
+          "Prea multe încercări de trimitere. Vă rugăm să așteptați înainte de a încerca din nou."
+        );
+      } else setError(errorMessage);
+      setSuccess("");
+    },
+  });
+  const verifyOTP = useMutation({
+    mutationFn: (values: { otpCode: string; sessionId: string }) =>
+      apiRequest<VerifyOtpResponse>("POST", "/api/auth/verify-otp", {
+        code: values.otpCode,
+        sessionId: values.sessionId,
+      }),
+    onSuccess: (data) => {
+      setSuccess("Authentication successful!");
+      setError("");
+      router.replace("/admin");
+    },
+    onError: (error) => {
+      const errorMessage = getErrorMessage(error);
+      setSuccess("");
+
+      if (isAuthError(error)) {
+        setError("Codul OTP este invalid.");
+        return;
+      }
+
+      // If it's a rate limit error, show a more specific message
+      if (isRateLimitError(error)) {
+        setError(
+          "Prea multe încercări de verificare. Vă rugăm să așteptați înainte de a încerca din nou."
+        );
+        return;
+      }
+
+      setError(errorMessage);
+    },
+  });
 
   const otpForm = useForm<z.infer<typeof otpFormSchema>>({
     resolver: zodResolver(otpFormSchema),
@@ -49,52 +109,12 @@ export default function AdminLoginPage() {
     },
   });
 
-  const handleSendOTP = async () => {
-    sendOTP.mutate(
-      {},
-      {
-        onSuccess: (user) => {
-          if (user && user.sessionId) {
-            setSessionId(user.sessionId);
-            setStep("verify");
-            setSuccess(
-              "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
-            );
-          } else {
-            setError("Failed to send OTP code");
-          }
-        },
-        onError: (error) => {
-          setError(
-            error instanceof Error ? error.message : "Unknown error on send OTP"
-          );
-        },
-      }
-    );
+  const handleSendOTP = () => {
+    sendOTP.mutate();
   };
 
-  const onVerifyOtpSubmit = async (values: z.infer<typeof otpFormSchema>) => {
-    if (!sessionId) {
-      setError("Nu a putut fi creată sesiunea");
-      return;
-    }
-
-    verifyOTP.mutate(
-      { otpCode: values.otpCode, sessionId },
-      {
-        onSuccess: (user) => {
-          if (user) {
-            setSuccess("Authentication successful!");
-            router.refresh();
-          } else {
-            setError("Invalid OTP code");
-          }
-        },
-        onError: (error) => {
-          setError("Invalid OTP code");
-        },
-      }
-    );
+  const onVerifyOtpSubmit = (values: z.infer<typeof otpFormSchema>) => {
+    verifyOTP.mutate({ otpCode: values.otpCode, sessionId: sessionId! });
   };
 
   const handleBack = () => {

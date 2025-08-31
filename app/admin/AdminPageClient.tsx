@@ -10,11 +10,16 @@ import {
   useProperties,
   useSavePropertyMutation,
 } from "@/hooks/use-property";
+import { useQuery } from "@tanstack/react-query";
+import { AuthStatusResponse } from "@shared/api/auth";
+import { apiRequest } from "@/lib/queryClient";
+import { useRouter } from "next/navigation";
 
 export default function AdminPageClient() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
   const {
     data: propertiesList = [],
     isLoading,
@@ -22,6 +27,7 @@ export default function AdminPageClient() {
   } = useProperties({
     includeSections: true,
   });
+
   const { mutate: deleteProperty } = useDeletePropertyMutation();
   const { mutate: saveProperty } = useSavePropertyMutation();
 

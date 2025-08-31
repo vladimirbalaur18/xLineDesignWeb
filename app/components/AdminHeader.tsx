@@ -4,21 +4,27 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useLogout, useUser } from "@/hooks/use-react-auth";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { AuthStatusResponse } from "@shared/api/auth";
 
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
-  const user = useUser();
-  const logout = useLogout({
-    onSuccess: () => {
-      return router.push("/admin/login");
-    },
+  const authStatus = useQuery({
+    queryKey: ["auth-status"],
+    queryFn: () => apiRequest<AuthStatusResponse>("GET", "/api/auth/status"),
   });
 
-  const handleLogout = async () => {
-    logout.mutate({});
-  };
+  const handleLogout = () =>
+    fetch("/api/auth/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      router.push("/admin/login");
+    });
 
   return (
     <header className="fixed h-16 top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md py-2 border-b border-white/10">
@@ -27,7 +33,7 @@ export default function AdminHeader() {
           <Image src="/logo.png" alt="Logo" width={150} height={55} />
         </div>
 
-        {pathname === "/admin" && (
+        {authStatus.data?.authenticated && (
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout

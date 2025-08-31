@@ -1,7 +1,9 @@
+import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger"; // Import logger
+import { getTelegramService } from "./telegram";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
