@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AuthStatusResponse } from "@shared/api/auth";
 import { apiRequest } from "@/lib/queryClient";
 import { useRouter } from "next/navigation";
+import AdminHeader from "@/components/AdminHeader";
 
 export default function AdminPageClient() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
@@ -143,16 +144,19 @@ export default function AdminPageClient() {
   }
 
   return (
-    <section
-      id="admin"
-      className="relative overflow-hidden py-16 container mx-auto px-4 pt-24"
-    >
-      <PropertyTable
-        properties={propertiesList}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onCreate={handleCreate}
-      />
-    </section>
+    <>
+      <AdminHeader />
+      <section
+        id="admin"
+        className="relative overflow-hidden py-16 container mx-auto px-4 pt-24"
+      >
+        <PropertyTable
+          properties={propertiesList}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onCreate={handleCreate}
+        />
+      </section>
+    </>
   );
 }

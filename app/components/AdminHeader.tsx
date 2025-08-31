@@ -4,19 +4,25 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AuthStatusResponse } from "@shared/api/auth";
 
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
+
   const authStatus = useQuery({
     queryKey: ["auth-status"],
     queryFn: () => apiRequest<AuthStatusResponse>("GET", "/api/auth/status"),
   });
+  //TODO: fix teh logout button still showing after logout and not showing after login
+  const handleLogout = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["auth-status"],
+    });
 
-  const handleLogout = () =>
     fetch("/api/auth/logout", {
       method: "POST",
       headers: {
@@ -25,6 +31,7 @@ export default function AdminHeader() {
     }).then(() => {
       router.push("/admin/login");
     });
+  };
 
   return (
     <header className="fixed h-16 top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md py-2 border-b border-white/10">

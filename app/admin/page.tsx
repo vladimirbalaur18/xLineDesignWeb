@@ -1,6 +1,4 @@
-import { AuthLoader } from "@/hooks/use-react-auth";
 import AdminPageClient from "./AdminPageClient";
-import { useUser } from "@/hooks/use-react-auth";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth";

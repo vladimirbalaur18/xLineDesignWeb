@@ -103,8 +103,22 @@ export async function authenticateRequest(
  * The security of the admin user creation heavily relies on this assumption.
  */
 export function createAdminUser(): AdminUser {
+  const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!telegramChatId) {
+    throw new Error(
+      "TELEGRAM_CHAT_ID is not defined. Please set it in your environment variables."
+    );
+  }
+
+  if (isNaN(Number(telegramChatId))) {
+    throw new Error(
+      "TELEGRAM_CHAT_ID is not a valid numeric ID. Please ensure it is a number."
+    );
+  }
+
   return {
-    id: process.env.TELEGRAM_CHAT_ID!,
+    id: telegramChatId,
     role: "admin",
     loginTime: Date.now(),
   };

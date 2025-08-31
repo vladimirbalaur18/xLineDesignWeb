@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { SendOtpResponse, VerifyOtpResponse } from "@shared/api/auth";
 import {
   getErrorMessage,
@@ -79,6 +79,9 @@ export default function AdminLoginPage() {
     onSuccess: (data) => {
       setSuccess("Authentication successful!");
       setError("");
+      queryClient.invalidateQueries({
+        queryKey: ["auth-status"],
+      });
       router.replace("/admin");
     },
     onError: (error) => {

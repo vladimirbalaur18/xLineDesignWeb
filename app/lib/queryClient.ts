@@ -23,8 +23,15 @@ export async function apiRequest<ResponseType>(
 
   await throwIfResNotOk(res);
 
+  // Handle no-content responses (204, 205, or explicit zero Content-Length)
+  const contentLength = res.headers.get("content-length");
+  if (res.status === 204 || res.status === 205 || contentLength === "0") {
+    return undefined as ResponseType;
+  }
+
   try {
-    return (await res.json()) as Promise<ResponseType>;
+    const data = (await res.json()) as ResponseType;
+    return data;
   } catch (error) {
     // If JSON parsing fails, throw a more descriptive error
     throw new ApiError(
