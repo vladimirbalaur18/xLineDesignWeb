@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTelegramService } from "@/lib/telegram";
+import { getTelegramService, TelegramOTPService } from "@/lib/telegram";
 import { generateToken, createAdminUser } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
 
     // Verify OTP
     const telegramService = getTelegramService();
+
     const isValid = await telegramService.verifyOTP(sessionId, code);
 
     if (!isValid) {
@@ -92,7 +93,6 @@ export async function POST(request: NextRequest) {
     const responseSize = JSON.stringify({
       success: true,
       message: "Authentication successful",
-      token,
       user,
     }).length;
 
@@ -113,7 +113,6 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         message: "Authentication successful",
-        token,
         user,
       },
       { status: 200 }
@@ -130,22 +129,17 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    const commonLogDetails = {
+      action: "otp_failed",
+      ...requestContext,
+      error: "OTP verification error",
+      statusCode: 500,
+    };
+
     if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "otp_failed",
-          ...requestContext,
-          error: "OTP verification error",
-          statusCode: 500,
-        },
-        error
-      );
+      logger.errorWithStack(commonLogDetails, error);
     } else {
-      logger.otpFailed({
-        ...requestContext,
-        error: "OTP verification error",
-        statusCode: 500,
-      });
+      logger.otpFailed(commonLogDetails);
     }
 
     return NextResponse.json(
@@ -156,15 +150,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// Only POST method is allowed
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: false,
-      message: "Method not allowed",
-    },
-    { status: 405 }
-  );
 }

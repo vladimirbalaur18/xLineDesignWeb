@@ -1,7 +1,9 @@
+import "server-only";
 import TelegramBot from "node-telegram-bot-api";
 import { getRedis } from "@/lib/redis";
+import { randomBytes, randomInt } from "crypto";
 
-class TelegramOTPService {
+export class TelegramOTPService {
   private bot: TelegramBot;
   private chatId: string;
   private redisKeyPrefix = "otp:session:";
@@ -12,7 +14,7 @@ class TelegramOTPService {
 
     if (!token || !chatId) {
       throw new Error(
-        "TELEGRAM_BOT_TOKEN and TELEGRAM_ADMIN_CHAT_ID must be set in environment variables"
+        "TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be set in environment variables"
       );
     }
 
@@ -24,8 +26,7 @@ class TelegramOTPService {
    * Generate a 6-digit OTP code
    */
   private generateOTP(): string {
-    const crypto = require("crypto");
-    return crypto.randomInt(100000, 1000000).toString();
+    return randomInt(100000, 1000000).toString();
   }
 
   /**
@@ -94,8 +95,7 @@ Session ID: \`${sessionId}\`
    * Generate a unique session ID
    */
   private generateSessionId(): string {
-    const crypto = require("crypto");
-    return crypto.randomBytes(16).toString("hex");
+    return randomBytes(16).toString("hex");
   }
 }
 

@@ -42,23 +42,17 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
+    const commonLogDetails = {
+      action: "logout_error",
+      ...requestContext,
+      error: "Logout error",
+      statusCode: 500,
+    };
+
     if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "logout_error",
-          ...requestContext,
-          error: "Logout error",
-          statusCode: 500,
-        },
-        error
-      );
+      logger.errorWithStack(commonLogDetails, error);
     } else {
-      logger.error({
-        action: "logout_error",
-        ...requestContext,
-        error: "Logout error",
-        statusCode: 500,
-      });
+      logger.error(commonLogDetails);
     }
 
     return NextResponse.json(
@@ -69,15 +63,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// Only POST method is allowed
-export async function GET() {
-  return NextResponse.json(
-    {
-      success: false,
-      message: "Method not allowed",
-    },
-    { status: 405 }
-  );
 }
