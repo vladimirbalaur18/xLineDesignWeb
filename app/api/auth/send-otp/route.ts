@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const commonLogDetails = {
       action: "otp_failed",
       ...requestContext,
-      error: "Eșuat de a trimite OTP",
+      error: "Trimiterea codului OTP a eșuat.",
       statusCode: 500,
     };
 
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Eșuat de a trimite OTP", // Generic error message for security
+        message: "Nu s-a putut trimite codul OTP",
       },
       { status: 500 }
     );
