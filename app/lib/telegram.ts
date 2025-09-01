@@ -47,10 +47,10 @@ export class TelegramOTPService {
     const message = `
 🔐 *Admin Login Request*
 
-Your OTP code is: \`${code}\`
+Codul OTP este: \`${code}\`
 
-This code will expire in 5 minutes.
-Do not share this code with anyone.
+Acest cod va expira în 5 minute.
+Nu împărtășiți acest cod cu nimeni.
 
 Session ID: \`${sessionId}\`
     `;
@@ -62,11 +62,11 @@ Session ID: \`${sessionId}\`
 
       return { sessionId, expires };
     } catch (error) {
-      console.error("Failed to send Telegram message:", error);
+      console.error("Eșuat de a trimite mesajul Telegram:", error);
       // Clean up stored OTP on send failure
       const redis = getRedis();
       await redis.del(key);
-      throw new Error("Failed to send OTP code");
+      throw new Error("Eșuat de a trimite codul OTP");
     }
   }
 

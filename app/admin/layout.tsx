@@ -1,6 +1,5 @@
-import { QueryClientProvider } from "@tanstack/react-query";
-import AdminHeader from "../components/AdminHeader";
-import { queryClient } from "@/lib/queryClient";
+import AdminHeader from "@/components/AdminHeader";
+import { OTPAuthProvider } from "@/hooks/use-otp-auth";
 
 export default function AdminLayout({
   children,
@@ -8,6 +7,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <OTPAuthProvider>
+      <AdminHeader />
+      {children}
+    </OTPAuthProvider>
   );
 }

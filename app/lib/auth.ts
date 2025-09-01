@@ -1,25 +1,19 @@
 import "server-only";
-import { SignJWT, jwtVerify } from "jose";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@/lib/logger"; // Import logger
-import { getTelegramService } from "./telegram";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 const JWT_EXPIRY = "24h"; // Token expires in 24 hours
 
-export interface AdminUser {
-  id: string;
-  role: "admin";
-  loginTime: number;
-  sessionId?: string; // Optional for send-otp response
-}
-
 /**
  * Generate JWT token for authenticated admin user
  */
-export async function generateToken(user: AdminUser): Promise<string> {
+export async function generateToken<User extends JWTPayload>(
+  user: User
+): Promise<string> {
   const jwt = await new SignJWT({ ...user })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -32,7 +26,7 @@ export async function generateToken(user: AdminUser): Promise<string> {
 /**
  * Verify JWT token and return user data
  */
-export async function verifyToken(token: string): Promise<AdminUser | null> {
+export async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
 
@@ -65,7 +59,7 @@ export async function verifyToken(token: string): Promise<AdminUser | null> {
 /**
  * Extract token from Authorization header or cookies
  */
-export function extractToken(request: NextRequest): string | null {
+function extractToken(request: NextRequest): string | null {
   // Check Authorization header first
   const authHeader = request.headers.get("Authorization");
   if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -84,9 +78,7 @@ export function extractToken(request: NextRequest): string | null {
 /**
  * Middleware helper to authenticate requests
  */
-export async function authenticateRequest(
-  request: NextRequest
-): Promise<AdminUser | null> {
+export async function authenticateRequest(request: NextRequest) {
   const token = extractToken(request);
   if (!token) {
     return null;
@@ -102,7 +94,7 @@ export async function authenticateRequest(
  * is configured to only send OTPs to the chat ID specified in TELEGRAM_CHAT_ID.
  * The security of the admin user creation heavily relies on this assumption.
  */
-export function createAdminUser(): AdminUser {
+export function createAdminUser() {
   const telegramChatId = process.env.TELEGRAM_CHAT_ID;
 
   if (!telegramChatId) {
@@ -128,9 +120,7 @@ export function createAdminUser(): AdminUser {
  * Middleware to protect API endpoints that require admin authentication
  * Returns the authenticated user if valid, or throws an error response
  */
-export async function requireAdminAuth(
-  request: NextRequest
-): Promise<AdminUser> {
+export async function requireAdminAuth(request: NextRequest) {
   const user = await authenticateRequest(request);
 
   if (!user) {
@@ -139,4 +129,12 @@ export async function requireAdminAuth(
   }
 
   return user;
+}
+
+export async function isAdminAuthenticated(token?: string) {
+  if (!token) {
+    return false;
+  }
+
+  return !!(await verifyToken(token));
 }

@@ -7,30 +7,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AuthStatusResponse } from "@shared/api/auth";
+import { useOTPAuth } from "@/hooks/use-otp-auth";
 
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
+  const { logout, isAuthenticated } = useOTPAuth();
 
-  const authStatus = useQuery({
-    queryKey: ["auth-status"],
-    queryFn: () => apiRequest<AuthStatusResponse>("GET", "/api/auth/status"),
-  });
-  //TODO: fix teh logout button still showing after logout and not showing after login
-  const handleLogout = () => {
-    queryClient.invalidateQueries({
-      queryKey: ["auth-status"],
-    });
-
-    fetch("/api/auth/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then(() => {
-      router.push("/admin/login");
-    });
+  const handleLogout = async () => {
+    await logout();
+    router.push("/admin/login");
   };
 
   return (
@@ -40,7 +26,7 @@ export default function AdminHeader() {
           <Image src="/logo.png" alt="Logo" width={150} height={55} />
         </div>
 
-        {authStatus.data?.authenticated && (
+        {isAuthenticated && pathname === "/admin" && (
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout

@@ -1,11 +1,15 @@
-import type { AdminUser } from "@/lib/auth";
+export interface AdminUser {
+  id: string;
+  role: "admin";
+  loginTime: number;
+  sessionId?: string; // Optional for send-otp response
+}
 
 // /api/auth/send-otp (POST) - No request body
 export interface SendOtpResponseSuccess {
   success: true;
   message: string;
   sessionId: string;
-  expires: number;
 }
 
 export interface SendOtpResponseFailure {
@@ -13,7 +17,10 @@ export interface SendOtpResponseFailure {
   message: string;
 }
 
-export type SendOtpResponse = SendOtpResponseSuccess | SendOtpResponseFailure;
+export type SendOtpResponse = (
+  | SendOtpResponseSuccess
+  | SendOtpResponseFailure
+) & { success: unknown };
 
 // /api/auth/verify-otp (POST)
 export interface VerifyOtpRequest {
@@ -32,9 +39,10 @@ export interface VerifyOtpResponseFailure {
   message: string;
 }
 
-export type VerifyOtpResponse =
+export type VerifyOtpResponse = (
   | VerifyOtpResponseSuccess
-  | VerifyOtpResponseFailure;
+  | VerifyOtpResponseFailure
+) & { success: boolean };
 
 // /api/auth/status (GET)
 export interface AuthStatusResponseAuthenticated {
@@ -49,9 +57,10 @@ export interface AuthStatusResponseUnauthenticated {
   message: string;
 }
 
-export type AuthStatusResponse =
+export type AuthStatusResponse = (
   | AuthStatusResponseAuthenticated
-  | AuthStatusResponseUnauthenticated;
+  | AuthStatusResponseUnauthenticated
+) & { success: boolean };
 
 // /api/auth/logout (POST)
 export interface LogoutResponseSuccess {
@@ -64,4 +73,6 @@ export interface LogoutResponseFailure {
   message: string;
 }
 
-export type LogoutResponse = LogoutResponseSuccess | LogoutResponseFailure;
+export type LogoutResponse = (LogoutResponseSuccess | LogoutResponseFailure) & {
+  success: boolean;
+};

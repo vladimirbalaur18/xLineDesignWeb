@@ -1,15 +1,14 @@
-import AdminPageClient from "./AdminPageClient";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/auth";
+import AdminPageClient from "./AdminPageClient";
+import { isAdminAuthenticated } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function AdminPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("admin-token");
+  const cookiesStore = await cookies();
+  const token = cookiesStore.get("admin-token");
 
-  if (!token || !(await verifyToken(token.value))) {
+  if (!(await isAdminAuthenticated(token?.value))) {
     return redirect("/admin/login");
   }
-
   return <AdminPageClient />;
 }

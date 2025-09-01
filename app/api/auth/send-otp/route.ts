@@ -3,8 +3,6 @@ import { getTelegramService } from "@/lib/telegram";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
-
-
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
   const requestContext = logger.extractRequestContext(request);
@@ -20,7 +18,8 @@ export async function POST(request: NextRequest) {
       return new NextResponse(
         JSON.stringify({
           success: false,
-          message: "Too many OTP requests. Please try again later.",
+          message:
+            "Prea multe încercări de OTP. Vă rugăm să încercați mai târziu.",
         }),
         {
           status: 429,
@@ -38,7 +37,8 @@ export async function POST(request: NextRequest) {
     const processingTime = Date.now() - startTime;
     const responseSize = JSON.stringify({
       success: true,
-      message: "OTP sent successfully",
+      message:
+        "Codul OTP a fost trimis cu succes. Vă rugăm să verificați Telegram pentru a vă autentifica.",
       sessionId,
       expires,
     }).length;
@@ -58,7 +58,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "OTP sent successfully",
+        message:
+          "Codul OTP a fost trimis cu succes. Vă rugăm să verificați Telegram pentru a vă autentifica.",
         sessionId,
         expires,
       },
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
     const commonLogDetails = {
       action: "otp_failed",
       ...requestContext,
-      error: "Failed to send OTP",
+      error: "Trimiterea codului OTP a eșuat.",
       statusCode: 500,
     };
 
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to send OTP", // Generic error message for security
+        message: "Nu s-a putut trimite codul OTP",
       },
       { status: 500 }
     );
