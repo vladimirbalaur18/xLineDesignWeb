@@ -7,12 +7,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AuthStatusResponse } from "@shared/api/auth";
-import { useAuth } from "@/hooks/use-auth";
+import { useOTPAuth } from "@/hooks/use-otp-auth";
 
 export default function AdminHeader() {
   const router = useRouter();
   const pathname = usePathname();
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated } = useOTPAuth();
 
   const handleLogout = async () => {
     await logout();

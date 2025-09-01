@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { getErrorMessage } from "@/lib/api-errors";
-import { useAuth } from "@/hooks/use-auth";
+import { useOTPAuth } from "@/hooks/use-otp-auth";
 
 const otpFormSchema = z.object({
   otpCode: z
@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
     type: "error",
   });
   const router = useRouter();
-  const { sendOTP, verifyOTP, isLoading } = useAuth();
+  const { sendOTP, verifyOTP, isLoading } = useOTPAuth();
   const otpForm = useForm<z.infer<typeof otpFormSchema>>({
     resolver: zodResolver(otpFormSchema),
     defaultValues: {

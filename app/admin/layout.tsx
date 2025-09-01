@@ -1,5 +1,5 @@
 import AdminHeader from "@/components/AdminHeader";
-import { AuthProvider } from "@/hooks/use-auth";
+import { OTPAuthProvider } from "@/hooks/use-otp-auth";
 
 export default function AdminLayout({
   children,
@@ -7,9 +7,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <AuthProvider>
+    <OTPAuthProvider>
       <AdminHeader />
       {children}
-    </AuthProvider>
+    </OTPAuthProvider>
   );
 }

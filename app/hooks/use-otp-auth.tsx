@@ -17,7 +17,7 @@ import type {
 } from "@shared/api/auth";
 import { getErrorMessage } from "@/lib/api-errors";
 
-interface AuthContextType {
+interface OTPAuthContextType {
   user: AdminUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -27,17 +27,17 @@ interface AuthContextType {
   refreshAuth: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const OTPAuthContext = createContext<OTPAuthContextType | undefined>(undefined);
 
-export function useAuth() {
-  const context = useContext(AuthContext);
+export function useOTPAuth() {
+  const context = useContext(OTPAuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
+    throw new Error("useOTPAuth must be used within OTPAuthProvider");
   }
   return context;
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function OTPAuthProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<AdminUser | null>(null);
   const { data: authStatus } = useQuery({
@@ -148,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider
+    <OTPAuthContext.Provider
       value={{
         user,
         isAuthenticated: authStatus?.authenticated || false,
@@ -160,6 +160,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </OTPAuthContext.Provider>
   );
 }
