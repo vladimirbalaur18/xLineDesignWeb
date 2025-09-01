@@ -24,14 +24,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { SendOtpResponse, VerifyOtpResponse } from "@shared/api/auth";
-import {
-  getErrorMessage,
-  isRateLimitError,
-  isAuthError,
-} from "@/lib/api-errors";
+import { getErrorMessage } from "@/lib/api-errors";
+import { useAuth } from "@/hooks/use-auth";
 
 const otpFormSchema = z.object({
   otpCode: z
@@ -40,71 +34,17 @@ const otpFormSchema = z.object({
     .max(6, "Codul OTP trebuie să aibă 6 cifre"),
 });
 
+type FormMessageType = { message: string; type: "error" | "success" };
+type FormStepsType = "request" | "verify";
 export default function AdminLoginPage() {
-  const [step, setStep] = useState<"request" | "verify">("request");
+  const [step, setStep] = useState<FormStepsType>("request");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
+  const [formMessage, setFormMessage] = useState<FormMessageType>({
+    message: "",
+    type: "error",
+  });
   const router = useRouter();
-  const sendOTP = useMutation({
-    mutationFn: () => apiRequest<SendOtpResponse>("POST", "/api/auth/send-otp"),
-    onSuccess: (data) => {
-      if (!data.success) {
-        throw new Error(data.message);
-      }
-      setSessionId(data.sessionId);
-      setStep("verify");
-      setSuccess(
-        "Codul OTP a fost trimis pe Telegram! Vă rugăm să verificați chatul."
-      );
-      setError("");
-    },
-    onError: (error) => {
-      const errorMessage = getErrorMessage(error);
-
-      if (isRateLimitError(error)) {
-        setError(
-          "Prea multe încercări de trimitere. Vă rugăm să așteptați înainte de a încerca din nou."
-        );
-      } else setError(errorMessage);
-      setSuccess("");
-    },
-  });
-  const verifyOTP = useMutation({
-    mutationFn: (values: { otpCode: string; sessionId: string }) =>
-      apiRequest<VerifyOtpResponse>("POST", "/api/auth/verify-otp", {
-        code: values.otpCode,
-        sessionId: values.sessionId,
-      }),
-    onSuccess: (data) => {
-      setSuccess("Authentication successful!");
-      setError("");
-      queryClient.invalidateQueries({
-        queryKey: ["auth-status"],
-      });
-      router.replace("/admin");
-    },
-    onError: (error) => {
-      const errorMessage = getErrorMessage(error);
-      setSuccess("");
-
-      if (isAuthError(error)) {
-        setError("Codul OTP este invalid.");
-        return;
-      }
-
-      // If it's a rate limit error, show a more specific message
-      if (isRateLimitError(error)) {
-        setError(
-          "Prea multe încercări de verificare. Vă rugăm să așteptați înainte de a încerca din nou."
-        );
-        return;
-      }
-
-      setError(errorMessage);
-    },
-  });
-
+  const { sendOTP, verifyOTP, isLoading } = useAuth();
   const otpForm = useForm<z.infer<typeof otpFormSchema>>({
     resolver: zodResolver(otpFormSchema),
     defaultValues: {
@@ -112,19 +52,52 @@ export default function AdminLoginPage() {
     },
   });
 
-  const handleSendOTP = () => {
-    sendOTP.mutate();
+  const handleSendOTP = async () => {
+    try {
+      const data = await sendOTP();
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      setSessionId(data.sessionId);
+      setStep("verify");
+      setFormMessage({
+        message: data.message,
+        type: "success",
+      });
+    } catch (error) {
+      setFormMessage({
+        message: getErrorMessage(error),
+        type: "error",
+      });
+    }
   };
 
-  const onVerifyOtpSubmit = (values: z.infer<typeof otpFormSchema>) => {
-    verifyOTP.mutate({ otpCode: values.otpCode, sessionId: sessionId! });
+  const onVerifyOtpSubmit = async (values: z.infer<typeof otpFormSchema>) => {
+    try {
+      const data = await verifyOTP(sessionId!, values.otpCode);
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      setFormMessage({
+        message: data.message,
+        type: "success",
+      });
+      router.push("/admin");
+    } catch (error) {
+      setFormMessage({
+        message: getErrorMessage(error),
+        type: "error",
+      });
+    }
   };
 
   const handleBack = () => {
     setStep("request");
     otpForm.reset();
-    setError("");
-    setSuccess("");
+    setFormMessage({
+      message: "",
+      type: "error",
+    });
     setSessionId(null);
   };
 
@@ -144,17 +117,17 @@ export default function AdminLoginPage() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {error && (
+          {formMessage.message.length > 0 && formMessage.type === "error" && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{formMessage.message}</AlertDescription>
             </Alert>
           )}
 
-          {success && (
+          {formMessage.message.length > 0 && formMessage.type === "success" && (
             <Alert className="border-green-200 bg-green-50">
               <MessageCircle className="h-4 w-4 text-green-800" />
               <AlertDescription className="text-green-800">
-                {success}
+                {formMessage.message}
               </AlertDescription>
             </Alert>
           )}
@@ -173,17 +146,17 @@ export default function AdminLoginPage() {
 
               <Button
                 onClick={handleSendOTP}
-                disabled={sendOTP.isPending}
+                disabled={isLoading}
                 className="w-full"
                 size="lg"
               >
-                {step === "request" && sendOTP.isPending && (
+                {step === "request" && isLoading && (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Trimitere OTP...
                   </>
                 )}
-                {step === "request" && !sendOTP.isPending && (
+                {step === "request" && !isLoading && (
                   <>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Trimite Codul OTP
@@ -232,18 +205,18 @@ export default function AdminLoginPage() {
                 <div className="space-y-2">
                   <Button
                     type="submit"
-                    disabled={verifyOTP.isPending || !otpForm.formState.isValid}
+                    disabled={isLoading || !otpForm.formState.isValid}
                     className="w-full"
                     size="lg"
                   >
-                    {verifyOTP.isPending && step === "verify" && (
+                    {isLoading && step === "verify" && (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Verificare...
                       </>
                     )}
                     {step === "verify" &&
-                      !verifyOTP.isPending &&
+                      !isLoading &&
                       "Verifică & Autentifică-te"}
                   </Button>
 
@@ -252,7 +225,7 @@ export default function AdminLoginPage() {
                     variant="ghost"
                     onClick={handleBack}
                     className="w-full"
-                    disabled={verifyOTP.isPending}
+                    disabled={isLoading}
                   >
                     Înapoi
                   </Button>

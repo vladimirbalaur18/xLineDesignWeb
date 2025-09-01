@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
-import AdminLogin from "./AdminLogin";
+import AdminLogin from "./AdminLoginClient";
 import { cookies } from "next/headers";
-import { verifyToken } from "@/lib/auth";
+import { isAdminAuthenticated } from "@/lib/auth";
 
 export default async function AdminLoginPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin-token");
 
-  if (token && (await verifyToken(token.value))) {
+  if (await isAdminAuthenticated(token?.value)) {
     return redirect("/admin");
   }
 

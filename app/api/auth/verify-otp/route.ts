@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
     const processingTime = Date.now() - startTime;
     const responseSize = JSON.stringify({
       success: true,
-      message: "Authentication successful",
+      message: "Autentificare reușită",
       user,
     }).length;
 
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(
       {
         success: true,
-        message: "Authentication successful",
+        message: "Autentificare reușită",
         user,
       },
       { status: 200 }

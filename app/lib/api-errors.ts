@@ -70,14 +70,14 @@ export async function parseApiError(response: Response): Promise<ApiError> {
 
     // Fallback for non-standard JSON responses
     return new ApiError(
-      data.message || response.statusText || "An error occurred",
+      data.message || response.statusText || "A apărut o eroare",
       response.status,
       false
     );
   } catch (parseError) {
     // If JSON parsing fails, create error from response text or status
     const text = (await response.text()) || response.statusText;
-    return new ApiError(text || "An error occurred", response.status, false);
+    return new ApiError(text || "A apărut o eroare", response.status, false);
   }
 }
 
@@ -90,18 +90,18 @@ export function getErrorMessage(error: unknown): string {
     switch (error.statusCode) {
       case 429:
         return error.retryAfter
-          ? `${error.message} (Try again in ${error.retryAfter} seconds)`
+          ? `${error.message} (Încercați din nou în ${error.retryAfter} secunde)`
           : error.message;
       case 401:
-        return "Authentication failed. Please check your credentials.";
+        return "Autentificare eșuată. Vă rugăm să verificați datele de autentificare.";
       case 403:
-        return "Access denied. You don't have permission to perform this action.";
+        return "Acces refuzat. Nu aveți permisiunea să executați această acțiune.";
       case 404:
-        return "The requested resource was not found.";
+        return "Resursa cerută nu a fost găsită.";
       case 422:
-        return "Validation error. Please check your input.";
+        return "Eroare de validare. Vă rugăm să verificați datele de intrare.";
       case 500:
-        return "Server error. Please try again later.";
+        return "Eroare de server. Vă rugăm să încercați din nou mai târziu.";
       default:
         return error.message;
     }
@@ -111,7 +111,7 @@ export function getErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return "An unexpected error occurred";
+  return "A apărut o eroare neașteptată.";
 }
 
 /**
