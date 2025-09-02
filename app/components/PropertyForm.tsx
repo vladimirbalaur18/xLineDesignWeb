@@ -43,6 +43,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import PropertyPagePreview from "@/components/PropertyPagePreview";
 
 // Manual mapping of required fields based on the schema
 const REQUIRED_FIELDS = new Set([
@@ -179,6 +186,7 @@ export function PropertyForm({
   onSave,
   onCancel,
 }: PropertyFormProps) {
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [modalImage, setModalImage] = useState<{
     url: string;
     alt: string;
@@ -784,6 +792,13 @@ export function PropertyForm({
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={onCancel}>
               Anulează
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsPreviewOpen(true)}
+            >
+              Previzualizare Live
             </Button>
             <Button
               type="submit"
@@ -1769,6 +1784,54 @@ export function PropertyForm({
             </div>
           </div>
         )}
+
+        {/* Live Preview Dialog */}
+        <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+          <DialogContent className="max-w-[95vw] w-[95vw] h-[95vh] p-0 overflow-hidden bg-black">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Previzualizare</DialogTitle>
+            </DialogHeader>
+            <div className="w-full h-full overflow-auto bg-black">
+              <PropertyPagePreview
+                property={{
+                  slug: form.getValues("slug"),
+                  title: form.getValues("title"),
+                  description: form.getValues("description") || undefined,
+                  fullDescription:
+                    form.getValues("fullDescription") || undefined,
+                  address: form.getValues("address") || undefined,
+                  price: form.getValues("price") || undefined,
+                  bedrooms: form.getValues("bedrooms") || undefined,
+                  bathrooms: form.getValues("bathrooms") || undefined,
+                  area: form.getValues("area") || undefined,
+                  yearBuilt: form.getValues("yearBuilt") || undefined,
+                  features: form.getValues("features") || [],
+                  category: form.getValues("category"),
+                  location: form.getValues("location") || "",
+                  image: form.getValues("image") || "",
+                  tags: form.getValues("tags") || [],
+                  heroImages: (form.getValues("heroImages") || []).filter(
+                    (i: any) => i?.url && String(i.url).trim() !== ""
+                  ),
+                  galleryImages: (form.getValues("galleryImages") || []).filter(
+                    (i: any) => i?.url && String(i.url).trim() !== ""
+                  ),
+                  storyChapters: form.getValues("storyChapters") || [],
+                  sections: (form.getValues("sections") || []).map(
+                    (s: any) => ({
+                      title: s?.title || "",
+                      content: s?.content || "",
+                      images: Array.isArray(s?.images) ? s.images : [],
+                    })
+                  ),
+                  id: property?.id,
+                  createdAt: property?.createdAt,
+                  updatedAt: property?.updatedAt,
+                }}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </form>
     </Form>
   );
