@@ -50,6 +50,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import PropertyPagePreview from "@/components/PropertyPagePreview";
+import { ToastAction } from "@/components/ui/toast";
 
 // Manual mapping of required fields based on the schema
 const REQUIRED_FIELDS = new Set([
@@ -340,6 +341,17 @@ export function PropertyForm({
   useEffect(() => {
     const timer = setTimeout(showAllErrors, 100);
     return () => clearTimeout(timer);
+  }, []);
+  // Show a floating preview button after slight scroll for visibility
+  const [showPreviewFab, setShowPreviewFab] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      setShowPreviewFab(y > 200);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true } as any);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Field arrays for dynamic content
@@ -792,13 +804,6 @@ export function PropertyForm({
           <div className="flex gap-2">
             <Button type="button" variant="outline" onClick={onCancel}>
               Anulează
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsPreviewOpen(true)}
-            >
-              Previzualizare Live
             </Button>
             <Button
               type="submit"
@@ -1832,6 +1837,19 @@ export function PropertyForm({
             </div>
           </DialogContent>
         </Dialog>
+        {/* Floating preview FAB */}
+        {showPreviewFab && (
+          <Button
+            type="button"
+            onClick={() => setIsPreviewOpen(true)}
+            className="fixed bottom-6 right-6 z-50 shadow-lg h-12 w-12 rounded-full p-0 bg-primary text-primary-foreground hover:bg-primary/90"
+            variant="default"
+            aria-label="Deschide previzualizarea live"
+            title="Previzualizare live"
+          >
+            <Eye className="h-6 w-6" />
+          </Button>
+        )}
       </form>
     </Form>
   );
