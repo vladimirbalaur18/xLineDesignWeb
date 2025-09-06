@@ -171,6 +171,17 @@ export default function Footer() {
             © {new Date().getFullYear()} xLine Design. Toate drepturile
             rezervate.
           </div>
+          <div className="text-gray-500 text-sm">
+            Website dezvoltat de{" "}
+            <a
+              href="https://www.linkedin.com/in/vladimir-balaur"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary"
+            >
+              Vladimir Balaur
+            </a>
+          </div>
         </div>
       </div>
     </footer>

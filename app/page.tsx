@@ -250,8 +250,8 @@ export default function HomePage() {
         <section aria-label="Hero">
           <Hero />
         </section>
-        <section aria-label="Despre noi">
-          <About />
+        <section aria-label="Proiecte">
+          <Projects />
         </section>
         <section aria-label="De ce noi">
           <WhyUs />
@@ -259,9 +259,10 @@ export default function HomePage() {
         <section aria-label="Servicii">
           <Services />
         </section>
-        <section aria-label="Proiecte">
-          <Projects />
+        <section aria-label="Despre noi">
+          <About />
         </section>
+
         {/* <section aria-label="Galerie proiecte">
           <ProjectGallery />
         </section> */}

@@ -79,3 +79,13 @@ export function transformImagesToWsrv(
     url: transformToWsrvUrl(image.url, width, height, quality, format),
   }));
 }
+
+export function isVercelBlobUrl(url: string): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.host.includes(".public.blob.vercel-storage.com");
+  } catch {
+    return false;
+  }
+}

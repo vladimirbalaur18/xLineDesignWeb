@@ -17,6 +17,7 @@ import {
   type CarouselApi,
 } from "./ui/carousel";
 import { useProperties } from "@/hooks/use-property";
+import { filtersMap } from "@/shared/filtersMap";
 
 // Animation variants
 const containerVariants = {
@@ -30,23 +31,12 @@ const containerVariants = {
 };
 
 export default function Projects() {
-  const {
-    data: properties,
-    error,
-    isLoading,
-  } = useProperties({ includeSections: true });
+  const { data: properties, error, isLoading } = useProperties({});
   const [activeFilter, setActiveFilter] = useState("all");
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px 0px" });
-
-  const filtersMap = {
-    all: "Toate lucrările",
-    interiorDesign: "Design interior",
-    architecture: "Arhitectură",
-    landscapeDesign: "Peisagistică",
-  };
 
   const filters = Object.keys(filtersMap) as Array<keyof typeof filtersMap>;
 

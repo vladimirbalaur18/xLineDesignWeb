@@ -4,28 +4,32 @@ import { motion } from "motion/react";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { Leaf, Globe2, Users, Award } from "lucide-react";
+import { Leaf, Globe2, Users, Award, Wallet, Clock } from "lucide-react";
 
 export default function WhyUs() {
   const features = [
     {
-      title: "Sustenabilitate",
-      description: "Materiale ecologice și soluții eficiente energetic.",
-      icon: <Leaf className="h-6 w-6 text-primary" />,
+      title: "Gestionare eficientă a bugetului",
+      description:
+        "Îți oferim soluții adaptate bugetului tău, fără costuri ascunse și cu prețuri transparente.",
+      icon: <Wallet className="h-6 w-6 text-primary" />,
     },
     {
-      title: "Experiență internațională",
-      description: "Proiecte în Moldova, România, și în Europa.",
-      icon: <Globe2 className="h-6 w-6 text-primary" />,
+      title: "Termene respectate",
+      description:
+        "Plan clar de lucru și livrare la timp, ca să te bucuri de casa ta fără întârzieri.",
+      icon: <Clock className="h-6 w-6 text-primary" />,
     },
     {
-      title: "Proces centrat pe client",
-      description: "Ascultăm, adaptăm și livrăm exact ce îți imaginezi.",
+      title: "Furnizori și echipe de execuție verificate",
+      description:
+        "Colaborăm cu meșteri și producători de încredere din Moldova și România, pentru calitate garantată.",
       icon: <Users className="h-6 w-6 text-primary" />,
     },
     {
-      title: "Creativitate premiată",
-      description: "Susținută de precizie tehnică.",
+      title: "Design practic și modern",
+      description:
+        "Amenajări care arată spectaculos, dar sunt și funcționale, ușor de întreținut și adaptate vieții de zi cu zi.",
       icon: <Award className="h-6 w-6 text-primary" />,
     },
   ];
@@ -75,7 +79,7 @@ export default function WhyUs() {
           </p>
         </motion.div>
 
-        <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}

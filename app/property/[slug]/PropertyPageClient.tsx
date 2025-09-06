@@ -5,13 +5,23 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyPageView from "@/components/PropertyPageView";
 import { useProperty } from "@/hooks/use-property";
+import type { Property } from "@/types/properties";
 
 export default function PropertyPageClient({
   propertySlug,
+  initialProperty,
 }: {
   propertySlug: string;
+  initialProperty?: Property;
 }) {
-  const { data: property, isLoading, error } = useProperty(propertySlug);
+  const {
+    data: property,
+    isLoading,
+    error,
+  } = useProperty(propertySlug, {
+    enabled: !initialProperty,
+    initialData: initialProperty,
+  });
 
   const router = useRouter();
   const storyAutoOpen =

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PropertyTable } from "@/components/PropertyTable";
+import Spinner from "@/components/ui/spinner";
 import { PropertyForm } from "@/components/PropertyForm";
 import type { Property } from "@/types/properties";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +11,6 @@ import {
   useProperties,
   useSavePropertyMutation,
 } from "@/hooks/use-property";
-import AdminHeader from "@/components/AdminHeader";
 
 export default function AdminPageClient() {
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
@@ -27,14 +27,16 @@ export default function AdminPageClient() {
   const { mutate: deleteProperty } = useDeletePropertyMutation();
   const { mutate: saveProperty } = useSavePropertyMutation();
 
-  if (error) {
-    toast({
-      title: "Eroare",
-      description: "A apărut o eroare la încărcarea proprietăților.",
-      variant: "destructive",
-    });
-    console.error("Failed to fetch properties:", error);
-  }
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Eroare",
+        description: "A apărut o eroare la încărcarea proprietăților.",
+        variant: "destructive",
+      });
+      console.error("Failed to fetch properties:", error);
+    }
+  }, [error, toast]);
 
   const handleEdit = (property: Property) => {
     console.log("Editing property:", property);
@@ -116,7 +118,9 @@ export default function AdminPageClient() {
         className="relative overflow-hidden py-16 container mx-auto px-4 pt-24"
       >
         <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="mx-auto">
+            <Spinner />
+          </div>
           <p className="">Loading properties...</p>
         </div>
       </section>

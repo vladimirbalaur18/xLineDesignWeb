@@ -89,17 +89,13 @@ export default function Hero() {
           >
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter uppercase mb-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
-                DESIGN MODERN
+                Eleganță în fiecare detaliu
               </span>
             </h1>
-            <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold uppercase mb-8">
-              <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
-                ARHITECTURĂ INOVATIVĂ
-              </span>
-            </h2>
+
             <p className="text-md md:text-2xl font-light tracking-wide mb-8 text-white/80">
-              Arhitectură și design interior contemporan, creat cu viziune,
-              funcționalitate și suflet.
+              Studio de arhitectură și design interior cu experiență în Moldova
+              și România. Plan clar, buget controlat, execuție garantată
             </p>
           </motion.div>
 

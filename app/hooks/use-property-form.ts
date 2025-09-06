@@ -42,7 +42,7 @@ export function usePropertyForm() {
     setError(null);
 
     try {
-      const response = await fetch(`/api/property/${property.slug}`, {
+      const response = await fetch(`/api/properties/${property.slug}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,20 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Property } from "@/types/properties";
 
-export function useProperty(slug?: string) {
+export function useProperty(
+  slug?: string,
+  options?: { enabled?: boolean; initialData?: Property }
+) {
   return useQuery({
     queryKey: ["property", slug],
     queryFn: async (): Promise<Property> => {
       if (!slug) {
         throw new Error("Property slug is required");
       }
-      const response = await fetch(`/api/property/${slug}`);
+      const response = await fetch(`/api/properties/${slug}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch property: ${response.statusText}`);
       }
       return response.json();
     },
-    enabled: !!slug,
+    enabled: options?.enabled ?? !!slug,
+    initialData: options?.initialData,
     staleTime: 10 * 60 * 1000, // 10 minutes
     gcTime: 20 * 60 * 1000, // 20 minutes
   });
@@ -46,6 +50,7 @@ export function useSavePropertyMutation() {
   return useMutation({
     mutationFn: async (property: Property): Promise<Property> => {
       const response = await fetch("/api/properties", {
+        //PUT for update, POST for create
         method: property.id ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",

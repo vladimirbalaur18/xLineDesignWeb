@@ -26,22 +26,15 @@ export interface GradualRateLimitResult extends RateLimitResult {
   penaltySeconds?: number;
 }
 
-const limiterCache = new Map<string, Ratelimit>();
-
 function getFixedWindowLimiter(
   limit: number,
   windowSeconds: number
 ): Ratelimit {
-  const cacheKey = `${limit}:${windowSeconds}`;
-  const cached = limiterCache.get(cacheKey);
-  if (cached) return cached;
-
   const limiter = new Ratelimit({
     redis: getRedis(),
     limiter: Ratelimit.fixedWindow(limit, `${windowSeconds} s`),
     analytics: false,
   });
-  limiterCache.set(cacheKey, limiter);
   return limiter;
 }
 
