@@ -8,11 +8,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 const MIN_VISIBLE_MS = 1_000; // 1 s  ⟵  adjust if you need more
 const FADE_MS = 600; // length of the exit animation
 
-export default function RootScreenLoader({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ScreenLoader() {
   const pathname = usePathname();
   const hydrated = useHydrated();
   const [show, setShow] = useState(true); // controls DOM presence
@@ -58,8 +54,6 @@ export default function RootScreenLoader({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {children}
     </>
   );
 }

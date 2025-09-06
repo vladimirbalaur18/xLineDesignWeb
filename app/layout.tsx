@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "./components/toaster";
-import RootScreenLoader from "./RootScreenLoader";
+import RootScreenLoader from "./ScreenLoader";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { Root } from "vaul";
@@ -122,15 +122,13 @@ export default function RootLayout({
         /> */}
       </head>
       <body className={inter.className}>
-        <RootScreenLoader>
-          <Providers>
-            <header>
-              <Header />
-            </header>
-            {children}
-            <Toaster />
-          </Providers>
-        </RootScreenLoader>
+        <Providers>
+          <header>
+            <Header />
+          </header>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
