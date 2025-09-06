@@ -4,7 +4,7 @@ import ClientOnly from "./components/ClientOnly";
 import dynamic from "next/dynamic";
 import Services from "./components/Services";
 import PropertyForSale from "./components/PropertyForSale";
-import RootScreenLoader from "./RootScreenLoader";
+import RootScreenLoader from "./components/RootScreenLoader";
 
 // Dynamically import components to avoid server-side rendering of client components
 const Hero = dynamic(() => import("./components/Hero"));

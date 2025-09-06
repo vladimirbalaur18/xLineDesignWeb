@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import { navItems } from "@/shared/navitems";
 import { i } from "vite/dist/node/types.d-aGj9QkWt";
+import { socialUrls } from "@/shared/socialUrls";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -16,12 +17,6 @@ export default function Footer() {
   };
 
   // Social media URLs from environment variables
-  const socialUrls = {
-    instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
-    pinterest: process.env.NEXT_PUBLIC_PINTEREST_URL,
-    facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL,
-    behance: process.env.NEXT_PUBLIC_BEHANCE_URL,
-  };
 
   return (
     <footer className="bg-gray-950 text-gray-300 border-t border-gray-800">

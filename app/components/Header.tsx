@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { socialUrls } from "@/shared/socialUrls";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,15 +18,6 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const router = useRouter();
-  const isAdmin = pathname.startsWith("/admin");
-
-  // Social media URLs from environment variables
-  const socialUrls = {
-    instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
-    pinterest: process.env.NEXT_PUBLIC_PINTEREST_URL,
-    facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL,
-    behance: process.env.NEXT_PUBLIC_BEHANCE_URL,
-  };
 
   // Track scroll position to change header style
   useEffect(() => {

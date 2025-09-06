@@ -13,6 +13,7 @@ import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
 import Footer from "@/components/Footer";
 import { OptimizedImage } from "@/components/OptimizedImage";
+import { useRouter } from "next/navigation";
 
 function LazySection({
   section,
@@ -24,6 +25,7 @@ function LazySection({
   totalSections: number;
 }) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
   const [loadingStates, setLoadingStates] = useState<{
     [key: number]: boolean;
   }>({});
@@ -178,7 +180,7 @@ export default function PropertyPageView({
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
-
+  const router = useRouter();
   const propertySections = property?.sections;
 
   useEffect(() => {
@@ -436,6 +438,7 @@ export default function PropertyPageView({
                   </h3>
                   <div className="space-y-3">
                     <Button
+                      onClick={() => router.push("/#contact")}
                       variant="outline"
                       className="w-full border-white/20 text-white hover:bg-white/10"
                     >

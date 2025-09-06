@@ -15,7 +15,7 @@ export const SharePopover: React.FC<SharePopoverProps> = ({
   className = "",
 }) => {
   const [copied, setCopied] = useState(false);
-  const propertyUrl = window.location.href;
+  const propertyUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = "Privește acest proiect interesant!";
   const [sharePopoverOpen, setSharePopoverOpen] = useState(false);
 
