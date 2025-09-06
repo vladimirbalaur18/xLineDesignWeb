@@ -7,7 +7,7 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import ProjectCard from "./ProjectCard";
-import type { Property } from "../lib/properties";
+import type { Property } from "../types/properties";
 import {
   Carousel,
   CarouselContent,

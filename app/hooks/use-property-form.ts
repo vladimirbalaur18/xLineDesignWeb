@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Property } from "@/lib/properties";
+import type { Property } from "@/types/properties";
 
 export function usePropertyForm() {
   const [isLoading, setIsLoading] = useState(false);

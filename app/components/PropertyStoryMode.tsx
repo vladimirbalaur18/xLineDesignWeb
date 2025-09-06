@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
-import { Property } from "../lib/properties";
+import { Property } from "../types/properties";
 import { useSwipe } from "@/hooks/use-swipe";
 import Image from "next/image";
 import { createPortal } from "react-dom";

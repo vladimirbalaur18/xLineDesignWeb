@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { AuthStatusResponse } from "@shared/api/auth";
+import { AuthStatusResponse } from "@/types/auth";
 import { useOTPAuth } from "@/hooks/use-otp-auth";
 
 export default function AdminHeader() {

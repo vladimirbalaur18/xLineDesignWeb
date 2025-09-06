@@ -11,8 +11,8 @@ import Footer from "../components/Footer";
 import NotFoundIllustration from "../components/NotFoundIllustration";
 import * as _ from "lodash";
 import ProjectCard from "../components/ProjectCard";
-import { filtersMap } from "../../shared/filtersMap";
-import type { Property } from "../lib/properties";
+import { filtersMap } from "../shared/filtersMap";
+import type { Property } from "../types/properties";
 
 import { useUrlStates } from "../hooks/use-url-state";
 import { useProperties } from "@/hooks/use-property";

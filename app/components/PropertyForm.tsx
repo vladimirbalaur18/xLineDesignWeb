@@ -12,7 +12,7 @@ import type {
   PropertyImage,
   PropertySection,
   PropertyStoryChapter,
-} from "@/lib/properties";
+} from "@/types/properties";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu, X, MailIcon, Instagram, Facebook } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { navItems } from "@shared/navitems";
+import { navItems } from "@/shared/navitems";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";

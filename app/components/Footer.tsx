@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { Instagram, Facebook, ArrowUp } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { navItems } from "@shared/navitems";
+import { navItems } from "@/shared/navitems";
 import { i } from "vite/dist/node/types.d-aGj9QkWt";
 
 export default function Footer() {

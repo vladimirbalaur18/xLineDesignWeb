@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { PropertyTable } from "@/components/PropertyTable";
 import { PropertyForm } from "@/components/PropertyForm";
-import type { Property } from "@/lib/properties";
+import type { Property } from "@/types/properties";
 import { useToast } from "@/hooks/use-toast";
 import {
   useDeletePropertyMutation,

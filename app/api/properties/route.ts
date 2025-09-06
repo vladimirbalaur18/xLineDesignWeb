@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { logger } from "@/lib/logger";
-import { getClientIp, gradualRateLimit } from "@/lib/rate-limit";
 import { requireAdminAuth } from "@/lib/auth";
-import {
-  Property,
-  PropertyImage,
-  PropertySection,
-  PropertyStoryChapter,
-} from "@/lib/properties";
 
 const prisma = new PrismaClient();
 

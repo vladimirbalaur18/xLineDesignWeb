@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import type { Property } from "@/lib/properties";
+import type { Property } from "@/types/properties";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Bed, Bath, Grid, Play, Calendar, ArrowLeft } from "lucide-react";

@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "../hooks/use-toast";
-import { InsertContactMessage } from "@shared/schema";
+import { InsertContactMessage } from "@/shared/schema";
 import {
   Form,
   FormControl,

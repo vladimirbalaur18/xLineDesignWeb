@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { properties } from "../app/lib/properties";
-
+import { properties } from "./data/initialProperties";
 const prisma = new PrismaClient();
 
 async function main() {

@@ -1,5 +1,5 @@
 import PropertyPageView from "@/components/PropertyPageView";
-import type { Property } from "@/lib/properties";
+import type { Property } from "@/types/properties";
 
 export default function PropertyPagePreview({
   property,

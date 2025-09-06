@@ -14,7 +14,7 @@ import type {
   VerifyOtpResponse,
   VerifyOtpResponseFailure,
   VerifyOtpResponseSuccess,
-} from "@shared/api/auth";
+} from "@/types/auth";
 import { getErrorMessage } from "@/lib/api-errors";
 
 interface OTPAuthContextType {

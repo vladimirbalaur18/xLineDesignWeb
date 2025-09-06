@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Property } from "@/lib/properties";
+import type { Property } from "@/types/properties";
 
 export function useProperty(slug?: string) {
   return useQuery({

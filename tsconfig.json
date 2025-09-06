@@ -1,6 +1,6 @@
 {
   "include": [
-    "shared/**/*",
+    "app/shared/**/*",
     "server/**/*",
     "app/**/*",
     "next-env.d.ts",
@@ -24,7 +24,7 @@
     "types": ["node"],
     "paths": {
       "@/*": ["./app/*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["app/shared/*"]
     },
     "plugins": [
       {
