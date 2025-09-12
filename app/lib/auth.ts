@@ -2,7 +2,6 @@ import "server-only";
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
-import { logger } from "@/lib/logger"; // Import logger
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -45,13 +44,6 @@ export async function verifyToken(token: string) {
 
     return null;
   } catch (error) {
-    logger.errorWithStack(
-      {
-        action: "token_verification_failed",
-        error: "Token verification failed",
-      },
-      error instanceof Error ? error : new Error(String(error))
-    );
     return null;
   }
 }

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 import path from "path";
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   transpilePackages: ["lucide-react"],
   compiler: {

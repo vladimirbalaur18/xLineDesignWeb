@@ -1,15 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { requireAdminAuth } from "@/lib/auth";
-import { logger } from "@/lib/logger";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const startTime = Date.now();
-  const requestContext = logger.extractRequestContext(request);
-
   let slug = "";
 
   try {
@@ -27,14 +23,6 @@ export async function GET(
     });
 
     if (!property) {
-      logger.error({
-        action: "project_not_found",
-        ...requestContext,
-        error: "Property not found",
-        statusCode: 404,
-        metadata: { projectSlug: slug },
-      });
-
       return NextResponse.json(
         { error: "Property not found" },
         { status: 404 }
@@ -49,49 +37,8 @@ export async function GET(
       sections: property.sections,
     };
 
-    const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(transformedProperty).length;
-
-    logger.projectAction({
-      ...logger.addResponseDetails(
-        requestContext,
-        responseSize,
-        processingTime,
-        1
-      ),
-      projectId: property.id,
-      statusCode: 200,
-      metadata: {
-        projectSlug: property.slug,
-        title: property.title,
-        category: property.category,
-        location: property.location,
-      },
-    });
-
     return NextResponse.json(transformedProperty);
   } catch (error) {
-    if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "project_fetch_error",
-          ...requestContext,
-          error: "Error fetching property",
-          statusCode: 500,
-          metadata: { projectSlug: slug },
-        },
-        error
-      );
-    } else {
-      logger.error({
-        action: "project_fetch_error",
-        ...requestContext,
-        error: "Error fetching property",
-        statusCode: 500,
-        metadata: { projectSlug: slug },
-      });
-    }
-
     return NextResponse.json(
       { error: "Failed to fetch property" },
       { status: 500 }
@@ -104,9 +51,6 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const startTime = Date.now();
-  const requestContext = logger.extractRequestContext(request);
-
   try {
     await requireAdminAuth(request);
   } catch (error) {
@@ -126,7 +70,6 @@ export async function PUT(
     const paramsResult = await params;
     slug = paramsResult.slug;
     body = await request.json();
-    const contextWithBody = logger.addRequestBody(requestContext, body);
     const {
       title,
       description,
@@ -223,53 +166,8 @@ export async function PUT(
       sections: property.sections,
     };
 
-    const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(transformedProperty).length;
-
-    logger.projectUpdated({
-      ...logger.addResponseDetails(
-        requestContext,
-        responseSize,
-        processingTime,
-        4
-      ),
-      projectId: property.id,
-      statusCode: 200,
-      metadata: {
-        projectSlug: property.slug,
-        title: property.title,
-        category: property.category,
-        location: property.location,
-        heroImagesCount: property.heroImages.length,
-        galleryImagesCount: property.galleryImages.length,
-        storyChaptersCount: property.storyChapters.length,
-        sectionsCount: property.sections.length,
-      },
-    });
-
     return NextResponse.json(transformedProperty);
   } catch (error) {
-    if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "project_update_error",
-          ...requestContext,
-          error: "Error updating property",
-          statusCode: 500,
-          metadata: { projectSlug: slug, title: body?.title || "unknown" },
-        },
-        error
-      );
-    } else {
-      logger.error({
-        action: "project_update_error",
-        ...requestContext,
-        error: "Error updating property",
-        statusCode: 500,
-        metadata: { projectSlug: slug, title: body?.title || "unknown" },
-      });
-    }
-
     return NextResponse.json(
       { error: "Failed to update property" },
       { status: 500 }

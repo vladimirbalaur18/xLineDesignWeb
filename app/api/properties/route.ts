@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { logger } from "@/lib/logger";
 import { requireAdminAuth } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
-  const startTime = Date.now();
-  const requestContext = logger.extractRequestContext(request);
-
   try {
     const { searchParams } = new URL(request.url);
     const includeImages = searchParams.get("includeImages") === "true";
@@ -34,47 +30,8 @@ export async function GET(request: NextRequest) {
       sections: property.sections || [],
     }));
 
-    const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(transformedProperties).length;
-
-    // Log successful fetch with detailed request information
-    logger.projectAction({
-      ...logger.addResponseDetails(
-        requestContext,
-        responseSize,
-        processingTime,
-        1
-      ),
-      statusCode: 200,
-      metadata: {
-        count: properties.length,
-        includeImages,
-        includeChapters,
-        includeSections,
-      },
-    });
-
     return NextResponse.json(transformedProperties);
   } catch (error) {
-    if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "project_fetch_error",
-          ...requestContext,
-          error: "Error fetching properties",
-          statusCode: 500,
-        },
-        error
-      );
-    } else {
-      logger.error({
-        action: "project_fetch_error",
-        ...requestContext,
-        error: "Error fetching properties",
-        statusCode: 500,
-      });
-    }
-
     return NextResponse.json(
       { error: "Failed to fetch properties" },
       { status: 500 }
@@ -84,9 +41,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now();
-  const requestContext = logger.extractRequestContext(request);
-
   // Require admin authentication for creating properties
   try {
     await requireAdminAuth(request);
@@ -104,8 +58,6 @@ export async function POST(request: NextRequest) {
 
   try {
     body = await request.json();
-    // Add request body to context
-    const contextWithBody = logger.addRequestBody(requestContext, body);
     const {
       slug,
       title,
@@ -191,60 +143,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(property).length;
-
-    // Log successful creation with detailed request information
-    logger.projectCreated({
-      ...logger.addResponseDetails(
-        contextWithBody,
-        responseSize,
-        processingTime,
-        1
-      ),
-      projectId: property.id,
-      projectSlug: property.slug,
-      statusCode: 201,
-      metadata: {
-        title: property.title,
-        category: property.category,
-        location: property.location,
-        heroImagesCount: property.heroImages.length,
-        galleryImagesCount: property.galleryImages.length,
-        storyChaptersCount: property.storyChapters.length,
-        sectionsCount: property.sections.length,
-      },
-    });
-
     return NextResponse.json(property, { status: 201 });
   } catch (error) {
-    if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "project_creation_error",
-          ...requestContext,
-          error: "Error creating property",
-          statusCode: 500,
-          metadata: {
-            slug: body?.slug || "unknown",
-            title: body?.title || "unknown",
-          },
-        },
-        error
-      );
-    } else {
-      logger.error({
-        action: "project_creation_error",
-        ...requestContext,
-        error: "Error creating property",
-        statusCode: 500,
-        metadata: {
-          slug: body?.slug || "unknown",
-          title: body?.title || "unknown",
-        },
-      });
-    }
-
     return NextResponse.json(
       { error: "Failed to create property" },
       { status: 500 }
@@ -254,9 +154,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-  const startTime = Date.now();
-  const requestContext = logger.extractRequestContext(request);
-
   // Require admin authentication for updating properties
   try {
     await requireAdminAuth(request);
@@ -274,8 +171,6 @@ export async function PUT(request: NextRequest) {
 
   try {
     body = await request.json();
-    // Add request body to context
-    const contextWithBody = logger.addRequestBody(requestContext, body);
 
     const {
       id,
@@ -302,13 +197,6 @@ export async function PUT(request: NextRequest) {
     } = body;
 
     if (!id) {
-      logger.error({
-        action: "project_update_error",
-        ...requestContext,
-        error: "Property ID is required for updates",
-        statusCode: 400,
-      });
-
       return NextResponse.json(
         { error: "Property ID is required for updates" },
         { status: 400 }
@@ -393,62 +281,8 @@ export async function PUT(request: NextRequest) {
 
     // Transform the response to match the expected format
 
-    const processingTime = Date.now() - startTime;
-    const responseSize = JSON.stringify(property).length;
-
-    // Log successful update with detailed request information
-    logger.projectUpdated({
-      ...logger.addResponseDetails(
-        contextWithBody,
-        responseSize,
-        processingTime,
-        4
-      ), // 4 DB operations: 3 deletes + 1 update
-      projectId: property.id,
-      projectSlug: property.slug,
-      statusCode: 200,
-      metadata: {
-        title: property.title,
-        category: property.category,
-        location: property.location,
-        heroImagesCount: property.heroImages.length,
-        galleryImagesCount: property.galleryImages.length,
-        storyChaptersCount: property.storyChapters.length,
-        sectionsCount: property.sections.length,
-      },
-    });
-
     return NextResponse.json(property);
   } catch (error) {
-    if (error instanceof Error) {
-      logger.errorWithStack(
-        {
-          action: "project_update_error",
-          ...requestContext,
-          error: "Error updating property",
-          statusCode: 500,
-          metadata: {
-            id: body?.id || "unknown",
-            slug: body?.slug || "unknown",
-            title: body?.title || "unknown",
-          },
-        },
-        error
-      );
-    } else {
-      logger.error({
-        action: "project_update_error",
-        ...requestContext,
-        error: "Error updating property",
-        statusCode: 500,
-        metadata: {
-          id: body?.id || "unknown",
-          slug: body?.slug || "unknown",
-          title: body?.title || "unknown",
-        },
-      });
-    }
-
     return NextResponse.json(
       { error: "Failed to update property" },
       { status: 500 }
