@@ -2,23 +2,9 @@
 
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import { Card, CardContent } from "./ui/card";
-import {
-  Award,
-  Users,
-  Globe,
-  Home,
-  Lightbulb,
-  ChevronRight,
-  Smile,
-  Square,
-} from "lucide-react";
 import Image from "next/image";
+import StatsSection from "./StatsSection";
 
-const ACTIVE_FROM_YEAR = 2019;
-const PROJECTS_COUNT = 250;
-const COUNTRIES_COUNT = 3;
-const SQUARE_METERS_COUNT = 10000;
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -29,31 +15,6 @@ export default function About() {
   const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
   const y2 = useTransform(scrollYProgress, [0, 1], [50, -50]);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-
-  const stats = [
-    {
-      value: `${
-        new Date().getFullYear() - ACTIVE_FROM_YEAR
-      }+ ani de activitate`,
-      label: `Activăm din ${ACTIVE_FROM_YEAR}`,
-      icon: <Award className="h-6 w-6 text-primary" />,
-    },
-    {
-      value: `${PROJECTS_COUNT}+`,
-      label: "Proiecte finalizate",
-      icon: <Home className="h-6 w-6 text-primary" />,
-    },
-    {
-      value: `${COUNTRIES_COUNT}`,
-      label: "Țări de activitate",
-      icon: <Globe className="h-6 w-6 text-primary" />,
-    },
-    {
-      value: `${SQUARE_METERS_COUNT}+`,
-      label: "Metri pătrați proiectați",
-      icon: <Square className="h-6 w-6 text-primary" />,
-    },
-  ];
 
   return (
     <section
@@ -146,34 +107,7 @@ export default function About() {
           viewport={{ once: true }}
           className="mt-24 w-full"
         >
-          <div className="w-full flex justify-center">
-            <div
-              className="
-                grid 
-                grid-cols-1 
-                sm:grid-cols-2 
-                lg:grid-cols-4 
-                gap-2
-                w-full 
-                max-w-6xl
-                "
-            >
-              {stats.map((stat, index) => (
-                <Card
-                  key={index}
-                  className="bg-gray-900/50 border-gray-800 flex flex-col h-full"
-                >
-                  <CardContent className="p-6 text-center flex flex-col h-full justify-center">
-                    <div className="flex justify-center mb-4">{stat.icon}</div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
-                      {stat.value}
-                    </h3>
-                    <p className="text-sm text-gray-400">{stat.label}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
+          <StatsSection />
         </motion.div>
       </div>
     </section>

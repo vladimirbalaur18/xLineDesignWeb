@@ -78,8 +78,9 @@ export default function Hero() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20" />
         </motion.div>
       </AnimatePresence>
+
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-10 h-full flex items-center">
+      <div className="container mx-auto px-4 relative z-10 h-full flex items-center ">
         <div className="max-w-2xl mx-auto text-center lg:mx-0 lg:text-left">
           {/* Static Content */}
           <motion.div
@@ -104,28 +105,102 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center lg:justify-start"
           >
-            <Button
-              size="lg"
-              className="relative bg-black border border-white/70 text-white hover:text-black hover:bg-white px-10 uppercase tracking-widest text-sm py-6 transition-all duration-300 group overflow-hidden"
-              onClick={scrollToProjects}
+            {/* Explore Button with glow effect */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="hidden md:block relative group w-fit"
             >
-              <span className="relative z-10">EXPLOREAZĂ</span>
-              <div className="absolute inset-0 bg-white scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="relative border-white/40 hover:border-white text-white hover:bg-black/30 uppercase tracking-widest text-sm px-10 py-6 transition-all duration-300 group overflow-hidden"
-              asChild
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-white to-white/50 rounded-none opacity-30 group-hover:opacity-100 transition duration-500 blur"></div>
+              <Button
+                size="lg"
+                className="relative bg-black border border-white/70 text-white hover:text-black hover:bg-white px-10 uppercase tracking-widest text-sm py-6 transition-all duration-300"
+                onClick={scrollToProjects}
+              >
+                Explorează proiectele
+              </Button>
+            </motion.div>
+
+            {/* Connect Button with animated border */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative w-fit"
             >
-              <a href="#contact">
-                <span className="relative z-10">CONTACTEAZĂ-NE</span>
-                <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300" />
-              </a>
-            </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="relative border-white/40 hover:border-white text-white hover:bg-black/30 uppercase tracking-widest text-sm px-10 py-6 overflow-hidden group"
+                asChild
+              >
+                <a href="#contact">
+                  Contactează-ne
+                  <motion.span
+                    className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white to-transparent"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: "100%" }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2,
+                      ease: "linear",
+                    }}
+                  />
+                </a>
+              </Button>
+            </motion.div>
           </motion.div>
+
+          {/* NEW BUTTONS */}
+        </div>
+      </div>
+
+      {/* Scroll indicator*/}
+      <div className="flex justify-center items-center mt-auto mb-0 absolute bottom-4 left-0 right-0 md:hidden">
+        {/* Animated gradient background */}
+        <motion.div
+          className="absolute -inset-2 rounded-none bg-gradient-to-t from-white/20 to-transparent blur-sm"
+          animate={{
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 2,
+            ease: "easeInOut",
+          }}
+        />
+
+        {/* Scroll container */}
+        <div className="relative h-14 w-8 border border-white/50 backdrop-blur-sm flex items-center justify-center">
+          {/* Animated dot */}
+          <motion.div
+            className="h-2 w-2 bg-white"
+            animate={{
+              y: [-3, 12, -3],
+              opacity: [0.5, 1, 0.5],
+              scale: [0.8, 1, 0.8],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.5,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Trailing light effect */}
+          <motion.div
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-white/70 to-transparent"
+            animate={{
+              scaleY: [0.3, 1, 0.3],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: "easeInOut",
+            }}
+          />
         </div>
       </div>
     </section>
