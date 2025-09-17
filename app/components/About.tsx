@@ -82,7 +82,7 @@ export default function About() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
               <span className="text-primary">Despre</span> XLINE Design
             </h2>
-            <div className="md:text-xl space-y-4 text-justify">
+            <div className="md:text-xl space-y-4 ">
               <p className="text-gray-400">
                 XLine Design este un studio premiat de arhitectură și design
                 interior din Chișinău, Moldova, care creează spații vizionare

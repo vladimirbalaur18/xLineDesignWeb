@@ -22,16 +22,25 @@ export async function generateMetadata({
         description: true,
         image: true,
         slug: true,
+        area: true,
+        location: true,
+        yearBuilt: true,
       },
     });
 
     if (!property) return {};
 
+    // Build title components
+    const titleParts = [property.title];
+    if (property.area) titleParts.push(`${property.area} m2`);
+    if (property.location) titleParts.push(property.location);
+    if (property.yearBuilt) titleParts.push(property.yearBuilt.toString());
+
     return {
-      title: `${property.title} | xLineDesign`,
+      title: titleParts.join(" | "),
       description: property.description || undefined,
       openGraph: {
-        title: property.title,
+        title: titleParts.join(" | "),
         description: property.description || undefined,
         url: `/property/${property.slug}`,
         type: "article",
@@ -46,7 +55,7 @@ export async function generateMetadata({
       },
       twitter: {
         card: "summary_large_image",
-        title: property.title,
+        title: titleParts.join(" | "),
         description: property.description || undefined,
         images: [property.image],
       },
