@@ -149,13 +149,6 @@ const ServiceImage = ({
         className="object-cover w-full h-full filter transition-all duration-700"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80"></div>
-      <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-        <div className="h-[1px] w-24 bg-gradient-to-r from-white/70 to-transparent mb-4 transform-gpu scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-        <p className="text-white/90 font-light">
-          Proiectele noastre de {service.title.toLowerCase()} îmbină tehnologia
-          de ultimă generație, estetica și soluțiile sustenabile.
-        </p>
-      </div>
     </div>
   </motion.div>
 );

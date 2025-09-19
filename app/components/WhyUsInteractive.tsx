@@ -11,12 +11,19 @@ import {
   ArrowRight,
   Zap,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useVisibleViewportItems } from "@/hooks/use-visible-viewport-items";
 
 export default function WhyUsInteractive() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const cardRefs = useRef<HTMLDivElement[]>([]);
+  const visibleItemsIndexArr = useVisibleViewportItems(cardRefs, {
+    threshold: 0.5,
+  });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -115,19 +122,24 @@ export default function WhyUsInteractive() {
         >
           {features.map((feature, index) => {
             const Icon = feature.icon;
-            const isHovered = hoveredCard === index;
+            const isHoveredOrInMobileView =
+              hoveredCard === index ||
+              (visibleItemsIndexArr.includes(index) && isMobile);
 
             return (
               <Card
+                ref={(el: HTMLDivElement | null) => {
+                  if (el) cardRefs.current[index] = el;
+                }}
                 key={index}
                 className="group relative p-8 border-0 bg-gray-950/50 backdrop-blur-xl hover:bg-gray-800/60 transition-all duration-700 cursor-pointer overflow-hidden"
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
                 style={{
-                  transform: isHovered
+                  transform: isHoveredOrInMobileView
                     ? "translateY(-8px) scale(1.02)"
                     : "translateY(0) scale(1)",
-                  boxShadow: isHovered
+                  boxShadow: isHoveredOrInMobileView
                     ? "0 20px 40px rgba(255, 255, 255, 0.2)"
                     : "none",
                 }}
@@ -136,10 +148,12 @@ export default function WhyUsInteractive() {
                 <div className="absolute inset-0 rounded-lg">
                   <div
                     className={`absolute inset-0 rounded-lg border-2 transition-all duration-700 ${
-                      isHovered ? "border-white" : "border-gray-700/50"
+                      isHoveredOrInMobileView
+                        ? "border-white"
+                        : "border-gray-700/50"
                     }`}
                   />
-                  {isHovered && (
+                  {isHoveredOrInMobileView && (
                     <div
                       className="absolute inset-0 rounded-lg animate-pulse"
                       style={{
@@ -152,7 +166,7 @@ export default function WhyUsInteractive() {
                 </div>
 
                 {/* Holographic effect */}
-                {isHovered && (
+                {isHoveredOrInMobileView && (
                   <div
                     className="absolute inset-0 rounded-lg opacity-30"
                     style={{
@@ -169,10 +183,10 @@ export default function WhyUsInteractive() {
                     <div
                       className="absolute inset-0 rounded-2xl bg-gradient-to-br from-gray-700 to-gray-900 p-5 transition-all duration-500"
                       style={{
-                        transform: isHovered
+                        transform: isHoveredOrInMobileView
                           ? "rotate(10deg) scale(1.1)"
                           : "rotate(0deg) scale(1)",
-                        boxShadow: isHovered
+                        boxShadow: isHoveredOrInMobileView
                           ? "0 10px 30px rgba(255, 255, 255, 0.3)"
                           : "none",
                       }}
@@ -180,7 +194,7 @@ export default function WhyUsInteractive() {
                       <Icon className="w-full h-full text-white" />
                     </div>
                     {/* Icon glow ring */}
-                    {isHovered && (
+                    {isHoveredOrInMobileView && (
                       <div
                         className="absolute inset-0 rounded-2xl border-2 border-white animate-ping"
                         style={{ animationDuration: "2s" }}
@@ -191,7 +205,7 @@ export default function WhyUsInteractive() {
                   {/* Text content with futuristic styling */}
                   <h3
                     className={`text-2xl font-bold mb-4 transition-all duration-500 ${
-                      isHovered ? "text-white" : "text-gray-200"
+                      isHoveredOrInMobileView ? "text-white" : "text-gray-200"
                     }`}
                   >
                     {feature.title}
@@ -202,7 +216,7 @@ export default function WhyUsInteractive() {
                 </div>
 
                 {/* Scanning line effect */}
-                {isHovered && (
+                {isHoveredOrInMobileView && (
                   <div
                     className="absolute left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white to-transparent"
                     style={{
