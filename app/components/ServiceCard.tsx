@@ -82,14 +82,11 @@ const ServiceContent = ({
             ? { whileInView: { opacity: 1, x: 0 }, viewport: { once: true } }
             : { animate: { opacity: 1, x: 0 } })}
           transition={{ duration: 0.3, delay: featureIndex * 0.1 }}
-          whileHover={{ x: 5 }}
         >
-          <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/50 transition-all">
-            <CheckCircle className="h-3.5 w-3.5 text-white/70 group-hover:text-white transition-colors" />
+          <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center">
+            <CheckCircle className="h-3.5 w-3.5 text-white/70" />
           </div>
-          <span className="group-hover:text-white transition-colors">
-            {feature}
-          </span>
+          <span>{feature}</span>
         </motion.li>
       ))}
     </ul>
