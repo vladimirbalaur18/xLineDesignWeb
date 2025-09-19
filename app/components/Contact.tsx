@@ -502,11 +502,11 @@ export default function Contact() {
                 zoom={15}
                 className="w-full h-full"
               /> */}
-              <div style={{ width: "100%" }}>
+              <div className="w-full h-full">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2294.883668971051!2d28.839751775770818!3d47.02331127114225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97c3e39f95555%3A0x64f6b5f096b8d29a!2sXline!5e1!3m2!1sen!2s!4v1756238579543!5m2!1sen!2s"
                   width="100%"
-                  height="510"
+                  height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
