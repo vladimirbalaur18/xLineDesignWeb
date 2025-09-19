@@ -25,7 +25,9 @@ export const useVisibleViewportItems = (
           if (elementIndex === undefined || elementIndex === -1) return;
 
           if (entry.isIntersecting) {
-            setVisibleIndex((prev) => [...prev, elementIndex]);
+            setVisibleIndex((prev) =>
+              prev.includes(elementIndex) ? prev : [...prev, elementIndex]
+            );
           } else {
             setVisibleIndex((prev) => prev.filter((id) => id !== elementIndex));
           }
@@ -46,7 +48,7 @@ export const useVisibleViewportItems = (
       });
       observer.disconnect();
     };
-  }, []);
+  }, [itemsRefs.current, options]);
 
   return visibleIndex;
 };

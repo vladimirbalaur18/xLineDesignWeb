@@ -25,6 +25,11 @@ export default function WhyUsInteractive() {
   });
   const isMobile = useIsMobile();
 
+  // Compute per-card stagger delay for mobile
+  const getAnimationDelay = (index: number) => {
+    return isMobile && visibleItemsIndexArr.includes(index) ? index * 0.1 : 0;
+  };
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -122,6 +127,7 @@ export default function WhyUsInteractive() {
         >
           {features.map((feature, index) => {
             const Icon = feature.icon;
+            const animationDelay = getAnimationDelay(index);
             const isHoveredOrInMobileView =
               hoveredCard === index ||
               (visibleItemsIndexArr.includes(index) && isMobile);
@@ -142,6 +148,7 @@ export default function WhyUsInteractive() {
                   boxShadow: isHoveredOrInMobileView
                     ? "0 20px 40px rgba(255, 255, 255, 0.2)"
                     : "none",
+                  transitionDelay: `${animationDelay}s`,
                 }}
               >
                 {/* Animated border */}
@@ -152,6 +159,7 @@ export default function WhyUsInteractive() {
                         ? "border-white"
                         : "border-gray-700/50"
                     }`}
+                    style={{ transitionDelay: `${animationDelay}s` }}
                   />
                   {isHoveredOrInMobileView && (
                     <div
@@ -189,6 +197,7 @@ export default function WhyUsInteractive() {
                         boxShadow: isHoveredOrInMobileView
                           ? "0 10px 30px rgba(255, 255, 255, 0.3)"
                           : "none",
+                        transitionDelay: `${animationDelay}s`,
                       }}
                     >
                       <Icon className="w-full h-full text-white" />
@@ -207,6 +216,7 @@ export default function WhyUsInteractive() {
                     className={`text-2xl font-bold mb-4 transition-all duration-500 ${
                       isHoveredOrInMobileView ? "text-white" : "text-gray-200"
                     }`}
+                    style={{ transitionDelay: `${animationDelay}s` }}
                   >
                     {feature.title}
                   </h3>
