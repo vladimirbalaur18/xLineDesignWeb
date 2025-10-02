@@ -31,10 +31,6 @@ export function PropertyGalleryModal({
   const [nextImageLoaded, setNextImageLoaded] = useState(false);
   const [shouldScrollThumbnails, setShouldScrollThumbnails] = useState(false);
   const [currentImageLoading, setCurrentImageLoading] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const isPanningRef = useRef(false);
-  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   const spinnerStartRef = useRef<number>(0);
   const hideSpinnerTimeoutRef = useRef<number | null>(null);
@@ -52,8 +48,6 @@ export function PropertyGalleryModal({
       setNextImageLoaded(false);
       setGalleryImageLoading(false);
       setCurrentImageLoading(false);
-      setScale(1);
-      setOffset({ x: 0, y: 0 });
     }
   }, [isOpen, images, initialImageIndex]);
 
@@ -138,8 +132,6 @@ export function PropertyGalleryModal({
     setCurrentImageIndex(newIndex);
     setGalleryImageLoading(false);
     setNextImageLoaded(false);
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -170,48 +162,7 @@ export function PropertyGalleryModal({
               </button>
 
               {/* Main Image Container */}
-              <div
-                className="relative bg-black rounded-lg overflow-hidden mb-4 flex items-center justify-center w-full h-full"
-                onWheel={(e) => {
-                  e.preventDefault();
-                  const delta = -e.deltaY;
-                  const zoomIntensity = 0.0015;
-                  const newScale = Math.min(
-                    5,
-                    Math.max(1, scale + delta * zoomIntensity)
-                  );
-                  setScale(newScale);
-                }}
-                onMouseDown={(e) => {
-                  if (scale <= 1) return;
-                  isPanningRef.current = true;
-                  lastPointRef.current = { x: e.clientX, y: e.clientY };
-                }}
-                onMouseMove={(e) => {
-                  if (!isPanningRef.current || !lastPointRef.current) return;
-                  const dx = e.clientX - lastPointRef.current.x;
-                  const dy = e.clientY - lastPointRef.current.y;
-                  lastPointRef.current = { x: e.clientX, y: e.clientY };
-                  setOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-                }}
-                onMouseUp={() => {
-                  isPanningRef.current = false;
-                  lastPointRef.current = null;
-                }}
-                onMouseLeave={() => {
-                  isPanningRef.current = false;
-                  lastPointRef.current = null;
-                }}
-                onDoubleClick={() => {
-                  // Toggle zoom
-                  if (scale > 1) {
-                    setScale(1);
-                    setOffset({ x: 0, y: 0 });
-                  } else {
-                    setScale(2);
-                  }
-                }}
-              >
+              <div className="relative bg-black rounded-lg overflow-hidden mb-4 flex items-center justify-center w-full h-full">
                 {(galleryImageLoading || currentImageLoading) && (
                   <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/20 backdrop-blur-sm">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white/80"></div>
@@ -233,13 +184,8 @@ export function PropertyGalleryModal({
                       : "opacity-100"
                   }`}
                   style={{
-                    maxHeight: "calc(100vh - 200px)",
-                    maxWidth: "calc(100vw - 80px)",
-                    transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
-                    transition:
-                      galleryImageLoading || currentImageLoading
-                        ? undefined
-                        : "transform 120ms ease-out",
+                    maxHeight: "calc(100vh - 200px)", // Account for thumbnails and padding
+                    maxWidth: "calc(100vw - 80px)", // Account for padding
                   }}
                   onLoad={() => {
                     const now =
@@ -305,11 +251,6 @@ export function PropertyGalleryModal({
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10">
                   {currentImageIndex + 1} / {images.length}
                 </div>
-                {scale > 1 && (
-                  <div className="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10">
-                    {Math.round(scale * 100)}%
-                  </div>
-                )}
               </div>
 
               {/* Current Image Description */}
