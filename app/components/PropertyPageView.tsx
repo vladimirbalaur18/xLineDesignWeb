@@ -4,7 +4,7 @@ import { motion, useInView } from "framer-motion";
 import type { Property } from "@/types/properties";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Grid, Play, Calendar, ArrowLeft } from "lucide-react";
+import { Bed, Bath, Grid, Play, Calendar, ArrowLeft, X } from "lucide-react";
 import { SharePopover } from "@/components/SharePopover";
 import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { PropertyStats } from "@/components/PropertyStats";
@@ -14,14 +14,18 @@ import PropertyStoryMode from "@/components/PropertyStoryMode";
 import Footer from "@/components/Footer";
 import { OptimizedImage } from "@/components/OptimizedImage";
 import { useRouter } from "next/navigation";
+import { ZoomableImageModal } from "./ZoomableImageModal";
+import _ from "lodash";
 
 function LazySection({
   section,
   index,
+  onImageClick,
   totalSections,
 }: {
   section: any;
   index: number;
+  onImageClick: (imageUrl: string) => void;
   totalSections: number;
 }) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
@@ -111,6 +115,7 @@ function LazySection({
                   }`}
                 >
                   <OptimizedImage
+                    onClick={() => onImageClick(section.images[0])}
                     src={section.images[0]}
                     alt={section.title}
                     width={1920}
@@ -134,6 +139,7 @@ function LazySection({
                       }`}
                     >
                       <OptimizedImage
+                        onClick={() => onImageClick(img)}
                         src={img}
                         alt={`${section.title} Image ${i + 1}`}
                         width={960}
@@ -182,7 +188,9 @@ export default function PropertyPageView({
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
   const router = useRouter();
   const propertySections = property?.sections;
-
+  const [currentImageModalUrl, setCurrentImageModalUrl] = useState<
+    string | undefined
+  >(undefined);
   useEffect(() => {
     setHeroImageLoaded(false);
   }, [currentHeroImageIndex, property]);
@@ -216,8 +224,13 @@ export default function PropertyPageView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-black"
+      className="h-[50vh] md:min-h-screen bg-black"
     >
+      <ZoomableImageModal
+        isOpen={!_.isUndefined(currentImageModalUrl)}
+        onClose={() => setCurrentImageModalUrl(undefined)}
+        imageUrl={currentImageModalUrl || ""}
+      />
       <PropertyHeroImage
         images={property.heroImages || []}
         currentImageIndex={currentHeroImageIndex}
@@ -459,6 +472,7 @@ export default function PropertyPageView({
                 section={section}
                 index={index}
                 totalSections={propertySections.length}
+                onImageClick={(imageUrl) => setCurrentImageModalUrl(imageUrl)}
               />
             ))}
           </div>

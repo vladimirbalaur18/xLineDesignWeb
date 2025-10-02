@@ -35,7 +35,7 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
   // Safety check: ensure we have valid images
   if (!images || images.length === 0 || !images.some((img) => img?.url)) {
     return (
-      <section className="relative h-screen overflow-hidden bg-gray-900 flex items-center justify-center">
+      <section className="relative h-full overflow-hidden bg-gray-900 flex items-center justify-center">
         <div className="text-white text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-4">{title}</h1>
           <p className="text-white/70">No images available</p>
@@ -49,7 +49,7 @@ export const PropertyHeroImage: React.FC<PropertyHeroImageProps> = ({
   const currentImage = images[validCurrentIndex] || images[0];
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-full overflow-hidden">
       <div className="absolute inset-0">
         {/* Hero Image with Build Effect */}
         <AnimatePresence mode="wait">
