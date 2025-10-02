@@ -4,12 +4,13 @@ import { motion, useInView } from "framer-motion";
 import type { Property } from "@/types/properties";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bed, Bath, Grid, Play, Calendar, ArrowLeft } from "lucide-react";
+import { Bed, Bath, Grid, Play, Calendar, ArrowLeft, Eye } from "lucide-react";
 import { SharePopover } from "@/components/SharePopover";
 import { PropertyHeroImage } from "@/components/PropertyHeroImage";
 import { PropertyStats } from "@/components/PropertyStats";
 import { PropertyGallerySmall } from "@/components/PropertyGallerySmall";
 import { PropertyGalleryModal } from "@/components/PropertyGalleryModal";
+import SectionImageModal from "./SectionImageModal";
 import PropertyStoryMode from "@/components/PropertyStoryMode";
 import Footer from "@/components/Footer";
 import { OptimizedImage } from "@/components/OptimizedImage";
@@ -19,10 +20,12 @@ function LazySection({
   section,
   index,
   totalSections,
+  onOpenModal,
 }: {
   section: any;
   index: number;
   totalSections: number;
+  onOpenModal: (images: string[], initialIndex: number) => void;
 }) {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
@@ -103,7 +106,12 @@ function LazySection({
           )}
 
           {Array.isArray(section.images) && section.images.length === 1 ? (
-            <div className="w-full mb-8 relative">
+            <div
+              className="w-full mb-8 relative group md:cursor-zoom-in"
+              role="button"
+              aria-label="Deschide imaginea în galerie"
+              onClick={() => onOpenModal(section.images as string[], 0)}
+            >
               {0 in loadingStates && (
                 <div
                   className={`transition-opacity duration-300 ${
@@ -122,11 +130,22 @@ function LazySection({
                   />
                 </div>
               )}
+              {/* Mobile-only overlay (visible only while pressing) */}
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity md:hidden group-active:opacity-100">
+                <div className="absolute inset-0 bg-black/30" />
+                <Eye className="relative z-10 w-10 h-10 text-white/80" />
+              </div>
             </div>
           ) : Array.isArray(section.images) && section.images.length === 2 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {section.images.map((img: string, i: number) => (
-                <div key={i} className="relative">
+                <div
+                  key={i}
+                  className="relative group md:cursor-zoom-in"
+                  role="button"
+                  aria-label={`Deschide imaginea ${i + 1} în galerie`}
+                  onClick={() => onOpenModal(section.images as string[], i)}
+                >
                   {i in loadingStates && (
                     <div
                       className={`transition-opacity duration-300 ${
@@ -145,6 +164,11 @@ function LazySection({
                       />
                     </div>
                   )}
+                  {/* Mobile-only overlay (visible only while pressing) */}
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-md opacity-0 transition-opacity md:hidden group-active:opacity-100">
+                    <div className="absolute inset-0 bg-black/30" />
+                    <Eye className="relative z-10 w-8 h-8 text-white/80" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -177,6 +201,12 @@ export default function PropertyPageView({
 }) {
   const [currentHeroImageIndex, setCurrentHeroImageIndex] = useState(0);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [modalImages, setModalImages] = useState<
+    { url: string; description?: string }[]
+  >([]);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
+  const [sectionModalImages, setSectionModalImages] = useState<string[]>([]);
+  const [sectionModalIndex, setSectionModalIndex] = useState(0);
   const [isStoryModeOpen, setIsStoryModeOpen] = useState(false);
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [currentGalleryImageIndex, setCurrentGalleryImageIndex] = useState(0);
@@ -423,6 +453,7 @@ export default function PropertyPageView({
                           Math.max(0, index),
                           property.galleryImages.length - 1
                         );
+                        setModalImages(property.galleryImages);
                         setCurrentGalleryImageIndex(safeIndex);
                         setIsImageModalOpen(true);
                       }}
@@ -459,6 +490,15 @@ export default function PropertyPageView({
                 section={section}
                 index={index}
                 totalSections={propertySections.length}
+                onOpenModal={(images, initialIndex) => {
+                  setSectionModalImages(images || []);
+                  const safeIndex = Math.min(
+                    Math.max(0, initialIndex),
+                    Math.max(0, (images || []).length - 1)
+                  );
+                  setSectionModalIndex(safeIndex);
+                  setIsSectionModalOpen(true);
+                }}
               />
             ))}
           </div>
@@ -468,9 +508,19 @@ export default function PropertyPageView({
       <PropertyGalleryModal
         isOpen={isImageModalOpen}
         onClose={() => setIsImageModalOpen(false)}
-        images={property?.galleryImages || []}
+        images={
+          modalImages.length > 0 ? modalImages : property?.galleryImages || []
+        }
         initialImageIndex={currentGalleryImageIndex}
         propertyTitle={property?.title || "Previzualizare"}
+      />
+
+      <SectionImageModal
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        images={sectionModalImages}
+        initialIndex={sectionModalIndex}
+        title={property?.title || "Previzualizare"}
       />
 
       <PropertyStoryMode
