@@ -103,7 +103,7 @@ export default function Footer() {
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="font-bold mb-4">Explore</h4>
+            <h4 className="font-bold mb-4">Explorează</h4>
             <ul className="space-y-2">
               {navItems.map((item) => (
                 <li key={item.key}>
@@ -125,7 +125,7 @@ export default function Footer() {
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="font-bold mb-4">Contact Us</h4>
+            <h4 className="font-bold mb-4">Informații de contact</h4>
             <ul className="space-y-2">
               <li className="text-gray-400">
                 {process.env.NEXT_PUBLIC_BUSINESS_ADDRESS_LINE1}
@@ -154,7 +154,7 @@ export default function Footer() {
               onClick={scrollToTop}
               className="mt-6 hover:bg-primary/90 transition-all"
             >
-              Spre pagina principală <ArrowUp className="ml-2 h-4 w-4" />
+              Înapoi la început <ArrowUp className="ml-2 h-4 w-4" />
             </Button>
           </motion.div>
         </div>
