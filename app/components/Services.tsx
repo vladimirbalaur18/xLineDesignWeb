@@ -25,7 +25,7 @@ const services = [
       "Renovări rezidențiale",
     ],
     image:
-      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/31%2C1.jpg",
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/services/design.jpg",
   },
 
   {
@@ -44,7 +44,7 @@ const services = [
       "Facilități științifice și de cercetare",
     ],
     image:
-      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/projects/31/0.jpg",
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/services/architecture.jpg",
   },
   {
     id: "landscapeDesign",
@@ -61,7 +61,8 @@ const services = [
       "Planificare campusuri",
       "Arhitectură peisagistică",
     ],
-    image: "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/5.jpg",
+    image:
+      "https://p6a7dqe3nols6dlo.public.blob.vercel-storage.com/services/landscaping.jpg",
   },
 ];
 
