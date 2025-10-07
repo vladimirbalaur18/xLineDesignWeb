@@ -5,10 +5,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate --no-engine && next build",
     "start": "next start",
     "lint": "next lint",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "build": "prisma generate --no-engine && next build",
+    "preview": "opennextjs-cloudflare build && wrangler dev",
+    "deploy": "opennextjs-cloudflare build && wrangler deploy",
+    "upload": "opennextjs-cloudflare build && wrangler upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -18,6 +22,7 @@
     "@hookform/resolvers": "^3.9.1",
     "@jridgewell/trace-mapping": "^0.3.25",
     "@neondatabase/serverless": "^0.10.4",
+    "@opennextjs/cloudflare": "^1.9.1",
     "@prisma/client": "^6.14.0",
     "@prisma/extension-accelerate": "^2.0.2",
     "@radix-ui/react-accordion": "^1.2.1",
@@ -74,6 +79,7 @@
     "next": "^15.2.4",
     "next-transpile-modules": "^10.0.1",
     "node-telegram-bot-api": "^0.66.0",
+    "npx": "^10.2.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "react": "^18.3.1",
@@ -117,7 +123,8 @@
     "tailwindcss": "^3.4.14",
     "tsx": "^4.20.4",
     "typescript": "5.6.3",
-    "vite": "^5.4.14"
+    "vite": "^5.4.14",
+    "wrangler": "^4.42.0"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
