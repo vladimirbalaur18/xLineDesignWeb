@@ -90,14 +90,16 @@ export default function Hero() {
           >
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter uppercase mb-4">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
-                Eleganță în fiecare detaliu
+                Arhitectură și design interior în Chișinău
               </span>
             </h1>
 
-            <p className="text-md md:text-2xl font-light tracking-wide mb-8 text-white/80">
-              Studio de arhitectură și design interior cu experiență în Moldova
-              și România. Plan clar, buget controlat, execuție garantată
-            </p>
+            <h2 className="text-md md:text-2xl font-light tracking-wide mb-8 text-white/80">
+              Studio de design interior și arhitectură în Chișinău, Moldova și
+              România. Amenajări interioare moderne pentru case, apartamente și
+              birouri. Proiect complet cu execuție la cheie, plan clar, buget
+              controlat și rezultate garantate.
+            </h2>
           </motion.div>
 
           {/* Static Buttons */}

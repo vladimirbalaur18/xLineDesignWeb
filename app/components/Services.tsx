@@ -16,7 +16,7 @@ const services = [
       <Home className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
     description:
-      "Amenajări personalizate pentru locuințe rezidențiale, spații comerciale și proiecte HoReCa. De la minimalism modern la clasic elegant, creăm interioare care inspiră și funcționează impecabil.",
+      "Design interior și amenajări personalizate pentru locuințe rezidențiale, spații comerciale și proiecte HoReCa în Chișinău, Moldova și România. De la minimalism modern la stil clasic elegant, creăm interioare care inspiră, sunt funcționale și realizate la cheie.",
     features: [
       "Proiectare case personalizate",
       "Locuințe multifamiliale",
@@ -35,7 +35,7 @@ const services = [
       <Landmark className="h-5 w-5 text-white group-data-[state=active]:text-black" />
     ),
     description:
-      "Servicii complete de proiectare pentru construcții noi, renovări și dezvoltări mixte. Combinăm estetica, funcționalitatea și responsabilitatea față de mediu.",
+      "Servicii complete de proiectare și arhitectură pentru construcții noi, renovări și dezvoltări imobiliare în Chișinău, Moldova și România. Combinăm estetica, funcționalitatea și sustenabilitatea, oferind soluții eficiente și responsabile față de mediu.",
     features: [
       "Instituții de învățământ",
       "Clădiri medicale",
