@@ -4,21 +4,22 @@
 
 ## 📖 Table of Contents
 
-* [About](#about)
-* [Features](#features)
-* [Tech Stack](#tech-stack)
-* [Getting Started](#getting-started)
+- [About](#about)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
 
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-  * [Running Locally](#running-locally)
-  * [Building for Production](#building-for-production)
-* [Environment Variables](#environment-variables)
-* [Project Structure](#project-structure)
-* [Deployment](#deployment)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running Locally](#running-locally)
+  - [Building for Production](#building-for-production)
+
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
 ---
 
@@ -30,26 +31,26 @@
 
 ## ✨ Features
 
-* **Responsive Design** – Mobile-first layouts that adapt seamlessly to all screen sizes
-* **Server-Side Rendering** – Blazing fast initial page loads and excellent SEO
-* **Image Optimization** – Built-in Next.js `<Image>` component for automatic resizing & lazy loading
-* **Dynamic Routing** – Clean URL structure for project detail pages
-* **CMS-Ready** – Easy integration with headless CMS or Markdown content
-* **Dark & Light Mode** – Toggle between themes with system preference detection
-* **Accessibility** – Follows WCAG standards for keyboard navigation & screen readers
-* **Animations** – Subtle scroll and hover effects (e.g. Framer Motion)
+- **Responsive Design** – Mobile-first layouts that adapt seamlessly to all screen sizes
+- **Server-Side Rendering** – Blazing fast initial page loads and excellent SEO
+- **Image Optimization** – Built-in Next.js `<Image>` component for automatic resizing & lazy loading
+- **Dynamic Routing** – Clean URL structure for project detail pages
+- **CMS-Ready** – Easy integration with headless CMS or Markdown content
+- **Dark & Light Mode** – Toggle between themes with system preference detection
+- **Accessibility** – Follows WCAG standards for keyboard navigation & screen readers
+- **Animations** – Subtle scroll and hover effects (e.g. Framer Motion)
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Framework:** Next.js
-* **Language:** TypeScript / JavaScript
-* **Styling:** Tailwind CSS
-* **Components:** React, ShadCN UI (optional)
-* **Animation:** Framer Motion
-* **Linting & Formatting:** ESLint, Prettier
-* **Hosting:** Vercel (recommended)
+- **Framework:** Next.js
+- **Language:** TypeScript / JavaScript
+- **Styling:** Tailwind CSS
+- **Components:** React, ShadCN UI (optional)
+- **Animation:** Framer Motion
+- **Linting & Formatting:** ESLint, Prettier
+- **Hosting:** Vercel (recommended)
 
 ---
 
@@ -57,8 +58,8 @@
 
 ### Prerequisites
 
-* **Node.js** v16 or higher
-* **npm** v8 or higher (or **Yarn** v1.22+)
+- **Node.js** v16 or higher
+- **npm** v8 or higher (or **Yarn** v1.22+)
 
 ### Installation
 
@@ -68,3 +69,28 @@
    git clone https://github.com/vladimirbalaur18/xLineDesignWeb.git
    cd xLineDesignWeb
    ```
+
+### Deploying on CloudFlare Workers and Pages
+
+For CloudFlare deployment, wrangler.toml is the configuration file.
+
+1. You must login using wrangler before running the `wrangler` CLI (`wrangler login`)
+2. Run the commands via `wrangler`, (` wrangler build`, `wrangler dev`) since the `opennextjs-cloudflare` from official documentation doesn't work
+
+3. **Run the build**
+
+```bash
+  npm run build
+```
+
+4. **Preview the Cloudflare build locally**
+
+```bash
+  npm run preview
+```
+
+5. **Deploy the Cloudflare build**
+
+```bash
+  npm run deploy
+```
